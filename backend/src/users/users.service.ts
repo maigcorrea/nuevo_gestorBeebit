@@ -1,27 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-
-interface User extends CreateUserDto {
-  id: number;
-}
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity'; // Importamos la entidad User
 
 @Injectable()
 export class UsersService {
-  // Definimos el tipo de los usuarios como un arreglo de objetos User
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User) // Inyectamos el repositorio de usuarios
+    private usersRepository: Repository<User>, // Usamos el repositorio para interactuar con la base de datos
+  ) {}
 
-  create(createUserDto: CreateUserDto) {
-    // Creamos el nuevo usuario, asignando un id único
-    const newUser = { id: this.users.length + 1, ...createUserDto };
-    this.users.push(newUser);
-    return newUser;
+  async createUser(name: string, email: string, password: string): Promise<User> {
+    const newUser = this.usersRepository.create({ name, email, password }); // Crea una nueva instancia
+    return this.usersRepository.save(newUser); // Guarda el usuario en la base de datos
   }
 
-  findAll() {
-    return this.users;
+  async create(user: User): Promise<User> {
+    return this.usersRepository.save(user); // Guardamos el usuario en la base de datos
   }
 
-  findOne(id: number) {
-    return this.users.find(user => user.id === id);
+  // Método para obtener todos los usuarios
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find(); // Obtenemos todos los usuarios
+  }
+
+  async findOne(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } }); // Obtenemos un usuario por su ID. findOne ahora espera un objeto con un campo where que contiene las condiciones de búsqueda.
   }
 }
+

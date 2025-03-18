@@ -11,6 +11,14 @@ services:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run start:dev
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=test
+    depends_on: #El contenedor backend no se levantará hasta que el contenedor de postgres esté list
+      - postgres
 
   frontend:
     container_name: frontend
@@ -22,3 +30,19 @@ services:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run dev
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
