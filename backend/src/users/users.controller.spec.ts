@@ -20,9 +20,9 @@ describe('UsersController', () => {
 
   it('should return an array of users', () => {
     const users = usersController.findAll();
-  expect(users).toEqual([
-    { id: 1, name: 'Usuario 1' },
-    { id: 2, name: 'Usuario 2' },
-  ]);
+    expect(users).toEqual([
+      { id: 1, name: 'Usuario 1' },
+      { id: 2, name: 'Usuario 2' },
+    ]);
   });
 });
