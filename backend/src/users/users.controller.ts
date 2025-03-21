@@ -9,7 +9,11 @@ import { CreateUserDto } from './dto/create-user.dto'; // El DTO que has creado
 import { UserResponseDto } from './dto/user-response.dto'; // Importamos el DTO de respuesta
 // Importamos la entidad User para que Swagger sepa qué tipo de datos devuelve cada endpoint.
 import { User } from './entities/user.entity';
+//Para transformar automáticamente los tipos de datos
+import { ParseIntPipe } from '@nestjs/common';
 
+
+import { NotFoundException } from '@nestjs/common';
 
 // El decorador @ApiTags agrupa los endpoints en Swagger bajo la categoría "Users".
 @ApiTags('Users') // Agrupa las rutas bajo la categoría "Users" en Swagger
@@ -23,7 +27,7 @@ export class UsersController {
   // Describe brevemente qué hace este endpoint para Swagger.
   @ApiOperation({ summary: 'Crear usuario básico' })
   // Indica a Swagger que si todo sale bien, devolverá un usuario con status 201.
-  @ApiResponse({ status: 201, description: 'Usuario creado correctamente', type: User })
+  @ApiResponse({ status: 201, description: 'Usuario creado correctamente', type: UserResponseDto})
    // Indica a Swagger que podría haber un error si los datos son inválidos.
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   create(@Body() createUserDto: CreateUserDto) {
@@ -35,11 +39,11 @@ export class UsersController {
   // Este endpoint maneja POST en /users/custom.
   @Post('custom')
   @ApiOperation({summary:'Crear usuario personalizado'})
-  @ApiResponse({ status:201, description: 'Usuario creado correctamente', type: User})
+  @ApiResponse({ status:201, description: 'Usuario creado correctamente', type: UserResponseDto})
   @ApiResponse({status:400, description: 'Datos inválidos'})
-  createUser(@Body() body: { name: string; email: string; password: string }) {
+  createUser(@Body() createUserDto: CreateUserDto) {
     // Recibe el body sin usar DTO, directamente como un objeto plano.
-    const { name, email, password } = body;
+    const { name, email, password } = createUserDto;
 
     // Llama al método createUser() del servicio, pasándole los datos de forma individual.
     return this.usersService.createUser(name, email, password);
@@ -48,7 +52,7 @@ export class UsersController {
   // Definir el endpoint para obtener todos los usuarios. Este endpoint maneja GET en /users/all.
   @Get('all')
   @ApiOperation({ summary: 'Listar todos los usuarios' })
-  @ApiResponse({ status: 200, description: 'Listado de usuarios', type: [User] })
+  @ApiResponse({ status: 200, description: 'Listado de usuarios', type: [UserResponseDto] })
   findAll() {
     // Llama al método findAll() del servicio, que devuelve un array de usuarios.
     return this.usersService.findAll();
@@ -60,10 +64,12 @@ export class UsersController {
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
   @ApiResponse({ status: 200, description: 'Usuario encontrado', type: User })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number) { // <--- Cambia el tipo a string
     const user = await this.usersService.findOne(id);
     if (!user) {
-      throw new Error('Usuario no encontrado');
+      //throw new Error('Usuario no encontrado');
+      //Más elegante el notFoundException
+      throw new NotFoundException('Usuario no encontrado');
     }
 
     // Convertimos el objeto User en un UserResponseDto sin la contraseña (Para que al devolver los datos, la contraseña no aparezca, por eso usamos el user-response.dto)
@@ -73,3 +79,4 @@ export class UsersController {
   }
 
 }
+
