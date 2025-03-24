@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn } from 'class-validator';
 
-export class updateTaskDto{
+export class UpdateTaskDto{
     @ApiProperty({
         description:"Titulo de la tarea",
         example:"Hacer funcionalidad de navegación entre páginas",
@@ -52,6 +52,7 @@ export class updateTaskDto{
         example: "high",
     })
     @IsString()
+    @IsOptional()
     //LIMITAR SÓLO A "ALTA, MEDIA, BAJA"
     @IsIn(['high', 'medium', 'low'], {
         message: 'La prioridad debe ser high, medium o low (Alta, media o baja)',
@@ -66,6 +67,7 @@ export class updateTaskDto{
         description: 'Indicador de estado de la tarea(pending, active o completed)',
         example: "completed",
     })
+    @IsOptional()
     //LIMITAR A PENDIENTE, EN PROGRESO(ACTIVA), FINALIZADA
     @IsIn(['pending', 'active', 'completed'], {
         message: 'El estado debe ser pending, active o completed',

@@ -39,17 +39,19 @@ export class CreateTaskDto{
     start_date: string;
 
 
-    @ApiPropertyOptional({
-        description: 'Fecha de finalización de la tarea',
-        example: '2025-03-23', // formato ISO
-    })
-    @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
-    @IsOptional()
     //LA FECHA DE FINALIZACIÓN DE LA TAREA ES LA FECHA EN LA QUE EL ESTADO CAMBIA A COMPLETADO, CUANDO EL ESTADO CAMBIA A COMPLETADO, ESTE CAMPO SE RELLENA CON LA FECHA DE ESE DÍA
-    end_date: string;
+    //POR ESO, POR DEFECTO, AL CREAR LA TAREA ESTÁ A NULL
+    //@ApiPropertyOptional({
+       // description: 'Fecha de finalización de la tarea',
+        //example: '2025-03-23', // formato ISO
+    //})
+    //@IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
+    //@IsOptional()
+    //end_date: string;
 
 
-
+    //EL BOOLEAN SÓLO CAMBIA A TRUE CUANDO EL ESTADO DE LA TAREA CAMBIA A COMPLETADO, POR DEFECTO EN EL MOMENTO DE CREACIÓN DE LA TAREA ES FALSE, CUANDO EL ESTADO CAMBIA A COMPLETADO, ESTE CAMPO CAMBIA A TRUE
+    //POR ESO, POR DEFECTO, AL CREAR LA TAREA ESTÁ A NULL
     //@ApiProperty({
         //description: 'Indicador de si la tarea se ha completado o no (Boolean)',
         //example: true,
@@ -73,14 +75,16 @@ export class CreateTaskDto{
 
 
 
-    @ApiProperty({
-        description: 'Indicador de estado de la tarea(pending, active o completed)',
-        example: "completed",
-    })
+    //POR DEFECTO, AL CREAR UNA TAREA, EL ESTADO ESTÁ PENDING (SE CONTROLA EN SERVICE)
+    //@ApiPropertyOptional({
+        //description: 'Indicador de estado de la tarea(pending, active o completed)',
+        //example: "completed",
+    //})
     //LIMITAR A PENDIENTE, EN PROGRESO(ACTIVA), FINALIZADA
-    @IsIn(['pending', 'active', 'completed'], {
-        message: 'El estado debe ser pending, active o completed',
-    })
-    status: string;
+    //@IsOptional()
+    //@IsIn(['pending', 'active', 'completed'], {
+        //message: 'El estado debe ser pending, active o completed',
+    //})
+    //status: string;
 
 }
