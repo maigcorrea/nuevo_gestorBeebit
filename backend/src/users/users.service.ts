@@ -34,11 +34,21 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 2. Creamos al usuario con la contraseña hasheada
-    const user = new User();
-    user.name = userData.name;
-    user.email = userData.email;
+
+    //AQUI SE CONSTRUYE A MANO, PERO ES MÁS EFICIENTE HACERLO CON CREATE (TEXTO DESCOMENTADO)
+    //const user = new User();
+    //user.name = userData.name;
+    //user.email = userData.email;
     //mÁS DATOS COMO ROL, STATUS, ETC.
-    user.password = hashedPassword;//Guardamos el hash, no el texto plano
+    //user.password = hashedPassword;//Guardamos el hash, no el texto plano
+
+    //MÁS EFICIENTE
+    const user = this.usersRepository.create({
+      ...userData,
+      password: hashedPassword,
+    });
+
+    
     // 3. GUardamos el usuario en la bd, save() hace dos cosas: inserta si es nuevo, actualiza si ya existe.
     return this.usersRepository.save(user);
   } 

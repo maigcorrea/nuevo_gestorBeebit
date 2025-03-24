@@ -8,7 +8,7 @@ export class CreateUserDto {
     example: 'Juan Pérez',
   })
   @IsString({ message: 'El nombre debe ser un texto' })
-  @Length(2, 50, { message: 'El nombre debe tener entre 2 y 50 caracteres' })
+  @Length(2, 100, { message: 'El nombre debe tener entre 2 y 100 caracteres' })
   @IsNotEmpty()
   name: string;
 
