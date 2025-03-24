@@ -14,7 +14,7 @@ import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString
 
 
  
-     @ApiProperty({
+     @ApiPropertyOptional({
          description:"Descripción del proyecto",
          example:"Tienda dedicada al comercio online al por mayor",
      })
@@ -41,7 +41,7 @@ import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString
 
 
  
-     @ApiProperty({
+     @ApiPropertyOptional({
          description:"Fecha límite para la entrega del proyecto",
          example:"2025-05-30",
      })
