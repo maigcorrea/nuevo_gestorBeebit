@@ -19,11 +19,12 @@ export class StaffController{
     @ApiOperation({summary:"Introducir empleado en el sistema"})
     @ApiResponse({ status: 201, description: 'Empleado creado correctamente', type: StaffResponseDto})
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
-    create(@Body() createStaffDto: CreateStaffDto) {
+    async create(@Body() createStaffDto: CreateStaffDto) {
         console.log("Hola")
         // Recibe el cuerpo de la petición (body) y lo convierte en un CreateStaffDto automáticamente.
         // Llama al método create() del servicio, pasándole el DTO.
-        return this.staffService.create(createStaffDto);
+        const user= await this.staffService.create(createStaffDto);
+        return user;
     }
 
 

@@ -19,12 +19,12 @@ export class StaffService {
 
     async create(createStaffDto: CreateStaffDto): Promise<Staff>{
         // Creamos una nueva instancia de User a partir de los datos que nos llegan del DTO. TypeORM genera un objeto User pero NO lo guarda en la base de datos aún.
-        const { register_date, ...userData } = createStaffDto;
-        console.log("Adios")
+        const { register_date,password, ...userData } = createStaffDto;
+        console.log("EStá")
         // Generamos el hash (10 es el salt rounds, número de encriptaciones, puedes cambiarlo, CUNATO MAYOR EL NÚMERO, MÁS SEGURO PERO MÁS LENTO
         //DA ERROR EN EL BCRYPT
-        //const hashedPassword = await bcrypt.hash(password, 10);
-        console.log("hey")
+        const hashedPassword =await bcrypt.hash(password, 10);
+
         // 2. Creamos al usuario con la contraseña hasheada
 
         //AQUI SE CONSTRUYE A MANO, PERO ES MÁS EFICIENTE HACERLO CON CREATE (TEXTO DESCOMENTADO)
@@ -35,11 +35,19 @@ export class StaffService {
         //user.password = hashedPassword;//Guardamos el hash, no el texto plano
 
         //MÁS EFICIENTE
-        const staff = this.staffRepository.create({
+        /*const staff = this.staffRepository.create({
             ...userData,
-            //password: hashedPassword,
+            password: hashedPassword,
             register_date: register_date ? new Date(register_date) : new Date()
-        });
+        });*/
+
+        const staff= {
+            name:"algo2",
+            email:"algo2@gmail.com",
+            register_date:"2025-02-20",
+            phone: "682543620",
+            password:"holaMundo_2"
+        }
 
 
         
