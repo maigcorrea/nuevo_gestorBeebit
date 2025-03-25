@@ -7,6 +7,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
+import { TaskPriority, TaskStatus } from './entities/task.entity';
 
 @Injectable()
 export class TaskService{
@@ -18,14 +19,15 @@ export class TaskService{
 
     //Método para crear una tarea
     async create(createTaskDto: CreateTaskDto): Promise<Task> {
-        const { start_date, ...restData } = createTaskDto;
+        const { start_date, associated_project, ...restData } = createTaskDto;
       
         const task = this.taskRepository.create({
           ...restData,
           start_date: start_date ? new Date(start_date) : new Date(),
           end_date: null,         //Forzamos null al crear
           completed: false,       // Forzamos a false al crear
-          status: 'pending',      // Forzamos a 'pending' por defecto
+          status: TaskStatus.PENDING,      // Forzamos a 'pending' por defecto. Así se usa el enum
+          associated_project: { id: associated_project }
         });
       
         return this.taskRepository.save(task);
@@ -36,7 +38,7 @@ export class TaskService{
     async findByProject(projectId:number):Promise<Task[]>{
         const tasks = await this.taskRepository.find({
             where:{ associated_project: { id: projectId }},
-            relations: ['associated_project'], // opcional: para incluir los datos del proyecto si los necesitas. Esto hace que se cargue el proyecto junto con la tarea
+            //relations: ['associated_project'], // opcional: para incluir los datos del proyecto si los necesitas. Esto hace que se cargue el proyecto junto con la tarea
         })
 
         if(tasks.length===0){
@@ -46,7 +48,7 @@ export class TaskService{
         return tasks;
     }
 
-
+    //Método para actualizar una tarea en concreto
     async updateTask(id: number, updateDto: UpdateTaskDto): Promise<{ message: string }> {
         const task = await this.taskRepository.findOneBy({ id });
       
@@ -59,7 +61,11 @@ export class TaskService{
       
         if (title !== undefined) task.title = title;
         if (description !== undefined) task.description = description;
-        if (priority !== undefined) task.priority = priority;
+        if (priority !== undefined) task.priority= priority;
+
+        //if (!title && !description && !priority && !status) {
+          //throw new BadRequestException('Debes proporcionar al menos un campo para actualizar.');
+        //}
       
         // 👇 Lógica para cuando se actualiza el estado
         if (status !== undefined) {
@@ -68,6 +74,9 @@ export class TaskService{
           if (status === 'completed') {
             task.completed = true;
             task.end_date = new Date(); // fecha actual como finalización
+          } else {
+            task.completed = false;
+            task.end_date = null;
           }
         }
       
@@ -75,4 +84,21 @@ export class TaskService{
       
         return { message: `Tarea con id ${id} actualizada con éxito` };
       }
+
+
+
+
+      //Método para borrar una tarea en concreto
+      async deleteTask(id:number):Promise<{message:string}>{
+        const result = await this.taskRepository.delete(id);
+      
+        if (result.affected === 0) {
+          throw new NotFoundException(`No se encontró la tarea con id ${id}`);
+        }
+
+        return { message: `Tarea con id ${id} eliminada con éxito` };
+      }
+
+
+
 }

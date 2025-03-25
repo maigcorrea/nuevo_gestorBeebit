@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+// MÓDULOS
 import { UsersModule } from './users/users.module'; // Tu módulo de usuarios
 import { ProjectModule } from './project/project.module';
+import { TaskModule } from './task/task.module';
+// ENTIDADES
 import { User } from './users/entities/user.entity'; // La entidad de usuario
 import { Project } from './project/entities/project.entity';
+import { Task } from './task/entities/task.entity';
 
 @Module({
   imports: [
@@ -14,12 +18,13 @@ import { Project } from './project/entities/project.entity';
       username: 'postgres', // Usuario de la base de datos
       password: 'password', // Contraseña de la base de datos
       database: 'test', // Nombre de la base de datos
-      entities: [User, Project,], // Entidades que se utilizarán
+      entities: [User, Project, Task], // Entidades que se utilizarán
       synchronize: true, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),
     UsersModule, // Aquí importamos el módulo de usuarios
     ProjectModule,
+    TaskModule
   ],
 })
 export class AppModule {}

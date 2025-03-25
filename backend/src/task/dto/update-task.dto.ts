@@ -1,11 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn } from 'class-validator';
+import { TaskPriority, TaskStatus } from '../entities/task.entity';
 
 export class UpdateTaskDto{
-    @ApiProperty({
+    //Todos los campos deberían ser opcionales, porque puede que quieras actualizar solo uno de ellos.
+
+    @ApiPropertyOptional({
         description:"Titulo de la tarea",
         example:"Hacer funcionalidad de navegación entre páginas",
     })
+    @IsOptional()
     @IsString({ message: 'El título debe ser un texto' })
     @Length(2, 100, { message: 'El título debe tener entre 2 y 100 caracteres' })
     title:string;
@@ -22,12 +26,13 @@ export class UpdateTaskDto{
     description: string;
 
 
-
-    @ApiProperty({
-        description:"id del proyecto al que está asociada la tarea",
-        example:1
-    })
-    associated_project:number;
+    // No se puede asignar otro proyecto diferente a la tarea. Si una tarea pertenece a un proyecto, no cambia a menos que se elimine y se cree otra.
+    //@ApiPropertyOptional({
+        //description:"id del proyecto al que está asociada la tarea",
+        //example:1
+    //})
+    //@IsOptional()
+    //associated_project:number;
 
 
 
@@ -35,10 +40,10 @@ export class UpdateTaskDto{
 
 
     //Esta fecha se modifica cuando el estado de la tarea cambia a completado o completed
-    @ApiProperty({
-        description:"Fecha de finalización de la tarea", example:"2025-03-29"
-    })
-    end_date:Date;
+    //@ApiProperty({
+        //description:"Fecha de finalización de la tarea", example:"2025-03-29"
+    //})
+    //end_date:Date;
 
 
 
@@ -47,7 +52,7 @@ export class UpdateTaskDto{
 
 
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Indicador de prioridad de la tarea (high, medium o low)',
         example: "high",
     })
@@ -57,13 +62,13 @@ export class UpdateTaskDto{
     @IsIn(['high', 'medium', 'low'], {
         message: 'La prioridad debe ser high, medium o low (Alta, media o baja)',
     })
-    priority: string;
+    priority: TaskPriority;
 
 
 
 
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Indicador de estado de la tarea(pending, active o completed)',
         example: "completed",
     })
@@ -72,5 +77,5 @@ export class UpdateTaskDto{
     @IsIn(['pending', 'active', 'completed'], {
         message: 'El estado debe ser pending, active o completed',
     })
-    status: string;
+    status: TaskStatus;
 }

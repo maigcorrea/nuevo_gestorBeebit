@@ -1,5 +1,18 @@
 import { Project } from 'src/project/entities/project.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+
+//ENUM
+export enum TaskPriority {
+   HIGH = 'high',
+   MEDIUM = 'medium',
+   LOW = 'low',
+ }
+ 
+ export enum TaskStatus {
+   PENDING = 'pending',
+   ACTIVE = 'active',
+   COMPLETED = 'completed',
+ }
  
  @Entity()
  export class Task{
@@ -17,11 +30,11 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
     @JoinColumn({ name: 'project_id' }) // Este será el nombre de la columna en la tabla
     associated_project:Project;
 
-    @Column()
+    @Column({ type: 'timestamp' })
     start_date:Date;
 
-    @Column()
-    end_date:Date;
+    @Column({ type: 'timestamp', nullable: true })
+    end_date:Date | null;
 
     //@Column()
     //start_time:Date;
@@ -29,13 +42,23 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
     //@Column()
     //end_time:Date;
 
-    @Column()
+    @Column({ type: 'boolean', default: false })
     completed:boolean;
 
-    @Column()
-    priority:string;
 
-    @Column()
-    status:string;
+
+    @Column({
+      type: 'enum',
+      enum: TaskPriority,
+    })
+    priority: TaskPriority;
+
+
+
+    @Column({
+      type: 'enum',
+      enum: TaskStatus,
+    })
+    status: TaskStatus;
  
  }

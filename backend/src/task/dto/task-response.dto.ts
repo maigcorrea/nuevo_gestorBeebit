@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, } from 'class-validator';
+import { TaskPriority, TaskStatus } from '../entities/task.entity';
 
 export class TaskResponseDto{
     @ApiProperty({
@@ -21,12 +21,12 @@ export class TaskResponseDto{
 
 
 
-    //DEVUELVO EL PROYECTO O SÓLO EL ID?????
-    @ApiProperty({
-        description:"id del proyecto al que está asociada la tarea",
-        example:1
-    })
-    associated_project:number;
+    //No es necesario mostrar el proyecto asociado en la respuesta, porque el usuario seleccionaría un proyecto y se obtendrían todas las tareas asociadas, pero sólo se mostraría la información de las tareas
+    //@ApiProperty({
+        //description:"id del proyecto al que está asociada la tarea",
+        //example:1
+    //})
+    //associated_project:number;
 
 
 
@@ -55,12 +55,12 @@ export class TaskResponseDto{
     @ApiProperty({
         description:"Prioridad de la tarea", example:"high"
     })
-    priority:string;
+    priority:TaskPriority;
 
 
 
     @ApiProperty({
         description:"Estado en el que se encuentra la tarea", example:"pending"
     })
-    status:string;
+    status:TaskStatus;
 }

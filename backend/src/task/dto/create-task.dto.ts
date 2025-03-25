@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, IsBoolean } from 'class-validator';
+import { TaskPriority, TaskStatus } from '../entities/task.entity';
 
 export class CreateTaskDto{
     @ApiProperty({
@@ -12,16 +13,17 @@ export class CreateTaskDto{
     title:string;
 
 
+    @IsOptional()
     @ApiPropertyOptional({
         description:"Descripción de la tarea",
         example:"Hay que hacer test sobre la funcionalidad de compra del carrito de la tienda online"
     })
-    @IsOptional()
     @IsString({message:"La descripción de la tarea debe ser un texto"})
     @Length(0, 200, {message:"La descripción de la tarea puede tener un máximo de 200 caracteres"})
     description:string;
 
 
+    @IsNotEmpty()
     @ApiProperty({
         description:"id del proyecto al que está asociada la tarea",
         example:1
@@ -29,12 +31,12 @@ export class CreateTaskDto{
     associated_project:number;
 
 
+    @IsOptional()
     @ApiPropertyOptional({
         description: 'Fecha de inicio de la tarea',
         example: '2025-03-23', // formato ISO
     })
     @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
-    @IsOptional()
     //LA FECHA DE INICIO DE LA TAREA ES LA FECHA EN LA QUE FUE CREADA, EN EL MOMENTO DE CREACIÓN, ESTE CAMPO SE RELLENA CON LA FECHA DE ESE DÍA
     start_date: string;
 
@@ -71,7 +73,7 @@ export class CreateTaskDto{
     @IsIn(['high', 'medium', 'low'], {
         message: 'La prioridad debe ser high, medium o low (Alta, media o baja)',
     })
-    priority: string;
+    priority: TaskPriority;
 
 
 
