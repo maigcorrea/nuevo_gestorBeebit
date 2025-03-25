@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TaskStaffService } from './task-staff.service';
+import { CreateTaskStaffDto } from './dto/create-task-staff.dto';
 //import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskStaffResponseDto } from './dto/task-staff-response.dto';
 //import { UpdateTaskDto } from './dto/update-task.dto';
@@ -14,6 +15,11 @@ import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';
 
 export class TaskStaffController{
     constructor(private readonly taskStaffService: TaskStaffService) {}
+
+    @Post()
+    create(@Body() dto: CreateTaskStaffDto) {
+        return this.taskStaffService.create(dto);
+    }
 
     @Get()
     findAll(): Promise<TaskStaffResponseDto[]> {

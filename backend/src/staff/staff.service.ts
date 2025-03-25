@@ -35,19 +35,19 @@ export class StaffService {
         //user.password = hashedPassword;//Guardamos el hash, no el texto plano
 
         //MÁS EFICIENTE
-        /*const staff = this.staffRepository.create({
+        const staff = this.staffRepository.create({
             ...userData,
             password: hashedPassword,
             register_date: register_date ? new Date(register_date) : new Date()
-        });*/
+        });
 
-        const staff= {
+        /*const staff= {
             name:"algo2",
             email:"algo2@gmail.com",
             register_date:"2025-02-20",
             phone: "682543620",
             password:"holaMundo_2"
-        }
+        }*/
 
 
         
