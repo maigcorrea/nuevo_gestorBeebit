@@ -37,4 +37,36 @@ export class StaffController{
         // Llama al método findAll() del servicio, que devuelve un array de usuarios.
         return this.staffService.findAll();
     }
+
+
+
+    //Endpoint para actualizar la información de un empleado en concreto
+    @Put("/update/:id")
+    @ApiOperation({summary:"Actualizar una empleado determinado"})
+    @ApiResponse({
+        status: 200,
+        description: 'Empleado actualizado con éxito',
+        schema: {
+          example: { message: 'Empleado actualizado con éxito' },
+        },
+      })
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    async updateStaff(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateStaffDto) {
+        return this.staffService.updateStaff(id, updateDto); //Se parsea a string el id por si viene en number
+    }
+
+
+
+
+    //Endpoint para eliminar un empleado
+    @Delete("/delete/:id")
+    @ApiOperation({summary:"Borrar un empleado determinado"})
+    @ApiResponse({ status: 201, description: 'Empleado eliminado con éxito',
+        schema: {
+          example: { message: 'Empleado actualizado con éxito' },
+        },})
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    async deleteStaff(@Param('id', ParseIntPipe) id: number) {
+        return this.staffService.deleteStaff(id); // conviertes el string a número
+    }
 }

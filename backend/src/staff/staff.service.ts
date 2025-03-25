@@ -47,6 +47,19 @@ export class StaffService {
         return this.staffRepository.save(staff);
     } 
 
+    
+
+    //Método para mostrar los datos del empleado en base a un id
+    async findById(id_staff:number):Promise<Staff>{
+        const staff = await this.staffRepository.findOneBy({ id: id_staff });
+
+        if (!staff) {
+            throw new NotFoundException(`No se encontró el empleado con id ${id_staff}`);
+        }
+
+        return staff;
+    }
+
 
 
     // Método que devuelve todos los usuarios de la base de datos.
@@ -54,5 +67,76 @@ export class StaffService {
         // Llama al método find() de TypeORM, que trae todos los registros de la tabla user.
         return this.staffRepository.find();
     }
+
+
+
+    //Método para actualizar la información de un empleado
+    async updateStaff(id: number, updateDto: UpdateStaffDto):Promise<{message:string}>{
+        const staff = await this.staffRepository.findOneBy({ id });
+              
+        if (!staff) {
+            throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
+        }
+        
+        //Al pasarle el objeto, De esta forma, desestructuramos solo una vez:
+        const { email, phone, password } = updateDto;
+
+        if (!email && !phone && !password) {
+            throw new BadRequestException('Debes proporcionar al menos un campo para actualizar');
+        }
+
+        
+        if (email !== undefined) staff.email = email;
+        if (phone !== undefined) staff.phone = phone;
+        if (password !== undefined) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            staff.password = hashedPassword;
+        }
+
+        await this.staffRepository.save(staff);
+
+        return { message: `Proyecto con id ${id} actualizado con éxito` };
+    }
+
+
+
+
+    //Método para borrar un empleado
+    async deleteStaff(id: number): Promise<{message: string }> {
+        const result = await this.staffRepository.delete(id);
+      
+        if (result.affected === 0) {
+          throw new NotFoundException(`No se encontró el empleado con id ${id}`);
+        }
+
+        return { message: `Empleado con id ${id} eliminado con éxito` };
+    }
+
+
+
+    //async login(email: string, password: string): Promise<any> {
+    // 1. Buscar al usuario por email
+    //const user = await this.usersRepository.findOne({ where: { email } });
+  
+    //if (!user) {
+      //throw new UnauthorizedException('Usuario no encontrado');
+    //}
+  
+    // 2. Comparar la contraseña enviada con el hash de la base de datos
+   // const isPasswordValid = await bcrypt.compare(password, user.password);
+  
+    //if (!isPasswordValid) {
+      //throw new UnauthorizedException('Contraseña incorrecta');
+    //}
+  
+    // 3. Si todo va bien, generar y devolver el token o el usuario (sin password)
+   // const { password: _, ...userWithoutPassword } = user;
+  
+    //return {
+      //message: 'Login exitoso',
+     // user: userWithoutPassword,
+      // // jwtToken: await this.jwtService.signAsync({...}) // si generas el token aquí
+    //};
+  //}
 
 }
