@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { StaffType } from '../entities/staff.entity';
 
 export class StaffResponseDto{
     @ApiProperty({
@@ -28,6 +29,15 @@ export class StaffResponseDto{
         description:"Teléfono del empleado", example:"682543621"
     })
     phone:string;
+
+
+
+    @ApiProperty({
+        description: 'Tipo de usuario: admin o user',
+        enum: StaffType,
+        example: StaffType.USER,
+    })
+    type: StaffType;
 
 
     //La contraseña no la devolvemos en la respuesta

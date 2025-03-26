@@ -41,6 +41,17 @@ export class StaffController{
 
 
 
+    // Mostrar un empleado por ID
+    @Get(':id')
+    @ApiOperation({ summary: 'Mostrar un empleado por ID' })
+    @ApiResponse({ status: 200, description: 'Empleado encontrado', type: StaffResponseDto })
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    async findById(@Param('id', ParseIntPipe) id: number) {
+    return this.staffService.findById(id);
+    }
+
+
+
     //Endpoint para actualizar la información de un empleado en concreto
     @Put("/update/:id")
     @ApiOperation({summary:"Actualizar una empleado determinado"})

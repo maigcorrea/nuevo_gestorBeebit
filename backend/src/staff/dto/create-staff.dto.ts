@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsEmail, IsNotEmpty, Length, Matches, IsDateString, MinLength, MaxLength, IsOptional } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, Length, Matches, IsDateString, MinLength, MaxLength, IsOptional, IsEnum } from 'class-validator';
+import { StaffType } from '../entities/staff.entity';
 
 
 export class CreateStaffDto{
@@ -60,4 +61,14 @@ export class CreateStaffDto{
     })
     password: string;
 
+
+    //Si el cliente no envía el campo type, se guarda como 'user' (por defecto en la entidad). Si el cliente sí lo envía, se valida y se guarda correctamente como 'admin' o 'user'.
+    @ApiPropertyOptional({
+        description: 'Tipo de usuario: admin o user',
+        enum: StaffType,
+        example: StaffType.USER,
+    })
+    @IsOptional()
+    @IsEnum(StaffType, { message: 'El tipo debe ser admin o user' })
+    type?: StaffType;
 }

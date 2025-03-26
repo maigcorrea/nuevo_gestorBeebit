@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, IsEmail, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, IsEmail, MinLength, IsEnum } from 'class-validator';
+import { StaffType } from '../entities/staff.entity';
 
 export class UpdateStaffDto{
     //TODOS LOS CAMPOS SON OPCIONALES PORQUE PUEDEN MODIFICARSE O NO, SI NO SE MODIFICAN O NO SE INTRODUCE NADA, SE QUEDA EL VALOR ANTERIOR
@@ -44,4 +45,17 @@ export class UpdateStaffDto{
     message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
     })
     password: string;
+
+
+
+
+    // Tipo de usuario (rol): admin o user
+    @ApiPropertyOptional({
+        description: 'Tipo de usuario: admin o user',
+        enum: StaffType,
+        example: StaffType.USER,
+    })
+    @IsOptional()
+    @IsEnum(StaffType, { message: 'El tipo debe ser admin o user' })
+    type: StaffType;
 }

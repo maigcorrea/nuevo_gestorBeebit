@@ -1,5 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BeforeInsert } from 'typeorm';
 
+export enum StaffType {
+    ADMIN = 'admin',
+    USER = 'user',
+}
+
 @Entity() // Decorador para marcar la clase como entidad (Una tabla en la base de datos)
 export class Staff{
     @PrimaryGeneratedColumn() // Decorador para indicar que esta propiedad es la clave primaria. id autoincremental(PK)
@@ -11,7 +16,8 @@ export class Staff{
     @Column({ unique: true }) // añadimos restricción única
     email: string;
 
-    @Column({ type: 'timestamp' })
+    // Fecha de registro con valor automático al insertar
+    @CreateDateColumn({ type: 'timestamp' })
     register_date:Date;
 
     @Column({ unique: true })
@@ -19,5 +25,13 @@ export class Staff{
 
     @Column({ select: false }) // no se selecciona por defecto para más seguridad. Estás diciendo: “No incluyas este campo en las consultas normales”, por seguridad. Para evitar devolver la contraseña en respuestas de find(), findOne()
     password: string;
+
+    // Tipo de usuario: 'admin' o 'user'
+    @Column({
+        type: 'enum',
+        enum: StaffType,
+        default: StaffType.USER,
+    })
+    type: StaffType;
 
 }

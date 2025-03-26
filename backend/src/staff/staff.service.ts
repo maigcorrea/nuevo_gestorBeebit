@@ -88,9 +88,9 @@ export class StaffService {
         }
         
         //Al pasarle el objeto, De esta forma, desestructuramos solo una vez:
-        const { email, phone, password } = updateDto;
+        const { email, phone, password, type } = updateDto;
 
-        if (!email && !phone && !password) {
+        if (!email && !phone && !password && !type) {
             throw new BadRequestException('Debes proporcionar al menos un campo para actualizar');
         }
 
@@ -101,6 +101,7 @@ export class StaffService {
             const hashedPassword = await bcrypt.hash(password, 10);
             staff.password = hashedPassword;
         }
+        if (type !== undefined) staff.type = type;
 
         await this.staffRepository.save(staff);
 
