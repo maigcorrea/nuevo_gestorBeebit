@@ -34,6 +34,12 @@ export class TaskService{
     }
 
 
+    //Método para mostrar todos los proyectos
+    async findAll():Promise<Task[]>{
+        return this.taskRepository.find();
+    }
+
+
     //Método para mostrar todas las tareas de un proyecto en concreto
     async findByProject(projectId:number):Promise<Task[]>{
         const tasks = await this.taskRepository.find({

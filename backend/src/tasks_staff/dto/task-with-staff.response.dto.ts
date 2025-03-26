@@ -7,6 +7,8 @@ import { ApiProperty } from '@nestjs/swagger';
 //Se usa en el servicio, al agrupar empleados por tarea
 
 export class TaskWithStaffResponseDto {
+    @ApiProperty({ example: 3 })
+    taskId: number;
 
     //Este dato será extraído de task.title cuando mapees los resultados desde la base de datos.
     @ApiProperty({ example: 'Comprobar login de usuarios' })
@@ -15,9 +17,11 @@ export class TaskWithStaffResponseDto {
 
     //Un array de strings con los nombres completos de los empleados.
     @ApiProperty({
-    example: ['Laura Sánchez', 'Carlos Pérez'],
-    description: 'Lista de nombres de los empleados asignados a la tarea',
-    isArray: true,
+    description: 'Lista de empleados asignados con su id y nombre',
+    example: [
+        { id: 7, name: 'Laura Sánchez' },
+        { id: 8, name: 'Carlos Pérez' }
+    ],
     })
-    staff: string[];
+    staff: { id: number; name: string }[];
 }

@@ -27,6 +27,22 @@ export class TaskController{
         return this.taskService.create(createTaskDto);
     }
 
+    //ENdpoint para obtener todas las tareas
+    @Get()
+    
+    @ApiOperation({summary:"Listar todos los proyectos"})
+    @ApiResponse({ status: 200, description: 'Listado de proyectos', type: [Task] })
+    @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
+    async findAll(): Promise<Task[]> {
+        const projects = await this.taskService.findAll();
+        
+        if (!projects.length) {
+            throw new NotFoundException('No se encontraron proyectos');
+        }
+        
+        return projects;
+    }
+
     // Endpoint para mostrar tareas en función de un proyecto asociado
     @Get(":id_proyecto")
     @ApiOperation({summary:"Obtener tareas para un proyecto determinado"})

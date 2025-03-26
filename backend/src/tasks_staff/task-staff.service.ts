@@ -7,7 +7,9 @@ import { Repository } from 'typeorm';
 import { TaskStaffResponseDto } from './dto/task-staff-response.dto';
 import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';
 import { CreateTaskStaffDto } from './dto/create-task-staff.dto';
-import { NotFoundException } from '@nestjs/common';
+import { UpdateTaskStaffDto } from './dto/update-task-staff.dto';
+import { DeleteTaskStaffDto } from './dto/delete-task-staff.dto';
+import { NotFoundException, ConflictException } from '@nestjs/common';
 
 @Injectable()
 export class TaskStaffService {
@@ -29,7 +31,35 @@ export class TaskStaffService {
     if (!task || !staff) {
       throw new NotFoundException('Task o empleado no encontrado');
     }
+
+    // Validar si ya existe la relación. Busca si ya hay una fila con esa combinación.
+    const yaExiste = await this.taskStaffRepo.findOne({
+      where: {
+        task: { id: dto.id_task },
+        staff: { id: dto.id_staff },
+      },
+    });
+
+    if (yaExiste) {
+      throw new ConflictException('Ya existe esta relación entre tarea y empleado');
+    }
+
+    // Validación que impida asignar a un empleado más de 3 tareas activas. Para evitar sobrecarga a un empleado
+    const relaciones = await this.taskStaffRepo.find({ //Obtiene todas las relaciones task_staff de un empleado concreto (staff.id)
+      where: {
+        staff: { id: dto.id_staff },
+      },
+      relations: ['task'], //Carga también la relación con la tarea (relations: ['task'])
+    });
+
+    const tareasActivas = relaciones.filter(rel => rel.task.status === 'active'); //Filtra solo las tareas activas
+
+    // Si ya tiene 3 o más → lanza ConflictException
+    if (tareasActivas.length >= 3) {
+      throw new ConflictException('El empleado ya tiene 3 tareas activas asignadas. No puede encargarse de más tareas');
+    }
   
+    //Si todo está bien, se crea la nueva relación
     //Usas el método create() del repositorio para crear un nuevo objeto TaskStaff. Le pasas los objetos task y staff que recuperaste antes
     const nuevaRelacion = this.taskStaffRepo.create({ task, staff });
 
@@ -47,8 +77,9 @@ export class TaskStaffService {
 
     //Mapear cada fila para construir un objeto con el título de la tarea y el nombre del empleado (por individual, tarea1- nombre1, tarea1-nombre2)
     return relaciones.map(rel => ({
+      taskId: rel.task.id,
       taskTitle: rel.task.title,
-      staffFullName: `${rel.staff.name}`,
+      staffFullName: `${rel.staff.id, rel.staff.name}`,
     }));
   }
 
@@ -61,19 +92,23 @@ export class TaskStaffService {
     });
   
     //Crear un Map para agrupar los nombres por cada taskTitle.
-    const mapa = new Map<string, string[]>(); // título → array de empleados
+    const mapa = new Map<number, { taskTitle: string, staff: { id: number, name: string }[] }>(); // título → array de empleados
   
-    //Iteras sobre cada relación y extraes: taskTitle y fullName del empleado
+    //Iteras sobre cada relación y extraes: taskTitle y staffName del empleado
     for (const rel of relaciones) {
+      const taskId = rel.task.id;
       const taskTitle = rel.task.title;
-      const fullName = `${rel.staff.name}`;
+      const staffId = rel.staff.id;
+      const staffName = `${rel.staff.name}`;
+
+      const fullStaff = { id: staffId, name: staffName };
   
       //Si es la primera vez que ves esa tarea, la agregas al Map con un array. Si ya existe, simplemente haces push() del nuevo nombre.
-      if (!mapa.has(taskTitle)) {
-        mapa.set(taskTitle, [fullName]);
+      if (!mapa.has(taskId)) {
+        mapa.set(taskId, { taskTitle, staff: [fullStaff] });
       } else {
         // Aquí TS no sabe si es undefined
-        mapa.get(taskTitle)!.push(fullName);// <- el "!" le dice a TS "confía, no es undefined"
+        mapa.get(taskId)!.staff.push(fullStaff);// <- el "!" le dice a TS "confía, no es undefined"
       }
     }
   
@@ -81,10 +116,73 @@ export class TaskStaffService {
     // Convertir el Map a un array de DTOs
     const resultado: TaskWithStaffResponseDto[] = [];
   
-    mapa.forEach((staff, taskTitle) => {
-      resultado.push({ taskTitle, staff });
+    mapa.forEach((data, taskId) => {
+      resultado.push({
+        taskId,
+        taskTitle: data.taskTitle,
+        staff: data.staff,
+      });
     });
   
     return resultado;
+  }
+
+
+
+  //Actualizar algún campo de la tabla (Uno sólo o los dos)
+  async update(dto: UpdateTaskStaffDto) { //Recibe el DTO dto, que contiene: old_task_id, old_staff_id, new_task_id, new_staff_id
+    //Busca la relación con findOne usando combinación de task.id y staff.id. Es decir, busca la fila actual en la tabla task_staff que conecta La tarea con ID old_task_id y el empleado con ID old_staff_id
+    const relacion = await this.taskStaffRepo.findOne({
+      where: {
+        task: { id: dto.old_task_id },
+        staff: { id: dto.old_staff_id },
+      },
+      relations: ['task', 'staff'], //Buen uso de relations: ['task', 'staff'] para tener acceso completo al objeto. Usas relations: ['task', 'staff'] para que también se carguen los objetos completos de la relación (no solo los IDs).
+    });
+  
+    //Si no encuentra la relación, lanza NotFoundException.
+    if (!relacion) throw new NotFoundException('Relación no encontrada');
+  
+    //Solo actualiza los valores si vienen en el DTO.
+    if (dto.new_task_id) {
+      // Buscas en la base de datos la nueva tarea por ID.
+      const nuevaTarea = await this.taskRepo.findOne({ where: { id: dto.new_task_id } });
+      // Si la tarea nueva no existe, lanzas error 404.
+      if (!nuevaTarea) throw new NotFoundException('Tarea no encontrada');
+      //Asignas la nueva tarea a la relación. Aún no guardas nada en la base de datos
+      relacion.task = nuevaTarea;
+    }
+  
+    //Igual que antes, pero para el empleado:
+    if (dto.new_staff_id) {
+      const nuevoStaff = await this.staffRepo.findOne({ where: { id: dto.new_staff_id } });
+      if (!nuevoStaff) throw new NotFoundException('Empleado no encontrado');
+      relacion.staff = nuevoStaff;
+    }
+  
+    //Guardas la relación modificada en la base de datos.
+    return await this.taskStaffRepo.save(relacion);
+  }
+
+
+
+  //Borrar una relación entre tarea y empleado
+  async deleteByTaskAndStaff(dto: DeleteTaskStaffDto): Promise<string> {
+    //Busca la relación por combinación de task.id + staff.id
+    const relacion = await this.taskStaffRepo.findOne({
+      where: {
+        task: { id: dto.id_task },
+        staff: { id: dto.id_staff },
+      },
+    });
+  
+    // Si no la encuentra, lanza error 404
+    if (!relacion) {
+      throw new NotFoundException('Relación no encontrada');
+    }
+  
+    //Si la encuentra, la elimina usando remove()
+    await this.taskStaffRepo.remove(relacion);
+    return 'Relación eliminada correctamente';
   }
 }
