@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity'; 
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
@@ -54,6 +55,7 @@ export class TaskService{
         return tasks;
     }
 
+
     //Método para actualizar una tarea en concreto
     async updateTask(id: number, updateDto: UpdateTaskDto): Promise<{ message: string }> {
         const task = await this.taskRepository.findOneBy({ id });
@@ -92,6 +94,30 @@ export class TaskService{
       }
 
 
+
+      //Método para actualizar SOLO EL ESTADO de una tarea en concreto
+      async updateTaskStatus(id: number, dto: UpdateTaskStatusDto): Promise<{ message: string }> {
+        const task = await this.taskRepository.findOneBy({ id });
+      
+        if (!task) {
+          throw new NotFoundException(`Tarea con id ${id} no encontrada`);
+        }
+      
+        task.status = dto.status;
+      
+        if (dto.status === 'completed') {
+          task.completed = true;
+          task.end_date = new Date(); // fecha de finalización
+        } else {
+          task.completed = false;
+          task.end_date = null;
+        }
+      
+        await this.taskRepository.save(task);
+      
+        return { message: `Estado de la tarea actualizado a ${dto.status}` };
+      }
+      
 
 
       //Método para borrar una tarea en concreto

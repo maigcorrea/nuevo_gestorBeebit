@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Put, Patch, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { Task } from './entities/task.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
@@ -69,6 +70,14 @@ export class TaskController{
     }
 
 
+    //Endpoint para actualizar sólo el estado de una tarea en concreto
+    @Patch(':id/status')
+    updateStatus(
+    @Param('id') id: number,
+    @Body() dto: UpdateTaskStatusDto,
+    ) {
+    return this.taskService.updateTaskStatus(+id, dto);
+    }
 
 
     //Endpoint para borrar una tarea en concreto
