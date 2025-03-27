@@ -10,7 +10,7 @@ import { User } from './entities/user.entity';
 // Es decir, aquí decides qué datos el usuario te puede enviar.
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import * as bcrypt from 'bcrypt';//Importamos bcrypt
+import * as bcrypt from 'bcryptjs';//Importamos bcrypt
 
 
 

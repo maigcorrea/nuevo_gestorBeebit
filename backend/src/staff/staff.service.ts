@@ -7,8 +7,7 @@ import { Injectable } from '@nestjs/common';
  import { NotFoundException } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
 import { Staff } from './entities/staff.entity';
-//import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
 
 @Injectable()
 
@@ -20,11 +19,11 @@ export class StaffService {
 
     async create(createStaffDto: CreateStaffDto): Promise<Staff>{
         // Creamos una nueva instancia de User a partir de los datos que nos llegan del DTO. TypeORM genera un objeto User pero NO lo guarda en la base de datos aún.
-        const { register_date, ...userData } = createStaffDto;
+        const { register_date,password, ...userData } = createStaffDto;
         console.log("EStá")
         // Generamos el hash (10 es el salt rounds, número de encriptaciones, puedes cambiarlo, CUNATO MAYOR EL NÚMERO, MÁS SEGURO PERO MÁS LENTO
         //DA ERROR EN EL BCRYPT
-        //const hashedPassword =await bcryptjs.hash(password, 10);
+        const hashedPassword =await bcryptjs.hash(password, 10);
 
         // 2. Creamos al usuario con la contraseña hasheada
 
@@ -38,7 +37,7 @@ export class StaffService {
         //MÁS EFICIENTE
         const staff = this.staffRepository.create({
             ...userData,
-            //password: hashedPassword,
+            password: hashedPassword,
             register_date: register_date ? new Date(register_date) : new Date()
         });
 
@@ -98,7 +97,7 @@ export class StaffService {
         if (email !== undefined) staff.email = email;
         if (phone !== undefined) staff.phone = phone;
         if (password !== undefined) {
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcryptjs.hash(password, 10);
             staff.password = hashedPassword;
         }
         if (type !== undefined) staff.type = type;
