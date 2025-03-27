@@ -19,7 +19,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch('http://localhost:3000/src/auth/login', {
+      const res = await fetch('http://localhost:3000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -32,7 +32,10 @@ const LoginForm = () => {
         return;
       }
 
-      localStorage.setItem('token', data.token);
+      //Guardamos el token
+      localStorage.setItem('token', data.access_token);
+
+      //Redirigimos al dashboard o página principal
       router.push('/dashboard');
     } catch (err) {
       setError('Error de conexión');
@@ -49,6 +52,10 @@ const LoginForm = () => {
             <a className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
           </div>
 
+          {//Mensaje de error
+          }
+          {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+
           <div>
             <label htmlFor="email" className="block text-900 font-medium mb-2">Email</label>
             <InputText id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className="w-full mb-3" />
@@ -56,7 +63,6 @@ const LoginForm = () => {
             <label htmlFor="password" className="block text-900 font-medium mb-2">Contraseña</label>
             <InputText id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full mb-3" />
 
-            {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
             <div className="flex align-items-center justify-content-between mb-6">
               <div className="flex align-items-center">

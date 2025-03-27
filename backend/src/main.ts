@@ -6,6 +6,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  //Si el frontend y el backend están en puertos diferentes, es necesario activar el CORS para transferir los datos
+  app.enableCors({
+    origin: 'http://localhost:3001', // tu frontend
+    credentials: true,
+  })
+
   // ✅ Activamos el ValidationPipe globalmente para todas las rutas
   app.useGlobalPipes(
     new ValidationPipe({
