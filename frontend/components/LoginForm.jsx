@@ -18,7 +18,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  //Hay que actualizar el contexto cada vez que se inicia sesión, para así tener disponibles el token y el tipo en tiempo real
+  //Hay que actualizar el contexto del tipo cada vez que se inicia sesión, para así tener disponibles el token y el tipo en tiempo real
   /*
     Cuando el usuario inicia sesión, guardas el tipo en el localStorage, pero React no sabe que lo guardaste, porque localStorage no tiene forma de notificar a React que algo cambió.
   */
@@ -42,8 +42,9 @@ const LoginForm = () => {
       //Guardamos el token
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('type', data.user.type);
+      localStorage.setItem('id', data.user.id);
 
-      setUserType(data.user.type); //ACTUALIZA el contexto en tiempo real
+      setUserType(data.user.type); //ACTUALIZA el contexto del tipo en tiempo real
 
       //Redirigimos al dashboard o página principal
       router.push('/');

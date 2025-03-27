@@ -53,6 +53,7 @@ export default function Navbar() {
         //Eliminar los datos de localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('type');
+        localStorage.removeItem('id');
 
         //Actualizamos el contexto a tiempo real a null
         setUserType(null);
