@@ -15,6 +15,7 @@ export default function Navbar() {
   const menuRef = useRef(null); // Referencia al menú para abrirlo con click
   const router = useRouter();
   const { userType } = useContext(UserContext);
+  const { setUserType } = useContext(UserContext);
   
   
 
@@ -49,8 +50,13 @@ export default function Navbar() {
       label: 'Cerrar sesión',
       icon: 'pi pi-sign-out',
       command: () => {
-        alert('Sesión cerrada (aquí iría tu lógica)');
-        // Aquí podrías hacer: eliminar token, redirigir, etc.
+        //Eliminar los datos de localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('type');
+
+        //Actualizamos el contexto a tiempo real a null
+        setUserType(null);
+        router.push('/login'); // redirigir al login
       },
     },
   ];
