@@ -17,23 +17,30 @@ export class TaskStaffController{
     constructor(private readonly taskStaffService: TaskStaffService) {}
 
     @Post()
+    @ApiOperation({summary:"Crear relación entre un empleado y una tarea"})
+    @ApiResponse({ status: 200, description: 'Relación creada correctamente'})
+    @ApiResponse({ status: 404, description: 'Error. No se ha podido crear la relación' })
     create(@Body() dto: CreateTaskStaffDto) {
         return this.taskStaffService.create(dto);
     }
 
+    @ApiOperation({summary:"Obtener todas las relaciones tarea-empleado"})
+    @ApiResponse({ status: 404, description: 'Error.' })
     @Get()
     findAll(): Promise<TaskStaffResponseDto[]> {
         return this.taskStaffService.findAll();
     }
 
-
+    @ApiOperation({summary:"Obtener todas las relaciones por tarea (tarea-[empleados])"})
+    @ApiResponse({ status: 404, description: 'Error.' })
     @Get('por-tarea')
     findGroupedByTask(): Promise<TaskWithStaffResponseDto[]> {
         return this.taskStaffService.findGroupedByTask();
     }
 
 
-
+    @ApiOperation({summary:"Actualizar una tarea en específico"})
+    @ApiResponse({ status: 404, description: 'Error.' })
     @Patch('/update/:id')
     @Patch() //Usa @Patch() sin :id, porque estás usando combinación de task + staff como identificador.
     updateByPair(@Body() dto: UpdateTaskStaffDto) {
@@ -41,6 +48,8 @@ export class TaskStaffController{
     }
 
 
+    @ApiOperation({summary:"Borrar una relación tarea-empleado"})
+    @ApiResponse({ status: 404, description: 'Error.' })
     @Delete('/delete')
     deleteByTaskAndStaff(@Body() dto: DeleteTaskStaffDto) {
         return this.taskStaffService.deleteByTaskAndStaff(dto);
