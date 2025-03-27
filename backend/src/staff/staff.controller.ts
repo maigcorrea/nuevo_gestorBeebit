@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { StaffResponseDto } from './dto/staff-response.dto';
@@ -7,6 +7,8 @@ import { UpdateStaffDto } from './dto/update-staff.dto';
 import { Staff } from './entities/staff.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @ApiTags('Staff')
@@ -29,6 +31,8 @@ export class StaffController{
 
 
     //Endpoint para mostrar todos los usuarios de la base de datos.
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth('jwt') // <- ¡Este es el importante!
     @Get("/all")
     @ApiOperation({summary:"Mostrar todos los empleados"})
     @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })
