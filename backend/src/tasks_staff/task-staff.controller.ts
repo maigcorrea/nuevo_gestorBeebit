@@ -13,7 +13,7 @@ import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Task_Staff')
-@Controller("task_staff")
+@Controller("tasks_staff")
 
 export class TaskStaffController{
     constructor(private readonly taskStaffService: TaskStaffService) {}
