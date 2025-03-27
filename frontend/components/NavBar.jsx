@@ -1,5 +1,6 @@
 'use client';
-import { useRef } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
+import { useMemo } from 'react'; // Hace que los ítems se generen cada vez que cambie userType
 import { useRouter } from 'next/navigation';
 import { Menubar } from 'primereact/menubar';
 import Link from 'next/link';
@@ -7,12 +8,17 @@ import { Menu } from 'primereact/menu';
 import Image from 'next/image';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
+import { UserContext } from '@/app/context/UserContext';
 
 export default function Navbar() {
+  
   const menuRef = useRef(null); // Referencia al menú para abrirlo con click
   const router = useRouter();
+  const { userType } = useContext(UserContext);
+  
+  
 
-  const items = [
+  const items = useMemo(() => [
     {
       label: 'Inicio',
       icon: 'pi pi-home',
@@ -23,7 +29,12 @@ export default function Navbar() {
       icon: 'pi pi-sign-in',
       command: () => router.push('/login')
     },
-  ];
+    ...(userType==='admin' ? [{ //concatena dinámicamente el botón solo si el usuario es admin
+      label:"Registrar nuevo usuario",
+      icon: 'pi pi-sign-in',
+      command: () => router.push('/registration'),
+    }] : []),
+  ], [userType]); // Hace que los ítems se generen cada vez que cambie userType
 
 
   const userMenuItems = [
