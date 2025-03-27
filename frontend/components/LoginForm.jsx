@@ -36,7 +36,7 @@ const LoginForm = () => {
       localStorage.setItem('token', data.access_token);
 
       //Redirigimos al dashboard o página principal
-      router.push('/dashboard');
+      router.push('/');
     } catch (err) {
       setError('Error de conexión');
     }
