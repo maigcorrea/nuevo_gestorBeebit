@@ -9,6 +9,7 @@ import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';
 import { CreateTaskStaffDto } from './dto/create-task-staff.dto';
 import { UpdateTaskStaffDto } from './dto/update-task-staff.dto';
 import { DeleteTaskStaffDto } from './dto/delete-task-staff.dto';
+import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 
 @Injectable()
@@ -128,6 +129,35 @@ export class TaskStaffService {
   }
 
 
+  //Obtener las tareas de un usuario determinado
+  async getTasksByUser(id:number): Promise <TaskByUserResponseDto[]>{
+    const tasks = await this.taskStaffRepo.find({ 
+      where: {
+        staff:{id} // Busca relaciones donde el staff tenga ese ID
+      },
+      relations:['task', 'task.associated_project'] // Incluye los datos de la tarea relacionada y del proyecto asociado a esa tarea
+     });
+
+    if (!tasks || tasks.length === 0) {
+      throw new NotFoundException(`No se encontraron tareas para el empleado con id ${id}`);
+    }
+
+    return tasks.map(rel => ({
+      id: rel.task.id,
+      title: rel.task.title,
+      description: rel.task.description,
+      start_date: rel.task.start_date,
+      end_date: rel.task.end_date,
+      status: rel.task.status,
+      completed: rel.task.completed,
+      priority: rel.task.priority,
+      associated_project: {
+          id: rel.task.associated_project.id,
+          name: rel.task.associated_project.title,
+      }
+    }));
+    
+  }
 
   //Actualizar algún campo de la tabla (Uno sólo o los dos)
   async update(dto: UpdateTaskStaffDto) { //Recibe el DTO dto, que contiene: old_task_id, old_staff_id, new_task_id, new_staff_id

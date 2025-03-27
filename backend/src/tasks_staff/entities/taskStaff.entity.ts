@@ -2,10 +2,13 @@ import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Task } from 'src/task/entities/task.entity';
 import { Staff } from 'src/staff/entities/staff.entity';
 
+// Esta entidad representa la relación entre empleados (Staff) y tareas (Task), muchas a muchas (con tabla intermedia).
 @Entity()
 export class TaskStaff{
     @PrimaryGeneratedColumn()
     id:number;
+
+    //Con esto, cada fila en task_staff enlaza una tarea y un empleado. COn toda la información de cada uno incluida
 
     //@ManyToOne: indica una relación "muchos a uno", @JoinColumn: personaliza el nombre de la clave foránea en la base de datos
     // Relación con la tabla Task

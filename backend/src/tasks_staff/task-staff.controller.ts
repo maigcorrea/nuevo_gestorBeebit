@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Delete, Put, Patch, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Delete, Put, Patch, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { TaskStaffService } from './task-staff.service';
 import { CreateTaskStaffDto } from './dto/create-task-staff.dto';
 import { TaskStaffResponseDto } from './dto/task-staff-response.dto';
@@ -9,6 +9,8 @@ import { TaskStaff } from './entities/taskStaff.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';
+import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Task_Staff')
 @Controller("task_staff")
@@ -36,6 +38,16 @@ export class TaskStaffController{
     @Get('por-tarea')
     findGroupedByTask(): Promise<TaskWithStaffResponseDto[]> {
         return this.taskStaffService.findGroupedByTask();
+    }
+
+
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth('jwt')
+    @ApiOperation({summary: "Obtener las tareas asignadas a un empleado concreto"})
+    @ApiResponse({status:404, description:"Error"})
+    @Get("por-usuario/:id")
+    getTasksByUser( @Param('id', ParseIntPipe)id:number):Promise<TaskByUserResponseDto[]>{
+        return this.taskStaffService.getTasksByUser(id);
     }
 
 
