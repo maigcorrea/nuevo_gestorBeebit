@@ -33,7 +33,7 @@ const TasksTab = () => {
         });
 
         if (!res.ok) {
-          throw new Error('Error al cargar tareas');
+          throw new Error('Este usuario no tiene tareas asignadas');
         }
 
         const data = await res.json();
