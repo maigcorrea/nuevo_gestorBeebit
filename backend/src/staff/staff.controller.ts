@@ -9,6 +9,8 @@ import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 
 
 @ApiTags('Staff')
@@ -31,7 +33,8 @@ export class StaffController{
 
 
     //Endpoint para mostrar todos los usuarios de la base de datos.
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
+    @Roles('admin')
     @ApiBearerAuth('jwt') // <- ¡Este es el importante!
     @Get("/all")
     @ApiOperation({summary:"Mostrar todos los empleados"})
