@@ -10,6 +10,7 @@ import { CreateTaskStaffDto } from './dto/create-task-staff.dto';
 import { UpdateTaskStaffDto } from './dto/update-task-staff.dto';
 import { DeleteTaskStaffDto } from './dto/delete-task-staff.dto';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
+import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 
 @Injectable()
@@ -157,6 +158,47 @@ export class TaskStaffService {
       }
     }));
     
+  }
+
+
+  //Obtener los proyectos de un usuario determinado
+  async getProjectsByUser(id:number): Promise<ProjectByUserResponseDto[]>{
+
+    //Busca en la tabla intermedia task_staff todas las asignaciones donde el staff.id coincida con el que pasamos.
+    const tasks= await this.taskStaffRepo.find({
+      where: {staff:{id}},
+      relations: ['task', 'task.associated_project'], //Le dice a TypeORM que incluya también los datos completos de: las task asociada a cada asignación, el proyecto asociado de cada tarea
+    })
+
+    if(!tasks || tasks.length === 0){
+      throw new NotFoundException(`No se encontraron tareas`)
+    }
+
+    //Map para evitar proyectos duplicados, la clave es el id del proyecto y el valor el dto que vamos a devolver. Así, si una tarea y otra comparten el mismo proyecto, no lo añadimos dos veces
+    const projectsMap= new Map<number, ProjectByUserResponseDto>();
+
+    //Iteramos sobre cada relación tarea-empleado (cada fila de task_staff)
+    for(const rel of tasks){
+      //Desde la fila rel.task.associated_project, accedemos directamente al proyecto relacionado gracias a las relations que incluimos en el find()
+      const project=rel.task.associated_project;
+
+      //Verificamos si ese proyecto ya está añadido al Map. Si no lo está, lo agregamos. Si ya está, no se vuelve a añadir
+      if(!projectsMap.has(project.id)){
+        //Agrega el proyecto al Map con su ID como clave y con todos los campos definidos en el DTO.
+        projectsMap.set(project.id,{
+          id: project.id,
+          title: project.title,
+          description: project.description,
+          start_date: project.start_date,
+          deadline: project.deadline,
+          last_update: project.last_update,
+          status:project.status,
+        });
+      }
+    }
+
+    //Convierte el Map en un array que contiene solo los valores (los proyectos únicos), y lo devuelve como respuesta final.
+    return Array.from(projectsMap.values());
   }
 
   //Actualizar algún campo de la tabla (Uno sólo o los dos)

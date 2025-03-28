@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, } from 'class-validator';
+import { ProjectStatus } from '../entities/project.entity';
 
 export class ProjectResponseDto{
     @ApiProperty({
@@ -44,5 +45,5 @@ export class ProjectResponseDto{
     @ApiProperty({
         description:"Estado del proyecto", example:"paused"
     })
-    status:string;
+    status:ProjectStatus;
 }

@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
  import { ProjectResponseDto } from './dto/project-response.dto';
  import { NotFoundException } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
+ import { ProjectStatus } from './entities/project.entity';
  
  @Injectable()
  export class ProjectService {
@@ -47,7 +48,7 @@ import { Injectable } from '@nestjs/common';
     //Método para mostrar los proyectos según su estado (ya finalizados PARA EL HISTORIAL SI SE IMPLEMENTA)
     async findByStatus(state:string):Promise<Project[]>{
         return this.projectRepository.find({
-            where:{ status:state.trim()}
+            where:{ status:state.trim() as ProjectStatus}
         })
     }
 

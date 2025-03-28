@@ -1,5 +1,6 @@
 'use client';
 import TasksTab from "@/components/TasksTab";
+import ProjectTab from "@/components/ProjectTab"
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -22,6 +23,7 @@ export default function Home() {
       <h1 className="text-2xl font-bold">Bienvenido al Dashboard</h1>
       {/* Aquí iría el contenido solo si hay sesión */}
       <TasksTab></TasksTab>
+      <ProjectTab></ProjectTab>
     </>
   );
 }

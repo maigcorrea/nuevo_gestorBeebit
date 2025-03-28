@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn } from 'class-validator';
+import { ProjectStatus } from '../entities/project.entity';
  
 export class UpdateProjectDto{
     @ApiProperty({
@@ -56,6 +57,6 @@ export class UpdateProjectDto{
     @IsIn(['pending', 'active', 'paused', 'completed'], {
     message: 'El estado debe ser uno de: pending, active, paused, completed',
     })
-    status: string;
+    status: ProjectStatus;
 
 }

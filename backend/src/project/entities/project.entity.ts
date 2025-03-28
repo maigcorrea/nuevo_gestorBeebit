@@ -1,5 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Task } from '../../task/entities/task.entity';
+
+//ENUM
+export enum ProjectStatus {
+    PENDING = 'pending',
+    ACTIVE = 'active',
+    COMPLETED = 'completed',
+}
  
  @Entity()
  export class Project{
@@ -21,8 +28,13 @@ import { Task } from '../../task/entities/task.entity';
     @Column()
     last_update:Date;
 
-    @Column()
-    status:string;
+    @Column({
+      type:'enum',
+      enum:ProjectStatus,
+      default: ProjectStatus.ACTIVE,
+      nullable:false
+    })
+    status:ProjectStatus;
 
 
     /*

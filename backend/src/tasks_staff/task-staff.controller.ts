@@ -10,6 +10,7 @@ import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
+import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Task_Staff')
@@ -48,6 +49,20 @@ export class TaskStaffController{
     @Get("por-usuario/:id")
     getTasksByUser( @Param('id', ParseIntPipe)id:number):Promise<TaskByUserResponseDto[]>{
         return this.taskStaffService.getTasksByUser(id);
+    }
+
+
+
+    @Get('proyectos/:id')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth('jwt')
+    @ApiOperation({ summary: 'Obtener proyectos asignados al usuario' })
+    @ApiResponse({ status: 200, description: 'Listado de proyectos', type: ProjectByUserResponseDto, isArray: true })
+    @ApiResponse({ status: 404, description: 'No se encontraron tareas para este usuario' })
+    getProjectsByUser(
+    @Param('id', ParseIntPipe) id: number
+    ): Promise<ProjectByUserResponseDto[]> {
+        return this.taskStaffService.getProjectsByUser(id);
     }
 
 
