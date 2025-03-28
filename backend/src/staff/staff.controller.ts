@@ -88,4 +88,31 @@ export class StaffController{
     async deleteStaff(@Param('id', ParseIntPipe) id: number) {
         return this.staffService.deleteStaff(id); // conviertes el string a número
     }
+
+
+
+    //Endpoint para comprobar si un nombre ya existe antes de enviar el form de registro del front
+    @Get('nameExists/:name')
+    async NameExists(@Param('name') name: string) {
+        const existe = await this.staffService.nameExist(name);
+        return { exists: existe };
+    }
+
+
+
+    //Endpoint para comprobar si un email ya existe antes de enviar el formulario
+    @Get('emailExists/:email')
+    async existeEmail(@Param('email') email: string) {
+        const existe = await this.staffService.existeEmail(email);
+        return { exists: existe };
+    }
+
+
+
+    //Endpoint para comprobar si un teléfono ya existe en la bd antes de enviar el form de registro desde el frontend
+    @Get('phoneExists/:phone')
+    async phoneExists(@Param('phone') phone: string) {
+        const existe = await this.staffService.phoneExist(phone);
+        return { exists: existe };
+    }
 }

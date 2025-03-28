@@ -32,7 +32,7 @@ export class CreateStaffDto{
     })
     @IsOptional()
     @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
-    register_date:Date
+    register_date?:Date
 
 
 

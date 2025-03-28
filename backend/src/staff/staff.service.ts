@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
 import { Staff } from './entities/staff.entity';
 import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
+import { InternalServerErrorException, ConflictException } from '@nestjs/common';
 
 @Injectable()
 
@@ -18,41 +19,54 @@ export class StaffService {
     ) {}
 
     async create(createStaffDto: CreateStaffDto): Promise<Staff>{
-        // Creamos una nueva instancia de User a partir de los datos que nos llegan del DTO. TypeORM genera un objeto User pero NO lo guarda en la base de datos aún.
+            // Creamos una nueva instancia de User a partir de los datos que nos llegan del DTO. TypeORM genera un objeto User pero NO lo guarda en la base de datos aún.
         const { register_date,password, ...userData } = createStaffDto;
         console.log("EStá")
-        // Generamos el hash (10 es el salt rounds, número de encriptaciones, puedes cambiarlo, CUNATO MAYOR EL NÚMERO, MÁS SEGURO PERO MÁS LENTO
-        //DA ERROR EN EL BCRYPT
-        const hashedPassword =await bcryptjs.hash(password, 10);
 
-        // 2. Creamos al usuario con la contraseña hasheada
+        try{
+            // Generamos el hash (10 es el salt rounds, número de encriptaciones, puedes cambiarlo, CUNATO MAYOR EL NÚMERO, MÁS SEGURO PERO MÁS LENTO
+            //DA ERROR EN EL BCRYPT
+            const hashedPassword =await bcryptjs.hash(password, 10);
 
-        //AQUI SE CONSTRUYE A MANO, PERO ES MÁS EFICIENTE HACERLO CON CREATE (TEXTO DESCOMENTADO)
-        //const user = new User();
-        //user.name = userData.name;
-        //user.email = userData.email;
-        //mÁS DATOS COMO ROL, STATUS, ETC.
-        //user.password = hashedPassword;//Guardamos el hash, no el texto plano
+            // 2. Creamos al usuario con la contraseña hasheada
 
-        //MÁS EFICIENTE
-        const staff = this.staffRepository.create({
-            ...userData,
-            password: hashedPassword,
-            register_date: register_date ? new Date(register_date) : new Date()
-        });
+            //AQUI SE CONSTRUYE A MANO, PERO ES MÁS EFICIENTE HACERLO CON CREATE (TEXTO DESCOMENTADO)
+            //const user = new User();
+            //user.name = userData.name;
+            //user.email = userData.email;
+            //mÁS DATOS COMO ROL, STATUS, ETC.
+            //user.password = hashedPassword;//Guardamos el hash, no el texto plano
 
-        /*const staff= {
-            name:"algo2",
-            email:"algo2@gmail.com",
-            register_date:"2025-02-20",
-            phone: "682543620",
-            password:"holaMundo_2"
-        }*/
+            //MÁS EFICIENTE
+            const staff = this.staffRepository.create({
+                ...userData,
+                password: hashedPassword,
+                register_date: register_date ? new Date(register_date) : new Date()
+            });
+
+            /*const staff= {
+                name:"algo2",
+                email:"algo2@gmail.com",
+                register_date:"2025-02-20",
+                phone: "682543620",
+                password:"holaMundo_2"
+            }*/
 
 
+            
+            // 3. Guardamos el usuario en la bd, save() hace dos cosas: inserta si es nuevo, actualiza si ya existe.
+            return await this.staffRepository.save(staff);
+
+        }catch(error){
+            // Si hay conflicto de datos únicos (nombre, email, teléfono)
+            if (error.code === '23505') {
+                throw new ConflictException('Ya existe un usuario con ese nombre, email o teléfono');
+            }
+
+            console.error('❌ Error al crear el empleado:', error);
+            throw new InternalServerErrorException('Error al crear el usuario');
+        }
         
-        // 3. Guardamos el usuario en la bd, save() hace dos cosas: inserta si es nuevo, actualiza si ya existe.
-        return this.staffRepository.save(staff);
     } 
 
     
@@ -122,6 +136,29 @@ export class StaffService {
     }
 
 
+
+    //Método para comprobar si un nombre ya existe en la bd antes de enviar el form de registro desde el frontend
+    async nameExist(name: string): Promise<boolean> {
+        const user = await this.staffRepository.findOneBy({ name });
+        return !!user;
+    }
+
+
+
+
+    //Método para comprobar si un email ya existe en la bd antes de enviar el form de registro desde el frontend
+    async existeEmail(email: string): Promise<boolean> {
+        const user = await this.staffRepository.findOneBy({ email });
+        return !!user;
+    }
+
+
+
+    //Método para comprobar si un teléfono ya existe en la bd antes de enviar el form de registro desde el frontend
+    async phoneExist(phone: string): Promise<boolean> {
+        const user = await this.staffRepository.findOneBy({ phone });
+        return !!user;
+    }
 
     //async login(email: string, password: string): Promise<any> {
     // 1. Buscar al usuario por email
