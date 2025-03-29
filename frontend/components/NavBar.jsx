@@ -8,6 +8,7 @@ import { Menu } from 'primereact/menu';
 import Image from 'next/image';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
+import "primeicons/primeicons.css";
 import { UserContext } from '@/app/context/UserContext';
 
 export default function Navbar() {
