@@ -5,6 +5,7 @@ import { Task } from '../../task/entities/task.entity';
 export enum ProjectStatus {
     PENDING = 'pending',
     ACTIVE = 'active',
+    PAUSED = 'paused',
     COMPLETED = 'completed',
 }
  
@@ -19,14 +20,14 @@ export enum ProjectStatus {
     @Column({length: 200})
     description:string;
 
-    @Column()
-    start_date:Date;
+    @Column({ type: 'date', nullable: true })
+    start_date:Date| null;
 
-    @Column()
-    deadline:Date;
+    @Column({type: 'date', nullable: true })
+    deadline:Date | null;
 
-    @Column()
-    last_update:Date;
+    @Column({type: 'date', nullable: true })
+    last_update:Date| null;
 
     @Column({
       type:'enum',

@@ -20,10 +20,11 @@ import { Injectable } from '@nestjs/common';
     //Método para crear un proyecto
     async create(createProjectDto: CreateProjectDto):Promise<Project>{
         //CONTROLAR QUE A LA HORA DE CREAR EL PROYECTO, LA FECHA DE INICIO SEA LA DE HOY
-        const { start_date, ...projectData} = createProjectDto;
+        const { start_date, deadline, ...projectData} = createProjectDto;
         const project= this.projectRepository.create({
             ...projectData,
             start_date: start_date ? new Date(start_date) : new Date(), //Si el DTO (createProjectDto) incluye start_date, lo convierte a Date y lo usa. Si no hay start_date, crea uno nuevo con new Date() (la fecha y hora actuales).
+            deadline: deadline ? new Date(deadline) : null,
         });
  
         return this.projectRepository.save(project);

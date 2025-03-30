@@ -25,21 +25,21 @@ export class ProjectResponseDto{
     @ApiProperty({
         description:"Fecha de inicio", example:"2025-03-22"
     })
-    start_date:Date;
+    start_date:Date | null;
 
 
     @IsString()
     @ApiProperty({
         description:"Fecha de entrega", example:"2025-06-29"
     })
-    deadline:Date;
+    deadline:Date | null;
 
     
     @IsString()
     @ApiProperty({
         description:"Última actualización del proyecto", example:"2025-03-23"
     })
-    last_update:Date;
+    last_update:Date | null;
 
 
     @ApiProperty({

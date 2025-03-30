@@ -35,7 +35,7 @@ import { ProjectStatus } from '../entities/project.entity';
      @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' }) //Mejor que isDate() porque @IsDate() espera un Date real, y los datos de entrada vienen como string.. Valida strings tipo fecha (ISO). 
      @IsOptional()
      //LA FECHA PUEDE SER FUTURA POR SI NOS MANDAN UN PROYECTO Y LO QUEREMOS TENER REGISTRADO, PERO NO LO EMPEZAMOS HASTA DENTRO DE UNA SEMANA, POR EJEMPLO
-     start_date: string;
+     start_date?: string | null;
 
 
 
@@ -49,7 +49,7 @@ import { ProjectStatus } from '../entities/project.entity';
      @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
      @IsOptional()
      //COMPROBAR QUE LA FECHA SEA FUTURA SÍ O SÍ
-     deadline:string;
+     deadline?:string | null;
 
 
 
@@ -57,29 +57,29 @@ import { ProjectStatus } from '../entities/project.entity';
 
  
  
-     @ApiProperty({
-         description:"Última fecha en la que se actualizó/modificó el proyecto. Fecha de la última tarea completada",
-         example:"2025-03-21",
-     })
-     @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
-     //COMPROBAR QUE NO SEA UNA FECHA FUTURA, SÓLO PUEDE IR DESDE LA FECHA DE INICIO DEL PROYECTO HASTA LA FECHA PRESENTE
-     last_update:string;
+    //  @ApiProperty({
+    //      description:"Última fecha en la que se actualizó/modificó el proyecto. Fecha de la última tarea completada",
+    //      example:"2025-03-21",
+    //  })
+    //  @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
+    //  //COMPROBAR QUE NO SEA UNA FECHA FUTURA, SÓLO PUEDE IR DESDE LA FECHA DE INICIO DEL PROYECTO HASTA LA FECHA PRESENTE
+    //  last_update:string;
  
  
 
 
 
 
-     @ApiProperty({
-         description:"Estado en el que se encuentra el proyecto: En progreso, pausado, finalizado",
-         example:"paused"
-     })
-     @IsString()
-     //LIMITAR SÓLO A "EN PROGRESO, FINALIZADO, PAUSADO"
-     @IsIn(['pending', 'paused', 'active', 'completed'], {
-        message: 'El estado debe ser pending, paused, active o completed',
-      })
-     status:ProjectStatus;
+    //  @ApiProperty({
+    //      description:"Estado en el que se encuentra el proyecto: En progreso, pausado, finalizado",
+    //      example:"paused"
+    //  })
+    //  @IsString()
+    //  //LIMITAR SÓLO A "EN PROGRESO, FINALIZADO, PAUSADO"
+    //  @IsIn(['pending', 'paused', 'active', 'completed'], {
+    //     message: 'El estado debe ser pending, paused, active o completed',
+    //   })
+    //  status:ProjectStatus;
  
      
  }

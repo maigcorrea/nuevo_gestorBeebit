@@ -22,7 +22,12 @@ export class ProjectController{
     create(@Body() createProjectDto: CreateProjectDto) {
         // Recibe el cuerpo de la petición (body) y lo convierte en un CreateUserDto automáticamente.
         // Llama al método create() del servicio, pasándole el DTO.
-        return this.projectService.create(createProjectDto);
+        try {
+            return this.projectService.create(createProjectDto);       
+        } catch (err) {
+            console.error('❌ ERROR en el controlador:', err);
+            throw err;
+        }
     }
 
 
