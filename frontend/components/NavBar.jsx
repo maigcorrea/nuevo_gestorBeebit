@@ -26,16 +26,16 @@ export default function Navbar() {
       icon: 'pi pi-home',
       command: () => router.push('/')
     },
-    {
-      label: 'Login',
-      icon: 'pi pi-sign-in',
-      command: () => router.push('/login')
-    },
     ...(userType==='admin' ? [{ //concatena dinámicamente el botón solo si el usuario es admin
       label:"Registrar nuevo usuario",
       icon: 'pi pi-sign-in',
       command: () => router.push('/registration'),
     }] : []),
+    ...(userType==='admin' ? [{ //concatena dinámicamente el botón solo si el usuario es admin
+      label:"Panel de control",
+      icon: 'pi pi-home',
+      command: () => router.push('/panel'),
+    }] : [])
   ], [userType]); // Hace que los ítems se generen cada vez que cambie userType
 
 

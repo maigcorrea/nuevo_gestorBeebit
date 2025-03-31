@@ -32,8 +32,18 @@ import { Injectable } from '@nestjs/common';
 
 
     //Método para mostrar todos los proyectos
-    async findAll():Promise<Project[]>{
-        return this.projectRepository.find();
+    async findAll():Promise<ProjectResponseDto[]>{
+        const projects = await this.projectRepository.find();
+
+        return projects.map((project) => ({
+            id: project.id,
+            title: project.title,
+            description: project.description,
+            start_date: project.start_date,
+            deadline: project.deadline,
+            last_update: project.last_update,
+            status: project.status,
+        }));
     }
 
 
