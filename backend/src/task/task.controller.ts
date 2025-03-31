@@ -72,6 +72,7 @@ export class TaskController{
 
     //Endpoint para actualizar sólo el estado de una tarea en concreto
     @Patch(':id/status')
+    @ApiOperation({summary:"Actualizar el estado de una tarea determinada"})
     updateStatus(
     @Param('id') id: number,
     @Body() dto: UpdateTaskStatusDto,
