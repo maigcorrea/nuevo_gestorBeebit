@@ -4,8 +4,11 @@ import { useRouter } from 'next/navigation'
 import { Inplace, InplaceDisplay, InplaceContent } from 'primereact/inplace';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 const UpdateProfileForm = () => {
+    const router = useRouter();
+
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [register_date, setRegisterDate] = useState("");
@@ -16,7 +19,8 @@ const UpdateProfileForm = () => {
     const [phoneError, setPhoneError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-    const router = useRouter();
+    //Spinner de carga
+    const [loading, setLoading] = useState(false);
 
     //Cargar datos del usuario
     useEffect(() => {
@@ -82,6 +86,7 @@ const UpdateProfileForm = () => {
             body: JSON.stringify(body),
         });
 
+        setLoading(true);
         if (res.ok) {
             setSuccessMessage('Datos actualizados correctamente');
             setOriginalEmail(email);     // actualizar originales para que si le da de nuevo al botón guardar no figuren lois antiguos datos
@@ -89,20 +94,28 @@ const UpdateProfileForm = () => {
             
             // Redirección en 2 segundos
             setTimeout(() => {
+                setLoading(false);
                 router.push('/');
             }, 2000);
     
         } else {
+            setLoading(false);
             setSuccessMessage('Error al actualizar los datos');
         }
     };
     
   return (
     <>
+        
         <div className="p-6 max-w-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Editar perfil</h2>
 
             {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}
+            {loading && (
+                <div className="flex justify-center my-4">
+                    <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                </div>
+            )}
                 
             <div className="mb-4">
                 <label className="block font-medium mb-1">Nombre</label>
@@ -142,7 +155,7 @@ const UpdateProfileForm = () => {
             </div>
 
 
-            <Button label="Guardar cambios" onClick={handleUpdate} className="mt-4" />
+            <Button label={loading ? "Guardando..." : "Guardar cambios"} onClick={handleUpdate} className="mt-4" disabled={loading} />
         </div>
     </>
   )
