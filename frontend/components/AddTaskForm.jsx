@@ -177,6 +177,7 @@ const AddTaskForm = () => {
             setAssociatedProject('');
             setPriority('');
             setError('');
+            setStaff([]);
             // router.push('/dashboard'); o mostrar un mensaje
         } catch (err) {
           setError('Error de conexión');
