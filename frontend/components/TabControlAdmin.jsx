@@ -18,6 +18,18 @@ const TabControlAdmin = () => {
     { name: 'Pendiente', code: 'pending'}
 ];
 
+const statusTaskTypes = [
+    { name: 'Completado', code: 'completed' },
+    { name: 'Activo', code: 'active' },
+    { name: 'Pendiente', code: 'pending'}
+];
+
+const priorityTaskTypes = [
+    { name: 'Alto', code: 'high' },
+    { name: 'Medio', code: 'medium' },
+    { name: 'Bajo', code: 'low'}
+];
+
   //Estados del formulario para borrar
   const [visible, setVisible] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
@@ -63,6 +75,9 @@ const TabControlAdmin = () => {
 
     if (type === 'project') {
         data.status = statusProjectTypes.find(s => s.code === rowData.status) || rowData.status;
+    }else if(type === 'task'){
+        data.status = statusTaskTypes.find(s => s.code === rowData.status) || rowData.status;
+        data.priority = priorityTaskTypes.find(s => s.code === rowData.priority) || rowData.priority;
     }
 
     setEditData(data);
@@ -78,12 +93,13 @@ const TabControlAdmin = () => {
       : `http://localhost:3000/tasks/update/${editData.id}`;
 
     //id y last update no están permitidos a la hora de editar un proyecto, status hay que desestructurarlo para que no se envíe el objeto completo
-  const { id, last_update, status, ...rest } = editData;
+  const { id, last_update, status, start_date, end_date, completed, priority, ...rest } = editData;
 
   //Normalizar el status
   const sanitizedData = {
     ...rest,
     status: typeof status === 'object' ? status.code : status, // solo el código
+    priority: typeof priority === 'object' ? priority.code : priority,
   };
 
   // Eliminar deadline si está vacío
@@ -196,10 +212,18 @@ const TabControlAdmin = () => {
             <TabPanel header="Tareas">
                 <DataTable value={tasks} paginator rows={4} stripedRows responsiveLayout="scroll">
                     <Column field="id" header="ID" />
-                    <Column field="title" header="Título" />
+                    <Column field="title" header="Título" sortable />
                     <Column field="description" header="Descripción" />
-                    <Column field="priority" header="Prioridad" />
-                    <Column field="status" header="Estado" />
+                    <Column field="priority" header="Prioridad" body={(rowData) => {
+                        if (typeof rowData.priority === 'object') return rowData.priority.name;
+                        const found = priorityTaskTypes.find(p => p.code === rowData.priority);
+                        return found?.name || rowData.priority;
+                    }} />
+                    <Column field="status" header="Estado" body={(rowData) => {
+                        if (typeof rowData.status === 'object') return rowData.status.name;
+                        const found = statusTaskTypes.find(p => p.code === rowData.status);
+                        return found?.name || rowData.status;
+                    }} />
                     <Column field="completed" header="Completada" />
                     <Column header="Acciones" body={(rowData) => actionButtonsTemplate(rowData, 'task')} />
                 </DataTable>
@@ -280,17 +304,11 @@ const TabControlAdmin = () => {
                   {deleteType === 'task' && (
                       <>
                           <label>Prioridad</label>
-                          <input
-                              className="p-inputtext"
-                              value={editData.priority || ''}
-                              onChange={(e) => setEditData({ ...editData, priority: e.target.value })}
-                          />
+                          <ListBox value={editData.priority || ''} onChange={(e) => setEditData({ ...editData, priority: e.value })} options={priorityTaskTypes} optionLabel="name" className="w-full md:w-14rem text-white" placeholder="Selecciona un tipo" required />
+
+
                           <label>Estado</label>
-                          <input
-                              className="p-inputtext"
-                              value={editData.status || ''}
-                              onChange={(e) => setEditData({ ...editData, status: e.target.value })}
-                          />
+                          <ListBox value={editData.status || ''} onChange={(e) => setEditData({ ...editData, status: e.value })} options={statusTaskTypes} optionLabel="name" className="w-full md:w-14rem text-white" placeholder="Selecciona un tipo" required />
                       </>
                   )}
               </div>
