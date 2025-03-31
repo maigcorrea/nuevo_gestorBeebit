@@ -24,7 +24,7 @@ const AddTaskForm = () => {
         { name: 'Low', code: 'low'}
     ];
     const [projectsList, setProjectsList] = useState([]);
-    const [staff, setStaff] = useState('');
+    const [staff, setStaff] = useState([]);
     const [staffList, setStaffList] = useState([]);
     const [error, setError] = useState('');
     const toast = useRef(null);
@@ -140,7 +140,7 @@ const AddTaskForm = () => {
         console.log(taskData);
 
         // Asignar el empleado si se ha seleccionado uno
-        if (staff && taskData.id) {
+        if (staff.length > 0 && taskData.id) {
             const assignRes = await fetch('http://localhost:3000/tasks_staff', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -215,7 +215,7 @@ const AddTaskForm = () => {
                     <ListBox value={priority} onChange={(e) => setPriority(e.value)} options={priorityTypes} optionLabel="name" className="w-full md:w-14rem text-white" placeholder="Selecciona un tipo" required />
                 
 
-                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className="mt-6 mb-6" />
+                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className="mt-6 mb-6" multiple />
         
                     {//Mensaje de error
                     }

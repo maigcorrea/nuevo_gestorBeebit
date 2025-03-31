@@ -25,48 +25,59 @@ export class TaskStaffService {
 
   ) {}
 
-  async create(dto: CreateTaskStaffDto): Promise<TaskStaff> {
-    const task = await this.taskRepo.findOne({ where: { id: dto.id_task } }); //Buscas en la base de datos, en la entidad Task, la tarea cuyo id sea igual a dto.id_task. Usas el repositorio de Task (taskRepo) y el método findOne. Si no existe una tarea con ese ID, la variable task será undefined
-    const staff = await this.staffRepo.findOne({ where: { id: dto.id_staff } }); //Igual que con task, aquí buscas el empleado dentro de la entidad Staff cuyo id coincida con dto.id_staff
-  
+  async create(dto: CreateTaskStaffDto): Promise<TaskStaff[]> {
+    const task = await this.taskRepo.findOne({ where: { id: dto.id_task } });
+
     //Verificas si alguno de los dos (task o staff) no fue encontrado
-    if (!task || !staff) {
-      throw new NotFoundException('Task o empleado no encontrado');
+    if (!task) {
+      throw new NotFoundException('Tarea no encontrada');
     }
 
-    // Validar si ya existe la relación. Busca si ya hay una fila con esa combinación.
-    const yaExiste = await this.taskStaffRepo.findOne({
-      where: {
-        task: { id: dto.id_task },
-        staff: { id: dto.id_staff },
-      },
-    });
+    const relaciones: TaskStaff[] = [];
 
-    if (yaExiste) {
-      throw new ConflictException('Ya existe esta relación entre tarea y empleado');
+    for (const staffId of dto.id_staff) {
+      const staff = await this.staffRepo.findOne({ where: { id: staffId } });
+
+      //Verificas si alguno de los dos (task o staff) no fue encontrado
+      if (!staff) {
+        throw new NotFoundException(`Empleado con ID ${staffId} no encontrado`);
+      }
+
+      // Validar si ya existe la relación. Busca si ya hay una fila con esa combinación.
+      const yaExiste = await this.taskStaffRepo.findOne({
+        where: {
+          task: { id: dto.id_task },
+          staff: { id: staffId },
+        },
+      });
+
+      if (yaExiste) {
+        throw new ConflictException(`La relación con el empleado ${staffId} ya existe`);
+      }
+
+
+      // Si ya tiene 3 o más → lanza ConflictException
+      const relacionesActuales = await this.taskStaffRepo.find({ //Obtiene todas las relaciones task_staff de un empleado concreto (staff.id)
+        where: { staff: { id: staffId } },
+        relations: ['task'], //Carga también la relación con la tarea (relations: ['task'])
+      });
+
+
+      const tareasActivas = relacionesActuales.filter(rel => rel.task.status === 'active');
+      if (tareasActivas.length >= 3) {
+        throw new ConflictException(`El empleado ${staffId} ya tiene 3 tareas activas`);
+      }
+
+      //Si todo está bien, se crea la nueva relación
+      //Usas el método create() del repositorio para crear un nuevo objeto TaskStaff. Le pasas los objetos task y staff que recuperaste antes
+      const nuevaRelacion = this.taskStaffRepo.create({ task, staff });
+
+      //El método save() devuelve el objeto insertado, incluyendo su id generado automáticamente.
+      const saved = await this.taskStaffRepo.save(nuevaRelacion);
+      relaciones.push(saved);
     }
 
-    // Validación que impida asignar a un empleado más de 3 tareas activas. Para evitar sobrecarga a un empleado
-    const relaciones = await this.taskStaffRepo.find({ //Obtiene todas las relaciones task_staff de un empleado concreto (staff.id)
-      where: {
-        staff: { id: dto.id_staff },
-      },
-      relations: ['task'], //Carga también la relación con la tarea (relations: ['task'])
-    });
-
-    const tareasActivas = relaciones.filter(rel => rel.task.status === 'active'); //Filtra solo las tareas activas
-
-    // Si ya tiene 3 o más → lanza ConflictException
-    if (tareasActivas.length >= 3) {
-      throw new ConflictException('El empleado ya tiene 3 tareas activas asignadas. No puede encargarse de más tareas');
-    }
-  
-    //Si todo está bien, se crea la nueva relación
-    //Usas el método create() del repositorio para crear un nuevo objeto TaskStaff. Le pasas los objetos task y staff que recuperaste antes
-    const nuevaRelacion = this.taskStaffRepo.create({ task, staff });
-
-    //El método save() devuelve el objeto insertado, incluyendo su id generado automáticamente.
-    return await this.taskStaffRepo.save(nuevaRelacion);
+    return relaciones;
   }
 
 
