@@ -33,9 +33,9 @@ export class StaffController{
 
 
     //Endpoint para mostrar todos los usuarios de la base de datos.
-    @UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
-    @Roles('admin')
-    @ApiBearerAuth('jwt') // <- ¡Este es el importante!
+   // @UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
+    //@Roles('admin')
+    //@ApiBearerAuth('jwt') // <- ¡Este es el importante!
     @Get("/all")
     @ApiOperation({summary:"Mostrar todos los empleados"})
     @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })

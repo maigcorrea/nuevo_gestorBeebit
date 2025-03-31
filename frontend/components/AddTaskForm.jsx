@@ -8,6 +8,7 @@ import { FloatLabel } from 'primereact/floatlabel';
 import { ListBox } from 'primereact/listbox';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
+import { SelectButton } from 'primereact/selectbutton';
 
 const AddTaskForm = () => {
 
@@ -23,6 +24,8 @@ const AddTaskForm = () => {
         { name: 'Low', code: 'low'}
     ];
     const [projectsList, setProjectsList] = useState([]);
+    const [staff, setStaff] = useState('');
+    const [staffList, setStaffList] = useState([]);
     const [error, setError] = useState('');
     const toast = useRef(null);
 
@@ -61,6 +64,31 @@ const AddTaskForm = () => {
     }));
 
     console.log(projectOptions);
+
+
+    //Obtener lista de todos los empleados
+    useEffect(() => {
+      const staff = async() =>{
+        try {
+            const staff = await fetch(`http://localhost:3000/staff/all`);
+            const dataStaff = await staff.json();
+            console.log("Proyectos recibidos:",dataStaff);
+            setStaffList(dataStaff);
+        } catch (error) {
+            console.error("Error al obtener empleados:", error);
+        }
+      }
+
+      staff();
+    }, []);
+
+    const staffOptions = staffList.map(st => ({
+        label: st.name,
+        value: st.id
+    }));
+
+    console.log(staffOptions);
+    
 
     //Validación de startDate(Fecha de inicio). Comprobar que no sea una fecha pasada a la actual
     // const checkEmailExists = async (email) => {
@@ -101,14 +129,30 @@ const AddTaskForm = () => {
           console.log('Body enviado:', body);
 
         try {
+            //Insertar tarea
           const res = await fetch('http://localhost:3000/tasks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
     
-        const data = await res.json();
-        console.log(data);
+        const taskData = await res.json();
+        console.log(taskData);
+
+        // Asignar el empleado si se ha seleccionado uno
+        if (staff && taskData.id) {
+            const assignRes = await fetch('http://localhost:3000/tasks_staff', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id_task: taskData.id,
+                id_staff: staff
+            })
+        });
+  
+        const assignData = await assignRes.json();
+        console.log("Empleado asignado:", assignData);
+      }
     
         //   if (!res.ok) {
         //     // Si es un array de errores de validación:
@@ -170,6 +214,8 @@ const AddTaskForm = () => {
                     <label htmlFor="type" className="block text-900 font-medium mb-2">Prioridad</label>                    
                     <ListBox value={priority} onChange={(e) => setPriority(e.value)} options={priorityTypes} optionLabel="name" className="w-full md:w-14rem text-white" placeholder="Selecciona un tipo" required />
                 
+
+                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className="mt-6 mb-6" />
         
                     {//Mensaje de error
                     }
