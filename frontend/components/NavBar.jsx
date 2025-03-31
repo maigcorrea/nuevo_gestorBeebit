@@ -44,7 +44,7 @@ export default function Navbar() {
       label: 'Perfil',
       icon: 'pi pi-user',
       command: () => {
-        window.location.href = '/perfil';
+        window.location.href = '/profile';
       },
     },
     {
