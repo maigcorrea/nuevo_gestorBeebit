@@ -42,6 +42,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"  # Web UI para ver correos
+      - "1025:1025"  # Puerto SMTP
 
 volumes:
   postgres_data:
