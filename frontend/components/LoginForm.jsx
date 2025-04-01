@@ -11,6 +11,7 @@ import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Checkbox } from 'primereact/checkbox';
+import ForgotPasswordForm from './forgotPasswordForm';
 
 const LoginForm = () => {
   const [checked, setChecked] = useState(false);
@@ -80,6 +81,7 @@ const LoginForm = () => {
                 <Checkbox id="rememberme" onChange={e => setChecked(e.checked)} checked={checked} className="mr-2" />
                 <label htmlFor="rememberme">Remember me</label>
               </div>
+              <ForgotPasswordForm />
               <a className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot your password?</a>
             </div>
 
