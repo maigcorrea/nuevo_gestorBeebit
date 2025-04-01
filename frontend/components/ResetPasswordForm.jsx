@@ -15,6 +15,7 @@ const ResetPasswordForm = () => {
     const [passwordMatchError, setPasswordMatchError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [error, setError] = useState('');
+    const [errorMessages, setErrorMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
@@ -38,10 +39,6 @@ const ResetPasswordForm = () => {
             return;
         }
 
-        if (!validatePassword(password)) {
-            setPasswordMatchError('La contraseña debe tener entre 6 y 20 caracteres y contener al menos una mayúscula, una minúscula, un número y un carácter especial.');
-            return;
-        }
 
         setPasswordMatchError('');
         setError('');
@@ -62,6 +59,7 @@ const ResetPasswordForm = () => {
                 Responder con un mensaje de éxito o error.
 
         */
+       let data;
         try {
             const res = await fetch('http://localhost:3000/staff/reset-password', {
                 method: 'POST',
@@ -71,17 +69,30 @@ const ResetPasswordForm = () => {
 
             const data = await res.json();
 
+            
+
             if (!res.ok) {
-                setError(data.message || 'Error al restablecer la contraseña');
-            } else {
-                setSuccessMessage('Tu contraseña ha sido restablecida con éxito.');
-                // Redirección en 2 segundos
-                setTimeout(() => {
-                    router.push('/');
-                }, 2000);
+                throw new Error(JSON.stringify(data));
             }
+
+            setSuccessMessage('Tu contraseña ha sido restablecida con éxito.');
+            setErrorMessages([]);
+            // Redirección en 2 segundos
+            setTimeout(() => {
+                router.push('/');
+            }, 2000);
+
         } catch (err) {
-            setError('Error de conexión con el servidor');
+            try {
+                const parsed = JSON.parse(err.message);
+                if (Array.isArray(parsed.message)) {
+                  setErrorMessages(parsed.message);
+                } else {
+                  setErrorMessages([parsed.message || 'Error al restablecer la contraseña']);
+                }
+            } catch {
+                setErrorMessages(['Error desconocido']);
+            }
         } finally {
             setLoading(false);
         }
@@ -115,7 +126,13 @@ const ResetPasswordForm = () => {
                             {//Mensaje de error
                             }
                             {passwordMatchError && <p className="text-red-500 text-sm mb-2">{passwordMatchError}</p>}
-                            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                            {errorMessages.length > 0 && (
+                                <div className="text-sm text-red-500 mb-2">
+                                    {errorMessages.map((msg, idx) => (
+                                        <p key={idx}>• {msg}</p>
+                                    ))}
+                                </div>
+                            )}
                             {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}
                             <div className="mt-3 text-sm">
                                 <p className={isProperLength(password) ? "text-green-600" : "text-red-500"}>
