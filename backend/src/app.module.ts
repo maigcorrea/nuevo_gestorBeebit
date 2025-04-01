@@ -7,6 +7,7 @@ import { TaskModule } from './task/task.module';
 import { StaffModule } from './staff/staff.module';
 import { TaskStaffModule } from './tasks_staff/task-staff.module';
 import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 // ENTIDADES
 import { User } from './users/entities/user.entity'; // La entidad de usuario
 import { Project } from './project/entities/project.entity';
@@ -32,7 +33,8 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
     TaskModule,
     StaffModule,
     TaskStaffModule,
-    AuthModule
+    AuthModule,
+    MailModule,
   ],
 })
 export class AppModule {}
