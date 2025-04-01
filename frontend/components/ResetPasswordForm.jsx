@@ -3,10 +3,13 @@ import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 
 
 const ResetPasswordForm = () => {
+    const router = useRouter();
     const [password, setPassword] = useState('');
     const [passwordAgain, setPasswordAgain] = useState('');
     const [passwordMatchError, setPasswordMatchError] = useState('');
@@ -60,6 +63,10 @@ const ResetPasswordForm = () => {
                 setError(data.message || 'Error al restablecer la contraseña');
             } else {
                 setSuccessMessage('Tu contraseña ha sido restablecida con éxito.');
+                // Redirección en 2 segundos
+                setTimeout(() => {
+                    router.push('/');
+                }, 2000);
             }
         } catch (err) {
             setError('Error de conexión con el servidor');
@@ -70,6 +77,14 @@ const ResetPasswordForm = () => {
     }
   return (
     <>
+        {successMessage && (
+            <div className="text-center">
+                <p className="text-green-600 text-sm mb-4">{successMessage}</p>
+                <ProgressSpinner style={{ width: '40px', height: '40px' }} />
+            </div>
+        )}
+        
+        {!successMessage && (
         <div className="min-h-screen flex items-center justify-center mx-auto">
                     <div className="surface-card p-4 shadow-2 border-round w-full max-w-3xl">
                         <div className="text-center mb-5">
@@ -92,9 +107,14 @@ const ResetPasswordForm = () => {
                             {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}
         
                             <Button type="submit" label={loading ? 'Procesando...' : 'Guardar nueva contraseña'} icon="pi pi-user" className="w-full" disabled={loading} />
+                            {loading && (
+                                <div className="flex justify-center my-4">
+                                    <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                                </div>
+                            )}
                         </form>
                     </div>
-                </div>
+                </div>)}
     </>
   )
 }
