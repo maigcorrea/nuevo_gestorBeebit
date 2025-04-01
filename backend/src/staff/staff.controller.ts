@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth , ApiParam, ApiBody} from '@nestjs/swagger';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/create-staff.dto';
 import { StaffResponseDto } from './dto/staff-response.dto';
@@ -12,6 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { VerifyPasswordDto } from './dto/verify-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 
 @ApiTags('Staff')
@@ -123,5 +124,22 @@ export class StaffController{
          const isValid = await this.staffService.verifyPassword(body.userId, body.password);
          return { valid: isValid };
      }
+
+
+      //Endpoint para cambiar nueva contraseña
+      @Put('changePassword/:id')
+      @ApiParam({ name: 'id', required: true, type: Number })
+      @ApiBody({ type: ChangePasswordDto })
+      async changePassword(
+      @Param('id', ParseIntPipe) id: number,
+      @Body() body: ChangePasswordDto,
+      ) {
+      const success = await this.staffService.changePassword(id, body.password);
+      if (!success) {
+          throw new NotFoundException('Usuario no encontrado');
+      }
+  
+      return { message: 'Contraseña actualizada correctamente' };
+      }
  
 }

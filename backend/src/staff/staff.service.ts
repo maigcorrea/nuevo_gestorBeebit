@@ -175,6 +175,19 @@ export class StaffService {
         return bcryptjs.compare(plainPassword, user.password);
     }
 
+     //Método para cambiar nueva contraseña
+     async changePassword(userId: number, newPassword: string): Promise<boolean> {
+        const user = await this.staffRepository.findOne({ where: { id: userId } });
+        if (!user) return false;
+      
+        const hashedPassword = await bcryptjs.hash(newPassword, 10);
+        user.password = hashedPassword;
+      
+        await this.staffRepository.save(user);
+        return true;
+      }
+
+
 
     //async login(email: string, password: string): Promise<any> {
     // 1. Buscar al usuario por email
