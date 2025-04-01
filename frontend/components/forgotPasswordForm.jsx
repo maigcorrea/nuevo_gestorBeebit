@@ -63,9 +63,9 @@ const ForgotPasswordForm = () => {
   return (
     <>
         
-        <a className="mt-4 text-sm text-blue-600 cursor-pointer" onClick={() => setVisible(true)}>
+        <a className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer" onClick={() => setVisible(true)}>
                 ¿Has olvidado tu contraseña?
-            </a>
+        </a>
 
         <Dialog header="Recuperar contraseña" visible={visible} style={{ width: '30vw' }} onHide={() => setVisible(false)}>
             {loading && (
@@ -78,14 +78,14 @@ const ForgotPasswordForm = () => {
             <InputText
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full mb-2"
+                className="w-full mb-4"
                 placeholder="email@ejemplo.com"
             />
             
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
-            <Button label="Enviar" className="mt-2" onClick={handleSendMessage} disabled={loading}/>
+            <Button label="Enviar" className="mt-4" onClick={handleSendMessage} disabled={loading}/>
         </Dialog>
     </>
   )

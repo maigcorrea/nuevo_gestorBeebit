@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { Staff } from './entities/staff.entity';
 import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
 import { InternalServerErrorException, ConflictException } from '@nestjs/common';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 
@@ -189,7 +190,7 @@ export class StaffService {
         return true;
       }
 
-    //Método para recuperar la contraseña
+    //Método para enviar email para recuperar la contraseña
     async handleForgotPassword(email: string) {
         const user = await this.staffRepository.findOne({ where: { email } });
       
@@ -198,12 +199,43 @@ export class StaffService {
           return { message: 'Si el email está registrado, recibirás un correo' };
         }
       
-        // Aquí se puede generar un token de recuperación (más adelante)
-        await this.mailService.sendPasswordResetEmail(email);
+        // Aquí se puede generar un token de recuperación
+        // Generar token aleatorio y caducidad de 1 hora
+        const token = randomBytes(32).toString('hex');
+        user.resetToken = token;
+        user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hora
+
+        await this.staffRepository.save(user);
+
+        const resetLink = `http://localhost:3001/reset-password?token=${token}`;
+        await this.mailService.sendPasswordResetEmail(email, resetLink);
+        
       
         return { message: 'Correo de recuperación enviado' };
       }
       
+    
+
+    //Método para establecer nueva contraseña al recuperar contraseña
+    async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+        const user = await this.staffRepository.findOne({ where: { resetToken: token } });
+      
+        if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {
+          throw new BadRequestException('Token inválido o expirado');
+        }
+      
+        const hashedPassword = await bcryptjs.hash(newPassword, 10);
+        user.password = hashedPassword;
+      
+        // Invalidar token para evitar que se reutilice ese enlace
+        user.resetToken = null;
+        user.resetTokenExpiry = null;
+      
+        await this.staffRepository.save(user);
+      
+        return { message: 'Contraseña actualizada correctamente' };
+    }
+
 
 
     //async login(email: string, password: string): Promise<any> {

@@ -13,6 +13,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { VerifyPasswordDto } from './dto/verify-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 
 @ApiTags('Staff')
@@ -143,9 +144,18 @@ export class StaffController{
       }
  
 
-    //Endpoint para recuperar contraseña
+    //Endpoint para mandar correo al recuperar contraseña
     @Post('forgot-password')
     async forgotPassword(@Body('email') email: string) {
         return this.staffService.handleForgotPassword(email);
+    }
+
+    //Endpoint para establecer nueva contraseña al recuperarla
+    @Post('reset-password')
+    async resetPassword(
+        @Body('token') token: string,
+        @Body('newPassword') newPassword: string,
+    ) {
+        return this.staffService.resetPassword(token, newPassword);
     }
 }

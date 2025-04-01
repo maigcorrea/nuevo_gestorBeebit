@@ -34,4 +34,12 @@ export class Staff{
     })
     type: StaffType;
 
+
+    //Guardar un token único que se le enviará al usuario para la recuperación de contraseña
+    @Column({ type: 'varchar', nullable: true })
+    resetToken: string | null;
+
+    //Tiempo de expiración del token
+    @Column({ type: 'timestamp', nullable: true })
+    resetTokenExpiry: Date | null;
 }
