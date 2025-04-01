@@ -160,6 +160,22 @@ export class StaffService {
         return !!user;
     }
 
+
+     //Método para verificar si una contraseña es correcta (Al modificar la contraseña, paso de verificación)
+     async verifyPassword(userId: number, plainPassword: string): Promise<boolean> {
+        const user = await this.staffRepository.findOne({
+            where: { id: userId },
+            select: ['id', 'password'], // <-- Aquí aseguras que venga la contraseña
+        });
+
+        if (!user || !user.password) return false;
+    
+        console.log('Usuario encontrado:', user);
+        console.log('Contraseña almacenada:', user.password);
+        return bcryptjs.compare(plainPassword, user.password);
+    }
+
+
     //async login(email: string, password: string): Promise<any> {
     // 1. Buscar al usuario por email
     //const user = await this.usersRepository.findOne({ where: { email } });

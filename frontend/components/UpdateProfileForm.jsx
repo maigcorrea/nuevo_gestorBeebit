@@ -5,6 +5,7 @@ import { Inplace, InplaceDisplay, InplaceContent } from 'primereact/inplace';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import UpdatePassword from './UpdatePassword';
 
 const UpdateProfileForm = () => {
     const router = useRouter();
@@ -156,6 +157,7 @@ const UpdateProfileForm = () => {
 
 
             <Button label={loading ? "Guardando..." : "Guardar cambios"} onClick={handleUpdate} className="mt-4" disabled={loading} />
+            <UpdatePassword></UpdatePassword>
         </div>
     </>
   )

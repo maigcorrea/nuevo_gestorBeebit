@@ -11,6 +11,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
+import { VerifyPasswordDto } from './dto/verify-password.dto';
 
 
 @ApiTags('Staff')
@@ -115,4 +116,12 @@ export class StaffController{
         const existe = await this.staffService.phoneExist(phone);
         return { exists: existe };
     }
+
+     //Endpoint para verificar si una contraseña es correcta (Al modificar la contraseña, paso de verificación)
+     @Post('passwordVerify')
+     async verifyPassword(@Body() body: VerifyPasswordDto,) {
+         const isValid = await this.staffService.verifyPassword(body.userId, body.password);
+         return { valid: isValid };
+     }
+ 
 }
