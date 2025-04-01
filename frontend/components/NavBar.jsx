@@ -65,7 +65,7 @@ export default function Navbar() {
 
 
   const start = (
-    <Link href="/home">
+    <Link href="/">
       <Image src="/logoBeebit.png" alt="Logo" width={40} height={40} />
     </Link>
   );
