@@ -20,6 +20,11 @@ const UpdateProfileForm = () => {
     const [phoneError, setPhoneError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
+    //Imagen
+    const [profileImage, setProfileImage] = useState(null);
+    const [uploadMessage, setUploadMessage] = useState("");
+
+
     //Spinner de carga
     const [loading, setLoading] = useState(false);
 
@@ -104,12 +109,61 @@ const UpdateProfileForm = () => {
             setSuccessMessage('Error al actualizar los datos');
         }
     };
+
+    //Subir imagen
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setProfileImage(file);
+        }
+    };
+
+
+    const handleUploadImage = async () => {
+        if (!profileImage) return;
+      
+        const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("file", profileImage);
+      
+        try {
+          const res = await fetch("http://localhost:3000/staff/upload-profile-picture", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          });
+      
+          const data = await res.json();
+      
+          if (res.ok) {
+            setUploadMessage("✅ Imagen subida correctamente: " + data.filename);
+          } else {
+            setUploadMessage("❌ Error al subir la imagen: " + (data.message || "Error desconocido"));
+          }
+        } catch (err) {
+          setUploadMessage("❌ Error al conectar con el servidor");
+        }
+    };
     
   return (
     <>
         
         <div className="p-6 max-w-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Editar perfil</h2>
+
+            <div className="mb-4">
+                <label className="block font-medium mb-1">Foto de perfil</label>
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <Button
+                    label="Subir imagen"
+                    onClick={handleUploadImage}
+                    className="mt-2"
+                    disabled={!profileImage}
+                />
+                {uploadMessage && <p className="text-sm mt-2">{uploadMessage}</p>}
+            </div>
 
             {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}
             {loading && (

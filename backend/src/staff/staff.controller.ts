@@ -14,12 +14,17 @@ import { Roles } from 'src/auth/roles.decorator';
 import { VerifyPasswordDto } from './dto/verify-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MinioService } from 'src/minio/minio.service';
 
 
 @ApiTags('Staff')
 @Controller("staff")
 export class StaffController{
-    constructor(private readonly staffService: StaffService) {}
+    constructor(private readonly staffService: StaffService,
+        private readonly minioService: MinioService
+    ) {}
 
     @Post()
 
@@ -154,5 +159,16 @@ export class StaffController{
     @Post('reset-password')
     async resetPassword(@Body() body: ResetPasswordDto) {
         return this.staffService.resetPassword(body.token, body.newPassword);
+    }
+
+
+    //Cargar foto de perfil
+    @Post('upload-profile-picture')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadProfilePicture(
+    @UploadedFile() file: Express.Multer.File,
+    ): Promise<{ filename: string }> {
+    const filename = await this.minioService.upload(file, 'profile-pictures');
+    return { filename };
     }
 }
