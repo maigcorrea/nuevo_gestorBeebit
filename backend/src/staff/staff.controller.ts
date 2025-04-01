@@ -152,10 +152,7 @@ export class StaffController{
 
     //Endpoint para establecer nueva contraseña al recuperarla
     @Post('reset-password')
-    async resetPassword(
-        @Body('token') token: string,
-        @Body('newPassword') newPassword: string,
-    ) {
-        return this.staffService.resetPassword(token, newPassword);
+    async resetPassword(@Body() body: ResetPasswordDto) {
+        return this.staffService.resetPassword(body.token, body.newPassword);
     }
 }
