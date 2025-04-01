@@ -23,6 +23,7 @@ const UpdateProfileForm = () => {
     //Imagen
     const [profileImage, setProfileImage] = useState(null);
     const [uploadMessage, setUploadMessage] = useState("");
+    const [profileImageUrl, setProfileImageUrl] = useState(null);
 
 
     //Spinner de carga
@@ -138,6 +139,8 @@ const UpdateProfileForm = () => {
           const data = await res.json();
       
           if (res.ok) {
+            console.log(data.url);
+            setProfileImageUrl(data.url); //Mostrar la imagen
             setUploadMessage("✅ Imagen subida correctamente: " + data.filename);
           } else {
             setUploadMessage("❌ Error al subir la imagen: " + (data.message || "Error desconocido"));
@@ -163,6 +166,14 @@ const UpdateProfileForm = () => {
                     disabled={!profileImage}
                 />
                 {uploadMessage && <p className="text-sm mt-2">{uploadMessage}</p>}
+
+
+                {
+                    //Vista previa de imagen
+                }
+                {profileImageUrl && (
+                    <img src={profileImageUrl} alt="Vista previa" className="mt-4 w-32 h-32 object-cover rounded-full" />
+                )}
             </div>
 
             {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}

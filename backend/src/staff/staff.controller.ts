@@ -167,8 +167,8 @@ export class StaffController{
     @UseInterceptors(FileInterceptor('file'))
     async uploadProfilePicture(
     @UploadedFile() file: Express.Multer.File,
-    ): Promise<{ filename: string }> {
-    const filename = await this.minioService.upload(file, 'profile-pictures');
-    return { filename };
+    ): Promise<{ url: string }> {
+        const url = await this.minioService.upload(file, 'profile-pictures');
+        return { url };
     }
 }

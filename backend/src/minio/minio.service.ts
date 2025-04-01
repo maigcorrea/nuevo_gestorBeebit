@@ -16,9 +16,16 @@ export class MinioService {
     });
   }
 
+  //Cargar la imagen al bucket en minio
   async upload(file: Express.Multer.File, bucket: string): Promise<string> {
     const filename = Date.now() + '-' + file.originalname;
     await this.client.putObject(bucket, filename, file.buffer);
-    return filename;
+
+    //Devolver una url pública para acceder a la imagen (bucket sin restricciones)
+    const url = `http://localhost:9000/${bucket}/${filename}`;
+
+    return url;
   }
+
+
 }
