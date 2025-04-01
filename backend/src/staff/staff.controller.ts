@@ -142,4 +142,10 @@ export class StaffController{
       return { message: 'Contraseña actualizada correctamente' };
       }
  
+
+    //Endpoint para recuperar contraseña
+    @Post('forgot-password')
+    async forgotPassword(@Body('email') email: string) {
+        return this.staffService.handleForgotPassword(email);
+    }
 }

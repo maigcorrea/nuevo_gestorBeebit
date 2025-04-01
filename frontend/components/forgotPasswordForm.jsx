@@ -35,6 +35,13 @@ const ForgotPasswordForm = () => {
             }
 
             // Aquí iría la lógica para enviar el correo con Mailpit (más adelante)
+            await fetch('http://localhost:3000/staff/forgot-password', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
 
             setLoading(true);
             setEmail('');

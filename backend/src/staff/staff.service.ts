@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
  import { StaffResponseDto } from './dto/staff-response.dto';
  import { NotFoundException } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
+ import { MailService } from 'src/mail/mail.service';
 import { Staff } from './entities/staff.entity';
 import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
 import { InternalServerErrorException, ConflictException } from '@nestjs/common';
@@ -16,6 +17,7 @@ export class StaffService {
     constructor(
         @InjectRepository(Staff)
         private staffRepository: Repository<Staff>,
+        private readonly mailService: MailService,
     ) {}
 
     async create(createStaffDto: CreateStaffDto): Promise<Staff>{
@@ -187,6 +189,21 @@ export class StaffService {
         return true;
       }
 
+    //Método para recuperar la contraseña
+    async handleForgotPassword(email: string) {
+        const user = await this.staffRepository.findOne({ where: { email } });
+      
+        if (!user) {
+          // No revelamos si existe o no, por seguridad
+          return { message: 'Si el email está registrado, recibirás un correo' };
+        }
+      
+        // Aquí se puede generar un token de recuperación (más adelante)
+        await this.mailService.sendPasswordResetEmail(email);
+      
+        return { message: 'Correo de recuperación enviado' };
+      }
+      
 
 
     //async login(email: string, password: string): Promise<any> {
