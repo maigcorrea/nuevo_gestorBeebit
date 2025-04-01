@@ -237,6 +237,14 @@ export class StaffService {
     }
 
 
+    //Guardar la imagen del usuario en la bd
+    async saveProfileImage(userId: number, imageUrl: string): Promise<void> {
+        const user = await this.staffRepository.findOneBy({ id: userId });
+        if (!user) throw new NotFoundException('Usuario no encontrado');
+      
+        user.profileImage = imageUrl;
+        await this.staffRepository.save(user);
+    }
 
     //async login(email: string, password: string): Promise<any> {
     // 1. Buscar al usuario por email

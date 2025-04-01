@@ -17,6 +17,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';
+import { Req } from '@nestjs/common';
 
 
 @ApiTags('Staff')
@@ -163,12 +164,21 @@ export class StaffController{
 
 
     //Cargar foto de perfil
+    @UseGuards(AuthGuard('jwt'))
     @Post('upload-profile-picture')
     @UseInterceptors(FileInterceptor('file'))
     async uploadProfilePicture(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File, @Req() req: any // o extrae el ID del token
     ): Promise<{ url: string }> {
         const url = await this.minioService.upload(file, 'profile-pictures');
+
+         // Extraer ID del usuario autenticado
+        const userId = req.user.id;
+        console.log(req.user.id);
+
+        // Guardar la URL o nombre del archivo en la BD
+        await this.staffService.saveProfileImage(userId, url);
+
         return { url };
     }
 }

@@ -42,4 +42,9 @@ export class Staff{
     //Tiempo de expiración del token
     @Column({ type: 'timestamp', nullable: true })
     resetTokenExpiry: Date | null;
+
+
+    //Foto de perfil del usuario
+    @Column({ nullable: true })
+    profileImage: string;
 }

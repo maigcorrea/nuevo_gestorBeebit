@@ -18,6 +18,10 @@ export class MinioService {
 
   //Cargar la imagen al bucket en minio
   async upload(file: Express.Multer.File, bucket: string): Promise<string> {
+    if (!file || !file.buffer) {
+      throw new Error('Archivo no recibido o está vacío');
+    }
+    
     const filename = Date.now() + '-' + file.originalname;
     await this.client.putObject(bucket, filename, file.buffer);
 

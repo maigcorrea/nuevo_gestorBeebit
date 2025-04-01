@@ -44,6 +44,7 @@ const LoginForm = () => {
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('type', data.user.type);
       localStorage.setItem('id', data.user.id);
+      localStorage.setItem('profileImage', data.user.profileImage || '');
 
       setUserType(data.user.type); //ACTUALIZA el contexto del tipo en tiempo real
 

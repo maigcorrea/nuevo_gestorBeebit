@@ -18,7 +18,8 @@ export default function Navbar() {
   const { userType } = useContext(UserContext);
   const { setUserType } = useContext(UserContext);
   
-  
+  //Para la foto de perfil
+  const profileImage = localStorage.getItem('profileImage');
 
   const items = useMemo(() => [
     {
@@ -74,7 +75,7 @@ export default function Navbar() {
     <>
     <Menu model={userMenuItems} popup ref={menuRef} />
       <Avatar
-        image="/perfil.jpeg" // Asegúrate de tener esta imagen en /public
+        image={profileImage || '/perfil.jpeg'} // Asegúrate de tener esta imagen en /public
         shape="circle"
         size="large"
         className="cursor-pointer"
