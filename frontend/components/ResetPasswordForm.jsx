@@ -21,6 +21,14 @@ const ResetPasswordForm = () => {
     const searchParams = useSearchParams();
     const token = searchParams.get('token'); // Para capturar el token de la url, el token viene desde el enlace del email
 
+
+    //Validar contraseña
+    const hasUppercase = (str) => /[A-Z]/.test(str);
+    const hasLowercase = (str) => /[a-z]/.test(str);
+    const hasNumber = (str) => /\d/.test(str);
+    const hasSpecialChar = (str) => /[\W_]/.test(str);
+    const isProperLength = (str) => str.length >= 6 && str.length <= 20;
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
@@ -30,6 +38,10 @@ const ResetPasswordForm = () => {
             return;
         }
 
+        if (!validatePassword(password)) {
+            setPasswordMatchError('La contraseña debe tener entre 6 y 20 caracteres y contener al menos una mayúscula, una minúscula, un número y un carácter especial.');
+            return;
+        }
 
         setPasswordMatchError('');
         setError('');
@@ -83,7 +95,7 @@ const ResetPasswordForm = () => {
                 <ProgressSpinner style={{ width: '40px', height: '40px' }} />
             </div>
         )}
-        
+
         {!successMessage && (
         <div className="min-h-screen flex items-center justify-center mx-auto">
                     <div className="surface-card p-4 shadow-2 border-round w-full max-w-3xl">
@@ -105,6 +117,23 @@ const ResetPasswordForm = () => {
                             {passwordMatchError && <p className="text-red-500 text-sm mb-2">{passwordMatchError}</p>}
                             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
                             {successMessage && <p className="text-green-600 text-sm mb-2">{successMessage}</p>}
+                            <div className="mt-3 text-sm">
+                                <p className={isProperLength(password) ? "text-green-600" : "text-red-500"}>
+                                    • Entre 6 y 20 caracteres
+                                </p>
+                                <p className={hasUppercase(password) ? "text-green-600" : "text-red-500"}>
+                                    • Al menos una letra mayúscula
+                                </p>
+                                <p className={hasLowercase(password) ? "text-green-600" : "text-red-500"}>
+                                    • Al menos una letra minúscula
+                                </p>
+                                <p className={hasNumber(password) ? "text-green-600" : "text-red-500"}>
+                                    • Al menos un número
+                                </p>
+                                <p className={hasSpecialChar(password) ? "text-green-600" : "text-red-500"}>
+                                    • Al menos un carácter especial (!@#$%...)
+                                </p>
+                            </div>
         
                             <Button type="submit" label={loading ? 'Procesando...' : 'Guardar nueva contraseña'} icon="pi pi-user" className="w-full" disabled={loading} />
                             {loading && (
