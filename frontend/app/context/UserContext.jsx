@@ -16,6 +16,12 @@ export const UserProvider = ({ children }) => {
     // Inicializamos el estado. De primeras es null, hasta que comprobemos si hay algo guardado en localStorage.
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
     const [profileImage, setProfileImage] = useState('');
+    const logout = () => {
+      localStorage.clear();
+      setUserType(null);
+      setProfileImage('');
+    };
+    
 
   //Sólo se ejecuta una vez al cargar la página
   useEffect(() => {
@@ -35,7 +41,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     // Envolvemos a toda la app (o una parte de ella) en un Provider que comparte ese estado a todos los componentes hijos. 
-    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage }}>
+    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage, logout }}>
       {children}
     </UserContext.Provider>
   );

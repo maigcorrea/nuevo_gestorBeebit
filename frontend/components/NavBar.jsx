@@ -18,6 +18,7 @@ export default function Navbar() {
   const { userType } = useContext(UserContext);
   const { setUserType } = useContext(UserContext);
   const { profileImage } = useContext(UserContext); //La imagen se actualiza según el contexto
+  const { logout } = useContext(UserContext); //Para cerrar sesión
   
 
   const items = useMemo(() => [
@@ -52,13 +53,7 @@ export default function Navbar() {
       icon: 'pi pi-sign-out',
       command: () => {
         //Eliminar los datos de localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('type');
-        localStorage.removeItem('id');
-        localStorage.removeItem('profileImage');
-
-        //Actualizamos el contexto a tiempo real a null
-        setUserType(null);
+        logout();
         router.push('/login'); // redirigir al login
       },
     },
@@ -83,6 +78,8 @@ export default function Navbar() {
       />
     </>
   );
+
+  if (!userType) return null; // No mostrar Navbar si no hay sesión
 
   return (
     <Menubar
