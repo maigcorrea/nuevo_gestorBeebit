@@ -8,14 +8,14 @@ import { createContext, useState, useEffect } from 'react';
 export const UserContext = createContext({
   userType:null,
   setUserType:() => {} // Función vacía para evitar errores antes de que se defina de verdad (en el Provider)
-}); //Var que se exporta
+});
 
 
 // Creamos el Provider, que será el encargado de guardar el estado global del usuario.
 export const UserProvider = ({ children }) => {
     // Inicializamos el estado. De primeras es null, hasta que comprobemos si hay algo guardado en localStorage.
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
-    const [profileImage, setProfileImage] = useState(null);
+    const [profileImage, setProfileImage] = useState('');
 
   //Sólo se ejecuta una vez al cargar la página
   useEffect(() => {
@@ -28,7 +28,9 @@ export const UserProvider = ({ children }) => {
       setUserType(storedType);
     }
 
-    if (storedImage) setProfileImage(storedImage);
+    if (storedImage) {
+      setProfileImage(storedImage);
+    }
   }, []);
 
   return (
