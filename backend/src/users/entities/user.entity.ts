@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity() // Decorador para marcar la clase como entidad (Una tabla en la base de datos)
 export class User {
-  @PrimaryGeneratedColumn() // Decorador para indicar que esta propiedad es la clave primaria. id autoincremental(PK)
-  id: number;
+  @PrimaryGeneratedColumn('uuid') // Decorador para indicar que esta propiedad es la clave primaria. id autoincremental(PK)
+  id: string;
 
   @Column({ length: 100 }) // Decorador para una columna de la base de datos. Puedes limitar el tamaño del campo
   name: string;

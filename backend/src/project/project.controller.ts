@@ -8,6 +8,7 @@ import { Project } from './entities/project.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 
+
 @ApiTags('Projects')
 @Controller("projects")
 
@@ -30,6 +31,11 @@ export class ProjectController{
         }
     }
 
+    //Comprobar que el id recibido es un UUID válido
+    /*@Get(':id')
+        findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+        return this.projectService.findById(id);
+    }*/
 
     // Endpoint para obtener todos los proyectos. Este endpoint maneja GET en /projects/.
     @Get()
@@ -130,7 +136,7 @@ export class ProjectController{
     @ApiOperation({ summary: 'Eliminar proyecto por ID' })
     @ApiResponse({ status: 200, description: 'Proyecto eliminado' })
     @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
-    async deleteProject(@Param('id', ParseIntPipe) id: number) {
+    async deleteProject(@Param('id', ParseIntPipe) id: string) {
         return this.projectService.deleteProject(id); // conviertes el string a número
     }
 
@@ -141,7 +147,7 @@ export class ProjectController{
     @ApiOperation({ summary: 'Actualizar proyecto' })
     @ApiResponse({ status: 200, description: 'Proyecto actualizado con éxito' })
     @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
-    async updateProject(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateProjectDto) {
+    async updateProject(@Param('id', ParseIntPipe) id: string, @Body() updateDto: UpdateProjectDto) {
         return this.projectService.updateProject(id, updateDto); //Se parsea a string el id por ni viene en number
     }
 }

@@ -73,7 +73,7 @@ export class UsersService {
   }
 
   // Método para buscar un usuario concreto por su id.
-  async findOne(id: number): Promise<User | null> {
+  async findOne(id: string): Promise<User | null> {
     // Llama al método findOne() de TypeORM, pasando el criterio de búsqueda (where).
     // Devuelve el usuario encontrado o null si no existe.
     return this.usersRepository.findOne({ where: { id } });

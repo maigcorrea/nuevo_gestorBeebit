@@ -47,7 +47,7 @@ export class TaskStaffController{
     @ApiOperation({summary: "Obtener las tareas asignadas a un empleado concreto"})
     @ApiResponse({status:404, description:"Error"})
     @Get("por-usuario/:id")
-    getTasksByUser( @Param('id', ParseIntPipe)id:number):Promise<TaskByUserResponseDto[]>{
+    getTasksByUser( @Param('id')id:string):Promise<TaskByUserResponseDto[]>{
         return this.taskStaffService.getTasksByUser(id);
     }
 
@@ -60,7 +60,7 @@ export class TaskStaffController{
     @ApiResponse({ status: 200, description: 'Listado de proyectos', type: ProjectByUserResponseDto, isArray: true })
     @ApiResponse({ status: 404, description: 'No se encontraron tareas para este usuario' })
     getProjectsByUser(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id') id: string
     ): Promise<ProjectByUserResponseDto[]> {
         return this.taskStaffService.getProjectsByUser(id);
     }

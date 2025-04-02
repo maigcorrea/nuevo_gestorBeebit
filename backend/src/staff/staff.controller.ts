@@ -66,7 +66,7 @@ export class StaffController{
     @ApiOperation({ summary: 'Mostrar un empleado por ID' })
     @ApiResponse({ status: 200, description: 'Empleado encontrado', type: StaffResponseDto })
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async findById(@Param('id', ParseIntPipe) id: number) {
+    async findById(@Param('id', ParseIntPipe) id: string) {
     return this.staffService.findById(id);
     }
 
@@ -84,7 +84,7 @@ export class StaffController{
         },
       })
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async updateStaff(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateStaffDto) {
+    async updateStaff(@Param('id') id: string, @Body() updateDto: UpdateStaffDto) {
         return this.staffService.updateStaff(id, updateDto); //Se parsea a string el id por si viene en number
     }
 
@@ -99,7 +99,7 @@ export class StaffController{
           example: { message: 'Empleado actualizado con éxito' },
         },})
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async deleteStaff(@Param('id', ParseIntPipe) id: number) {
+    async deleteStaff(@Param('id') id: string) {
         return this.staffService.deleteStaff(id); // conviertes el string a número
     }
 
@@ -143,7 +143,7 @@ export class StaffController{
       @ApiParam({ name: 'id', required: true, type: Number })
       @ApiBody({ type: ChangePasswordDto })
       async changePassword(
-      @Param('id', ParseIntPipe) id: number,
+      @Param('id') id: string,
       @Body() body: ChangePasswordDto,
       ) {
       const success = await this.staffService.changePassword(id, body.password);

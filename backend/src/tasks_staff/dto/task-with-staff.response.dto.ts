@@ -8,7 +8,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TaskWithStaffResponseDto {
     @ApiProperty({ example: 3 })
-    taskId: number;
+    taskId: string;
 
     //Este dato será extraído de task.title cuando mapees los resultados desde la base de datos.
     @ApiProperty({ example: 'Comprobar login de usuarios' })
@@ -23,5 +23,5 @@ export class TaskWithStaffResponseDto {
         { id: 8, name: 'Carlos Pérez' }
     ],
     })
-    staff: { id: number; name: string }[];
+    staff: { id: string; name: string }[];
 }

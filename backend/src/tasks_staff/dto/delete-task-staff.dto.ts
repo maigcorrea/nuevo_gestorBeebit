@@ -1,14 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, Min } from 'class-validator';
+import { IsInt, Min, IsUUID } from 'class-validator';
 
 export class DeleteTaskStaffDto {
   @ApiProperty({ example: 3 })
-  @IsInt()
-  @Min(1)
-  id_task: number;
+  @IsUUID()
+  id_task: string;
 
   @ApiProperty({ example: 7 })
-  @IsInt()
-  @Min(1)
-  id_staff: number;
+  @IsUUID()
+  id_staff: string;
 }

@@ -1,28 +1,24 @@
 //PARA QUE LAS RELACIONES ENTRE TAREAS Y EMPLEADOS SE MODIFIQUEN (Cambiar el empleado asignado a una tarea o reasignar la tarea a otro empleado)
 //Usar PATCH con campos opcionales porque: Puedes cambiar solo el id_staff, olo el id_task o ambos
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, Min } from 'class-validator';
+import { IsInt, IsOptional, Min, IsUUID } from 'class-validator';
 
 export class UpdateTaskStaffDto {
   @ApiProperty({ example: 3 })
-  @IsInt()
-  @Min(1)
-  old_task_id: number;
+  @IsUUID()
+  old_task_id: string;
 
   @ApiProperty({ example: 2 })
-  @IsInt()
-  @Min(1)
-  old_staff_id: number;
+  @IsUUID()
+  old_staff_id: string;
 
   @ApiProperty({ example: 5, required: false })
   @IsOptional()
-  @IsInt()
-  @Min(1)
-  new_task_id: number;
+  @IsUUID()
+  new_task_id: string;
 
   @ApiProperty({ example: 7, required: false })
   @IsOptional()
-  @IsInt()
-  @Min(1)
-  new_staff_id: number;
+  @IsUUID()
+  new_staff_id: string;
 }

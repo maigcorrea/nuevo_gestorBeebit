@@ -105,7 +105,7 @@ export class TaskStaffService {
     });
   
     //Crear un Map para agrupar los nombres por cada taskTitle.
-    const mapa = new Map<number, { taskTitle: string, staff: { id: number, name: string }[] }>(); // título → array de empleados
+    const mapa = new Map<string, { taskTitle: string, staff: { id: string, name: string }[] }>(); // título → array de empleados
   
     //Iteras sobre cada relación y extraes: taskTitle y staffName del empleado
     for (const rel of relaciones) {
@@ -142,7 +142,7 @@ export class TaskStaffService {
 
 
   //Obtener las tareas de un usuario determinado
-  async getTasksByUser(id:number): Promise <TaskByUserResponseDto[]>{
+  async getTasksByUser(id:string): Promise <TaskByUserResponseDto[]>{
     const tasks = await this.taskStaffRepo.find({ 
       where: {
         staff:{id} // Busca relaciones donde el staff tenga ese ID
@@ -173,7 +173,7 @@ export class TaskStaffService {
 
 
   //Obtener los proyectos de un usuario determinado
-  async getProjectsByUser(id:number): Promise<ProjectByUserResponseDto[]>{
+  async getProjectsByUser(id:string): Promise<ProjectByUserResponseDto[]>{
 
     //Busca en la tabla intermedia task_staff todas las asignaciones donde el staff.id coincida con el que pasamos.
     const tasks= await this.taskStaffRepo.find({
@@ -186,7 +186,7 @@ export class TaskStaffService {
     }
 
     //Map para evitar proyectos duplicados, la clave es el id del proyecto y el valor el dto que vamos a devolver. Así, si una tarea y otra comparten el mismo proyecto, no lo añadimos dos veces
-    const projectsMap= new Map<number, ProjectByUserResponseDto>();
+    const projectsMap= new Map<string, ProjectByUserResponseDto>();
 
     //Iteramos sobre cada relación tarea-empleado (cada fila de task_staff)
     for(const rel of tasks){

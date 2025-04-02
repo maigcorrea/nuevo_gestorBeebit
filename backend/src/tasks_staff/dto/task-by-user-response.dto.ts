@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TaskByUserResponseDto {
   @ApiProperty({ example: 1, description: 'ID de la tarea' })
-  id: number;
+  id: string;
 
   @ApiProperty({ example: 'Redactar informe mensual' })
   title: string;
@@ -33,7 +33,7 @@ export class TaskByUserResponseDto {
     description: 'Proyecto al que está asociada esta tarea',
   })
   associated_project: {
-    id: number;
+    id: string;
     name: string;
   };
 }

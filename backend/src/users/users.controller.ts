@@ -64,7 +64,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
   @ApiResponse({ status: 200, description: 'Usuario encontrado', type: User })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async findOne(@Param('id', ParseIntPipe) id: number) { // <--- Cambia el tipo a string
+  async findOne(@Param('id') id: string) {
     const user = await this.usersService.findOne(id);
     if (!user) {
       //throw new Error('Usuario no encontrado');

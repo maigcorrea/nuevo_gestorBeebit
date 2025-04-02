@@ -13,6 +13,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
+import { ParseUUIDPipe } from '@nestjs/common';
 
 
 @ApiTags('Tasks')
@@ -54,7 +55,7 @@ export class TaskController{
     @ApiOperation({summary:"Obtener tareas para un proyecto determinado"})
     @ApiResponse({ status: 201, description: 'Lista de tareas', type: Task})
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
-    async findByProject(@Param('id_proyecto', ParseIntPipe) id_proyecto: number): Promise<Task[]> {
+    async findByProject(@Param('id_proyecto', new ParseUUIDPipe()) id_proyecto: string): Promise<Task[]> {
         const tasks = await this.taskService.findByProject(id_proyecto);
         //if (!tasks.length) {
             //throw new NotFoundException('No se encontraron tareas asociadas al proyecto');
@@ -70,8 +71,8 @@ export class TaskController{
     @ApiOperation({summary:"Actualizar una tarea determinada"})
     @ApiResponse({ status: 201, description: 'Tarea actualizada con éxito', type: Task})
     @ApiResponse({ status: 400, description: 'Proyecto no encontrado' })
-    async updateTask(@Param('id_tarea', ParseIntPipe) id: number, @Body() updateDto: UpdateTaskDto) {
-        return this.taskService.updateTask(id, updateDto); //Se parsea a string el id por si viene en number
+    async updateTask(@Param('id_tarea', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateTaskDto) {
+        return this.taskService.updateTask(id, updateDto);
     }
 
 
@@ -79,10 +80,10 @@ export class TaskController{
     @Patch(':id/status')
     @ApiOperation({summary:"Actualizar el estado de una tarea determinada"})
     updateStatus(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() dto: UpdateTaskStatusDto,
     ) {
-    return this.taskService.updateTaskStatus(+id, dto);
+    return this.taskService.updateTaskStatus(id, dto);
     }
 
 
@@ -91,8 +92,8 @@ export class TaskController{
     @ApiOperation({summary:"Borrar una tarea determinada"})
     @ApiResponse({ status: 201, description: 'Tarea eliminada con éxito'})
     @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
-    async deleteTask(@Param('id_tarea', ParseIntPipe) id: number) {
-        return this.taskService.deleteTask(id); // conviertes el string a número
+    async deleteTask(@Param('id_tarea', new ParseUUIDPipe()) id: string) {
+        return this.taskService.deleteTask(id);
     }
 
 
@@ -102,7 +103,7 @@ export class TaskController{
     @ApiResponse({ status: 201, description: 'Tarea modificada con éxito'})
     @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
     updateStatusAndPriority(
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateTaskStatusPriorityDto,
     ) {
         return this.taskService.updateStatusAndPriority(id, dto.status, dto.priority);

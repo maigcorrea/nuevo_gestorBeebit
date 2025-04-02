@@ -5,7 +5,7 @@ export class TaskResponseDto{
     @ApiProperty({
         description:"ID de la tarea", example:1,
     })
-    id:number;
+    id:string;
 
 
     @ApiProperty({

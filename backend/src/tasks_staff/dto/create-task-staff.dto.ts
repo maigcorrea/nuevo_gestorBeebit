@@ -1,6 +1,6 @@
 //PARA ASIGNAR PERSONAS A UNA TAREA
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, Min, IsArray, ArrayNotEmpty } from 'class-validator';
+import { IsInt, Min, IsArray, ArrayNotEmpty, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateTaskStaffDto {
@@ -8,9 +8,8 @@ export class CreateTaskStaffDto {
     description: 'ID de la tarea a la que se asigna el empleado',
     example: 3,
   })
-  @IsInt({ message: 'El ID de la tarea debe ser un número entero' })
-  @Min(1, { message: 'El ID de la tarea debe ser mayor que 0' })
-  id_task: number;
+  @IsUUID()
+  id_task: string;
 
 
 
@@ -22,8 +21,7 @@ export class CreateTaskStaffDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  @Type(() => Number)
-  @IsInt({ each: true , message: 'El ID del empleado debe ser un número entero' })
-  @Min(1, { each: true, message: 'El ID del empleado debe ser mayor que 0' })
-  id_staff: number[]; //Array de ids
+  @Type(() => String)
+  @IsUUID("all", { each: true })
+  id_staff: string[]; //Array de ids
 }

@@ -6,7 +6,7 @@ export class ProjectResponseDto{
     @ApiProperty({
         description:"ID del proyecto", example:1,
     })
-    id:number;
+    id:string;
 
 
     @ApiProperty({

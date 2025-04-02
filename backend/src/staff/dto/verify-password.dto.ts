@@ -1,8 +1,8 @@
-import { IsNumber, IsString, Length, Matches, IsNotEmpty } from 'class-validator';
+import { IsNumber, IsString, Length, Matches, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class VerifyPasswordDto {
-  @IsNumber()
-  userId: number;
+  @IsUUID()
+  userId: string;
 
   @IsString()
   @IsNotEmpty()

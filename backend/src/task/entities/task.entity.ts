@@ -16,8 +16,8 @@ export enum TaskPriority {
  
  @Entity()
  export class Task{
-    @PrimaryGeneratedColumn()
-    id:number;
+    @PrimaryGeneratedColumn('uuid')
+    id:string;
 
     @Column({length: 100})
     title:string;

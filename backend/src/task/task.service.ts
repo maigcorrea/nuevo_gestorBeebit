@@ -42,7 +42,7 @@ export class TaskService{
 
 
     //Método para mostrar todas las tareas de un proyecto en concreto
-    async findByProject(projectId:number):Promise<Task[]>{
+    async findByProject(projectId:string):Promise<Task[]>{
         const tasks = await this.taskRepository.find({
             where:{ associated_project: { id: projectId }},
             //relations: ['associated_project'], // opcional: para incluir los datos del proyecto si los necesitas. Esto hace que se cargue el proyecto junto con la tarea
@@ -57,7 +57,7 @@ export class TaskService{
 
 
     //Método para actualizar una tarea en concreto
-    async updateTask(id: number, updateDto: UpdateTaskDto): Promise<{ message: string }> {
+    async updateTask(id: string, updateDto: UpdateTaskDto): Promise<{ message: string }> {
         const task = await this.taskRepository.findOneBy({ id });
       
         if (!task) {
@@ -96,7 +96,7 @@ export class TaskService{
 
 
       //Método para actualizar SOLO EL ESTADO de una tarea en concreto
-      async updateTaskStatus(id: number, dto: UpdateTaskStatusDto): Promise<{ message: string }> {
+      async updateTaskStatus(id: string, dto: UpdateTaskStatusDto): Promise<{ message: string }> {
         const task = await this.taskRepository.findOneBy({ id });
       
         if (!task) {
@@ -121,7 +121,7 @@ export class TaskService{
 
 
       //Método para borrar una tarea en concreto
-      async deleteTask(id:number):Promise<{message:string}>{
+      async deleteTask(id:string):Promise<{message:string}>{
         const result = await this.taskRepository.delete(id);
       
         if (result.affected === 0) {
@@ -133,7 +133,7 @@ export class TaskService{
 
 
       //Método para editar y actualizar el estado y prioridad de una tarea en concreto
-      async updateStatusAndPriority(id: number, status: TaskStatus, priority: TaskPriority) {
+      async updateStatusAndPriority(id: string, status: TaskStatus, priority: TaskPriority) {
         const task = await this.taskRepository.findOneBy({ id });
         if (!task) throw new NotFoundException('Tarea no encontrada');
 

@@ -11,8 +11,8 @@ export enum ProjectStatus {
  
  @Entity()
  export class Project{
-    @PrimaryGeneratedColumn()
-    id:number;
+    @PrimaryGeneratedColumn('uuid')
+    id:string;
 
     @Column({length: 100})
     title:string;

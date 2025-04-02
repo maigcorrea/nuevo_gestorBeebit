@@ -4,7 +4,7 @@ export class UserResponseDto{
     @ApiProperty({
         description: 'ID del usuario', example:1
     })
-    id:number;
+    id:string;
 
     @ApiProperty({
         description: 'Nombre del usuario', example:'Juan Pérez'

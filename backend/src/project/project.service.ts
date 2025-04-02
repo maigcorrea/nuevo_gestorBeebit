@@ -96,7 +96,7 @@ import { Injectable } from '@nestjs/common';
 
 
     //Método para borrar un proyecto según su id. Si no quiero que me devuelva nada, en la promesa poner void
-    async deleteProject(id: number): Promise<{message: string }> {
+    async deleteProject(id: string): Promise<{message: string }> {
         const result = await this.projectRepository.delete(id);
       
         if (result.affected === 0) {
@@ -109,7 +109,7 @@ import { Injectable } from '@nestjs/common';
 
 
     //Método para actualizar un proyecto según su id, cambiándole el titulo, descripción, fecha de inicio, deadline y estado. Dejando la última actualización last_update tal cómo estaba
-    async updateProject(id: number, updateDto: UpdateProjectDto): Promise<{message: string}>{ //Se le pasa un objeto por parámetro con  los posibles campos opcionales que puede actualizar
+    async updateProject(id: string, updateDto: UpdateProjectDto): Promise<{message: string}>{ //Se le pasa un objeto por parámetro con  los posibles campos opcionales que puede actualizar
         const project = await this.projectRepository.findOneBy({ id });
       
         if (!project) {

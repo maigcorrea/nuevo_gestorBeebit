@@ -3,7 +3,7 @@ import { ProjectStatus } from 'src/project/entities/project.entity';
 
 export class ProjectByUserResponseDto{
     @ApiProperty({ example: 1, description: 'ID del proyecto' })
-    id: number;
+    id: string;
   
     @ApiProperty({ example: 'Título del proyecto' })
     title: string;

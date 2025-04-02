@@ -75,7 +75,7 @@ export class StaffService {
     
 
     //Método para mostrar los datos del empleado en base a un id
-    async findById(id_staff:number):Promise<Staff>{
+    async findById(id_staff:string):Promise<Staff>{
         const staff = await this.staffRepository.findOneBy({ id: id_staff });
 
         if (!staff) {
@@ -96,7 +96,7 @@ export class StaffService {
 
 
     //Método para actualizar la información de un empleado
-    async updateStaff(id: number, updateDto: UpdateStaffDto):Promise<{message:string}>{
+    async updateStaff(id: string, updateDto: UpdateStaffDto):Promise<{message:string}>{
         const staff = await this.staffRepository.findOneBy({ id });
               
         if (!staff) {
@@ -128,7 +128,7 @@ export class StaffService {
 
 
     //Método para borrar un empleado
-    async deleteStaff(id: number): Promise<{message: string }> {
+    async deleteStaff(id: string): Promise<{message: string }> {
         const result = await this.staffRepository.delete(id);
       
         if (result.affected === 0) {
@@ -165,7 +165,7 @@ export class StaffService {
 
 
      //Método para verificar si una contraseña es correcta (Al modificar la contraseña, paso de verificación)
-     async verifyPassword(userId: number, plainPassword: string): Promise<boolean> {
+     async verifyPassword(userId: string, plainPassword: string): Promise<boolean> {
         const user = await this.staffRepository.findOne({
             where: { id: userId },
             select: ['id', 'password'], // <-- Aquí aseguras que venga la contraseña
@@ -179,7 +179,7 @@ export class StaffService {
     }
 
      //Método para cambiar nueva contraseña
-     async changePassword(userId: number, newPassword: string): Promise<boolean> {
+     async changePassword(userId: string, newPassword: string): Promise<boolean> {
         const user = await this.staffRepository.findOne({ where: { id: userId } });
         if (!user) return false;
       
@@ -238,7 +238,7 @@ export class StaffService {
 
 
     //Guardar la imagen del usuario en la bd
-    async saveProfileImage(userId: number, imageUrl: string): Promise<void> {
+    async saveProfileImage(userId: string, imageUrl: string): Promise<void> {
         const user = await this.staffRepository.findOneBy({ id: userId });
         if (!user) throw new NotFoundException('Usuario no encontrado');
       

@@ -28,7 +28,7 @@ export class CreateTaskDto{
         description:"id del proyecto al que está asociada la tarea",
         example:1
     })
-    associated_project:number;
+    associated_project:string;
 
 
     @IsOptional()

@@ -5,7 +5,7 @@ export class StaffResponseDto{
     @ApiProperty({
         description: 'ID del empleado', example:1
     })
-    id:number;
+    id:string;
 
     @ApiProperty({
         description: 'Nombre del empleado', example:'Juan Pérez'
