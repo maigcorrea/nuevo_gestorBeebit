@@ -11,7 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
     TypeOrmModule.forFeature([Staff]),
     JwtModule.register({
       secret: 'mi_clave_secreta',
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '1d' }, //Duración del token
     }),
   ],
   providers: [AuthService, JwtStrategy],
