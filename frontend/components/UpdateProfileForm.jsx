@@ -1,11 +1,12 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { Inplace, InplaceDisplay, InplaceContent } from 'primereact/inplace';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import UpdatePassword from './UpdatePassword';
+import { UserContext } from '@/app/context/UserContext';
 
 const UpdateProfileForm = () => {
     const router = useRouter();
@@ -21,9 +22,14 @@ const UpdateProfileForm = () => {
     const [successMessage, setSuccessMessage] = useState("");
 
     //Imagen
-    const [profileImage, setProfileImage] = useState(null);
+    const [profileImage, setProfileImage] = useState(null); // archivo seleccionado
+    const { setProfileImage: setProfileImageUrlContext } = useContext(UserContext); // desde contexto
     const [uploadMessage, setUploadMessage] = useState("");
     const [profileImageUrl, setProfileImageUrl] = useState(null);
+
+
+    //Para hacer fectch de nuevo y aplicar el cambio de la imágen visualmente
+    const [refreshData, setRefreshData] = useState(false);
 
 
     //Spinner de carga
@@ -49,10 +55,11 @@ const UpdateProfileForm = () => {
             setRegisterDate(new Date(data.register_date).toLocaleDateString());
             setEmail(data.email);
             setOriginalEmail(data.email);
+            setProfileImageUrl(prev => prev || data.profileImageUrl);
         };
       
         fetchProfile();
-    }, [])
+    }, [refreshData])
 
 
     const handleUpdate = async () => {
@@ -122,33 +129,43 @@ const UpdateProfileForm = () => {
 
     const handleUploadImage = async () => {
         if (!profileImage) return;
-      
+        
         const token = localStorage.getItem("token");
         const formData = new FormData();
         formData.append("file", profileImage);
-      
+        
         try {
-          const res = await fetch("http://localhost:3000/staff/upload-profile-picture", {
+            const res = await fetch("http://localhost:3000/staff/upload-profile-picture", {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
             body: formData,
-          });
-      
-          const data = await res.json();
-      
-          if (res.ok) {
+            });
+        
+            const data = await res.json();
+        
+            if (res.ok) {
             console.log(data.url);
             setProfileImageUrl(data.url); //Mostrar la imagen
+            setProfileImageUrlContext(data.url);
+            localStorage.setItem('profileImage', data.url);
+            
+
             setUploadMessage("✅ Imagen subida correctamente: " + data.filename);
-          } else {
+
+                // Esto dispara de nuevo el useEffect
+            setRefreshData(prev => !prev);
+    
+            
+            } else {
             setUploadMessage("❌ Error al subir la imagen: " + (data.message || "Error desconocido"));
-          }
+            }
         } catch (err) {
-          setUploadMessage("❌ Error al conectar con el servidor");
+            setUploadMessage("❌ Error al conectar con el servidor");
         }
     };
+    
     
   return (
     <>

@@ -17,9 +17,8 @@ export default function Navbar() {
   const router = useRouter();
   const { userType } = useContext(UserContext);
   const { setUserType } = useContext(UserContext);
+  const { profileImage } = useContext(UserContext); //La imagen se actualiza según el contexto
   
-  //Para la foto de perfil
-  const profileImage = localStorage.getItem('profileImage');
 
   const items = useMemo(() => [
     {

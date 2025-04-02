@@ -44,7 +44,7 @@ const priorityTaskTypes = [
     const fetchProjects = async () => {
       const res = await fetch('http://localhost:3000/projects');
       const data = await res.json();
-      setProjects(data);
+      setProjects(Array.isArray(data) ? data : []);
     };
 
 
@@ -52,7 +52,7 @@ const priorityTaskTypes = [
     const fetchTasks = async () => {
       const res = await fetch('http://localhost:3000/tasks');
       const data = await res.json();
-      setTasks(data);
+      setTasks(Array.isArray(data) ? data : []);
     };
 
     fetchProjects();
@@ -193,7 +193,7 @@ const priorityTaskTypes = [
     <>
         <TabView>
             <TabPanel header="Proyectos">
-                <DataTable value={projects} paginator rows={5} stripedRows responsiveLayout="scroll">
+                <DataTable value={projects} paginator rows={5} stripedRows  emptyMessage="No hay proyectos disponibles" responsiveLayout="scroll">
                     <Column field="id" header="ID" />
                     <Column field="title" header="Título" sortable/>
                     <Column field="description" header="Descripción" />
@@ -210,7 +210,7 @@ const priorityTaskTypes = [
                 </DataTable>
             </TabPanel>
             <TabPanel header="Tareas">
-                <DataTable value={tasks} paginator rows={4} stripedRows responsiveLayout="scroll">
+                <DataTable value={tasks} paginator rows={4} stripedRows  emptyMessage="No hay tareas disponibles" responsiveLayout="scroll">
                     <Column field="id" header="ID" />
                     <Column field="title" header="Título" sortable />
                     <Column field="description" header="Descripción" />

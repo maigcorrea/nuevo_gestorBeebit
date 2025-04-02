@@ -15,21 +15,25 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
     // Inicializamos el estado. De primeras es null, hasta que comprobemos si hay algo guardado en localStorage.
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
+    const [profileImage, setProfileImage] = useState(null);
 
   //Sólo se ejecuta una vez al cargar la página
   useEffect(() => {
     // Busca el tipo de usuario en el localStorage (Se guarda ahí tras iniciar sesión en el LoginForm)
     const storedType = localStorage.getItem('type');
+    const storedImage = localStorage.getItem('profileImage');
 
     // Si lo encuentra, lo actualiza en el estado 
     if (storedType) {
       setUserType(storedType);
     }
+
+    if (storedImage) setProfileImage(storedImage);
   }, []);
 
   return (
     // Envolvemos a toda la app (o una parte de ella) en un Provider que comparte ese estado a todos los componentes hijos. 
-    <UserContext.Provider value={{ userType, setUserType }}>
+    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage }}>
       {children}
     </UserContext.Provider>
   );

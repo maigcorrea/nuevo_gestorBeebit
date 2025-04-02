@@ -23,7 +23,7 @@ const LoginForm = () => {
   /*
     Cuando el usuario inicia sesión, guardas el tipo en el localStorage, pero React no sabe que lo guardaste, porque localStorage no tiene forma de notificar a React que algo cambió.
   */
-  const { setUserType } = useContext(UserContext);//Extraer el valor del tipo en el contexto
+  const { setUserType, setProfileImage } = useContext(UserContext);//Extraer el valor del tipo en el contexto
 
   const handleLogin = async () => {
     try {
@@ -47,6 +47,7 @@ const LoginForm = () => {
       localStorage.setItem('profileImage', data.user.profileImage || '');
 
       setUserType(data.user.type); //ACTUALIZA el contexto del tipo en tiempo real
+      setProfileImage(data.user.profileImage || '');//Actualiza el contexto de la imagen
 
       //Redirigimos al dashboard o página principal
       router.push('/');
