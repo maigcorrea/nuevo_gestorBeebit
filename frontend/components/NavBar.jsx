@@ -55,6 +55,7 @@ export default function Navbar() {
         localStorage.removeItem('token');
         localStorage.removeItem('type');
         localStorage.removeItem('id');
+        localStorage.removeItem('profileImage');
 
         //Actualizamos el contexto a tiempo real a null
         setUserType(null);
