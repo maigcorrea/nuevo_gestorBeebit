@@ -109,10 +109,25 @@ const AddTaskForm = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        /*if (await checkTitleExists(title)) {
-            setTitleError('Ya existe un proyecto con ese nombre');
+        //Validaciones
+        const errors = {};
+
+        if (!priority) {
+            errors.priority = "La prioridad es obligatoria";
+        }
+    
+        if (staff.length === 0) {
+            errors.staff = "Debes asignar al menos un empleado";
+        }
+    
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             return;
-        }*/
+        }
+    
+        // Si no hay errores, limpiamos posibles errores anteriores
+        setFieldErrors({});
+
 
 
 
@@ -214,9 +229,10 @@ const AddTaskForm = () => {
 
                     <label htmlFor="type" className="block text-900 font-medium mb-2">Prioridad</label>                    
                     <ListBox value={priority} onChange={(e) => setPriority(e.value)} options={priorityTypes} optionLabel="name" className="w-full md:w-14rem text-white" placeholder="Selecciona un tipo" required />
-                
+                    {fieldErrors.priority && (<p className="text-red-500 text-sm mt-1">{fieldErrors.priority}</p>)}
 
-                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className="mt-6 mb-6" multiple />
+                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className="mt-6 mb-6" multiple required />
+                    {fieldErrors.staff && (<p className="text-red-500 text-sm mt-1">{fieldErrors.staff}</p>)}
         
                     {//Mensaje de error
                     }
