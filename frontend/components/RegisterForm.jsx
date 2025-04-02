@@ -7,6 +7,8 @@ import { InputText } from 'primereact/inputtext';
 import { FloatLabel } from 'primereact/floatlabel';
 import { ListBox } from 'primereact/listbox';
 import { Toast } from 'primereact/toast';
+import { UserContext } from '@/app/context/UserContext';
+import { useContext } from 'react';
 
 const RegisterForm = () => {
 
@@ -23,6 +25,8 @@ const RegisterForm = () => {
         { name: 'Usuario', code: 'user' },
         { name: 'Administrador', code: 'admin' }
     ];
+
+    const { token } = useContext(UserContext); //Pillar el token del contexto
 
 
     //ERRORES
@@ -97,9 +101,11 @@ const RegisterForm = () => {
         });
 
         try {
+            console.log("TOKEN:", token);
+
           const res = await fetch('http://localhost:3000/staff', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ name, phone, email, type: type?.code, password })
           });
     

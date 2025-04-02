@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Put, Patch, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
@@ -9,6 +9,10 @@ import { Task } from './entities/task.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateTaskStatusPriorityDto } from './dto/update-task-status-priority.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 
 
 @ApiTags('Tasks')
@@ -32,9 +36,9 @@ export class TaskController{
     //ENdpoint para obtener todas las tareas
     @Get()
     
-    @ApiOperation({summary:"Listar todos los proyectos"})
-    @ApiResponse({ status: 200, description: 'Listado de proyectos', type: [Task] })
-    @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
+    @ApiOperation({summary:"Listar todas las tareas"})
+    @ApiResponse({ status: 200, description: 'Listado de tareas', type: [Task] })
+    @ApiResponse({ status: 404, description: 'No se encontraron tareas' })
     async findAll(): Promise<Task[]> {
         const projects = await this.taskService.findAll();
         

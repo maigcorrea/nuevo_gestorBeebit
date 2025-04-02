@@ -27,6 +27,9 @@ export class StaffController{
         private readonly minioService: MinioService
     ) {}
 
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles('admin')
+    @ApiBearerAuth('jwt')
     @Post()
 
     @ApiOperation({summary:"Introducir empleado en el sistema"})
@@ -42,7 +45,7 @@ export class StaffController{
 
 
     //Endpoint para mostrar todos los usuarios de la base de datos.
-   // @UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
+    //@UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
     //@Roles('admin')
     //@ApiBearerAuth('jwt') // <- ¡Este es el importante!
     @Get("/all")
@@ -58,6 +61,7 @@ export class StaffController{
 
 
     // Mostrar un empleado por ID
+    @UseGuards(AuthGuard('jwt')) //No se protege por rol
     @Get(':id')
     @ApiOperation({ summary: 'Mostrar un empleado por ID' })
     @ApiResponse({ status: 200, description: 'Empleado encontrado', type: StaffResponseDto })
@@ -69,6 +73,7 @@ export class StaffController{
 
 
     //Endpoint para actualizar la información de un empleado en concreto
+    @UseGuards(AuthGuard('jwt')) //No rol
     @Put("/update/:id")
     @ApiOperation({summary:"Actualizar una empleado determinado"})
     @ApiResponse({

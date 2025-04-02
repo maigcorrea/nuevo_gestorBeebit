@@ -20,6 +20,7 @@ export const UserProvider = ({ children }) => {
   
     // Inicializamos el estado. De primeras es null, hasta que comprobemos si hay algo guardado en localStorage.
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
+    const [token, setToken] = useState('');
     const [profileImage, setProfileImage] = useState('');
     const logout = () => {
       localStorage.clear();
@@ -33,6 +34,7 @@ export const UserProvider = ({ children }) => {
     // Busca el tipo de usuario en el localStorage (Se guarda ahí tras iniciar sesión en el LoginForm)
     const storedType = localStorage.getItem('type');
     const storedImage = localStorage.getItem('profileImage');
+    const storedToken = localStorage.getItem('token');
 
     // Si lo encuentra, lo actualiza en el estado 
     if (storedType) {
@@ -43,12 +45,16 @@ export const UserProvider = ({ children }) => {
       setProfileImage(storedImage);
     }
 
+    if (storedToken) {
+      setToken(storedToken);
+    }
+
     setIsLoading(false); //Ya se ha cargado el contexto
   }, []);
 
   return (
     // Envolvemos a toda la app (o una parte de ella) en un Provider que comparte ese estado a todos los componentes hijos. 
-    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage, logout, isLoading }}>
+    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage, logout, isLoading, token, setToken }}>
       {children}
     </UserContext.Provider>
   );

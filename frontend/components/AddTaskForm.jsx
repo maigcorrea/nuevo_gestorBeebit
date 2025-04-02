@@ -9,6 +9,8 @@ import { ListBox } from 'primereact/listbox';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
+import { UserContext } from '@/app/context/UserContext';
+import { useContext } from 'react';
 
 const AddTaskForm = () => {
 
@@ -28,6 +30,8 @@ const AddTaskForm = () => {
     const [staffList, setStaffList] = useState([]);
     const [error, setError] = useState('');
     const toast = useRef(null);
+
+    const { token } = useContext(UserContext); //Pillar el token del contexto
 
 
     //ERRORES
@@ -147,7 +151,7 @@ const AddTaskForm = () => {
             //Insertar tarea
           const res = await fetch('http://localhost:3000/tasks', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(body)
         });
     
