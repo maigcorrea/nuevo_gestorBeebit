@@ -11,8 +11,13 @@ export const UserContext = createContext({
 });
 
 
+
+
 // Creamos el Provider, que será el encargado de guardar el estado global del usuario.
 export const UserProvider = ({ children }) => {
+  //Hay veces que los datos tardarán un poco en extraerse, para que otra función que requiera del contexto no se ejecute antes de tenerlo, se indica si está cargando
+  const [isLoading, setIsLoading] = useState(true);
+  
     // Inicializamos el estado. De primeras es null, hasta que comprobemos si hay algo guardado en localStorage.
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
     const [profileImage, setProfileImage] = useState('');
@@ -37,11 +42,13 @@ export const UserProvider = ({ children }) => {
     if (storedImage) {
       setProfileImage(storedImage);
     }
+
+    setIsLoading(false); //Ya se ha cargado el contexto
   }, []);
 
   return (
     // Envolvemos a toda la app (o una parte de ella) en un Provider que comparte ese estado a todos los componentes hijos. 
-    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage, logout }}>
+    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage, logout, isLoading }}>
       {children}
     </UserContext.Provider>
   );

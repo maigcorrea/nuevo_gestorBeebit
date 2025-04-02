@@ -5,7 +5,7 @@ import React from 'react'
 const page = () => {
   return (
     <>
-      <ProtectRoutes>
+      <ProtectRoutes requiredRole={"admin"}>
         <h1>Nuevo Proyecto</h1>
         <AddProjectForm></AddProjectForm>
       </ProtectRoutes>
