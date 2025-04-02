@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useContext } from 'react';
 
-const ProtectRoutes = () => {
+const ProtectRoutes = ({children}) => {
     const router = useRouter();
     const { userType } = useContext(UserContext);
 
@@ -15,16 +15,13 @@ const ProtectRoutes = () => {
 
         if(!token){
             router.push('/login');
-        }else if (userType !== "admin"){
-            router.push('/permission');
         }
 
     }, [router])
     
   return (
     <>
-        
-        
+        {children}
     </>
   )
 }
