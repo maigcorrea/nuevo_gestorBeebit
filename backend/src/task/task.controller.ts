@@ -8,6 +8,7 @@ import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { Task } from './entities/task.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateTaskStatusPriorityDto } from './dto/update-task-status-priority.dto';
 
 
 @ApiTags('Tasks')
@@ -90,5 +91,17 @@ export class TaskController{
         return this.taskService.deleteTask(id); // conviertes el string a número
     }
 
+
+    //Endpoint para editar y actualizar el estado y prioridad de una tarea en concreto
+    @Patch(':id/update-status-priority')
+    @ApiOperation({summary:"Actualizar el estado y prioridad para una tarea"})
+    @ApiResponse({ status: 201, description: 'Tarea modificada con éxito'})
+    @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
+    updateStatusAndPriority(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() dto: UpdateTaskStatusPriorityDto,
+    ) {
+        return this.taskService.updateStatusAndPriority(id, dto.status, dto.priority);
+    }
 
 }

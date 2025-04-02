@@ -132,5 +132,24 @@ export class TaskService{
       }
 
 
+      //Método para editar y actualizar el estado y prioridad de una tarea en concreto
+      async updateStatusAndPriority(id: number, status: TaskStatus, priority: TaskPriority) {
+        const task = await this.taskRepository.findOneBy({ id });
+        if (!task) throw new NotFoundException('Tarea no encontrada');
+
+        if (!Object.values(TaskStatus).includes(status)) {
+          throw new BadRequestException('Estado no válido');
+        }
+
+        if (!Object.values(TaskPriority).includes(priority)) {
+          throw new BadRequestException('Prioridad no válida');
+        }
+
+        task.status = status;
+        task.priority = priority;
+      
+        return await this.taskRepository.save(task);
+      }
+
 
 }
