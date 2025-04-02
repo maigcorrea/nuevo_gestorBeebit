@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold">Bienvenido al Dashboarddccddddddfffffdd</h1>
+      <h1 className="text-2xl font-bold">Bienvenido al Dashboard</h1>
       {/* Aquí iría el contenido solo si hay sesión */}
       <TasksTab></TasksTab>
       <ProjectTab></ProjectTab>
