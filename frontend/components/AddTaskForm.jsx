@@ -228,10 +228,10 @@ const AddTaskForm = () => {
                     <Dropdown value={associated_project} onChange={(e) => setAssociatedProject(e.value)} options={projectOptions} placeholder="Seleciona un proyecto"  className="w-full md:w-14rem" filter showClear />
 
                     <label htmlFor="type" className="block text-900 font-medium mb-2">Prioridad</label>                    
-                    <ListBox value={priority} onChange={(e) => setPriority(e.value)} options={priorityTypes} optionLabel="name" className="w-full md:w-14rem text-white" placeholder="Selecciona un tipo" required />
+                    <ListBox value={priority} onChange={(e) => setPriority(e.value)} options={priorityTypes} optionLabel="name" className={`w-full md:w-14rem ${fieldErrors.priority ? 'p-invalid' : ''} `} placeholder="Selecciona un tipo" required />
                     {fieldErrors.priority && (<p className="text-red-500 text-sm mt-1">{fieldErrors.priority}</p>)}
 
-                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className="mt-6 mb-6" multiple required />
+                    <SelectButton value={staff} onChange={(e) => setStaff(e.value)} options={staffOptions} className={`mt-6 mb-6 ${fieldErrors.priority ? 'p-invalid' : ''} `} multiple required />
                     {fieldErrors.staff && (<p className="text-red-500 text-sm mt-1">{fieldErrors.staff}</p>)}
         
                     {//Mensaje de error
