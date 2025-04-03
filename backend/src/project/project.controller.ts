@@ -5,10 +5,8 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectResponseDto } from './dto/project-response.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
-import { ParseIntPipe } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common';
 import { ParseUUIDPipe } from '@nestjs/common';
-
+import { NotFoundException } from '@nestjs/common';
 
 
 @ApiTags('Projects')
