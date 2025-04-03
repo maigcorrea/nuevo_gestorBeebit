@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, IsBoolean, IsUUID } from 'class-validator';
 import { TaskPriority, TaskStatus } from '../entities/task.entity';
 
 export class CreateTaskDto{
@@ -23,6 +23,7 @@ export class CreateTaskDto{
     description:string;
 
 
+    @IsUUID()
     @IsNotEmpty()
     @ApiProperty({
         description:"id del proyecto al que está asociada la tarea",

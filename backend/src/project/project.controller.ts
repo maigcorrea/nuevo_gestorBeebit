@@ -7,6 +7,8 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
+
 
 
 @ApiTags('Projects')
@@ -136,7 +138,7 @@ export class ProjectController{
     @ApiOperation({ summary: 'Eliminar proyecto por ID' })
     @ApiResponse({ status: 200, description: 'Proyecto eliminado' })
     @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
-    async deleteProject(@Param('id', ParseIntPipe) id: string) {
+    async deleteProject(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.projectService.deleteProject(id); // conviertes el string a número
     }
 
@@ -147,7 +149,7 @@ export class ProjectController{
     @ApiOperation({ summary: 'Actualizar proyecto' })
     @ApiResponse({ status: 200, description: 'Proyecto actualizado con éxito' })
     @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
-    async updateProject(@Param('id', ParseIntPipe) id: string, @Body() updateDto: UpdateProjectDto) {
+    async updateProject(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateProjectDto) {
         return this.projectService.updateProject(id, updateDto); //Se parsea a string el id por ni viene en number
     }
 }

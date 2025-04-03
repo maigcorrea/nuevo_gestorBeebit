@@ -18,6 +18,7 @@ import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';
 import { Req } from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
 
 
 @ApiTags('Staff')
@@ -61,13 +62,15 @@ export class StaffController{
 
 
     // Mostrar un empleado por ID
-    @UseGuards(AuthGuard('jwt')) //No se protege por rol
+    //@UseGuards(AuthGuard('jwt')) //No se protege por rol
     @Get(':id')
+    @ApiParam({ name: 'id', type: 'string', description: 'ID del empleado (UUID)' }) 
     @ApiOperation({ summary: 'Mostrar un empleado por ID' })
     @ApiResponse({ status: 200, description: 'Empleado encontrado', type: StaffResponseDto })
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async findById(@Param('id', ParseIntPipe) id: string) {
-    return this.staffService.findById(id);
+    async findById(@Param('id', new ParseUUIDPipe()) id: string) {
+        console.log('ID recibido:', id);
+        return this.staffService.findById(id);
     }
 
 
@@ -84,7 +87,7 @@ export class StaffController{
         },
       })
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async updateStaff(@Param('id') id: string, @Body() updateDto: UpdateStaffDto) {
+    async updateStaff(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateStaffDto) {
         return this.staffService.updateStaff(id, updateDto); //Se parsea a string el id por si viene en number
     }
 
@@ -99,7 +102,7 @@ export class StaffController{
           example: { message: 'Empleado actualizado con éxito' },
         },})
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async deleteStaff(@Param('id') id: string) {
+    async deleteStaff(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.staffService.deleteStaff(id); // conviertes el string a número
     }
 

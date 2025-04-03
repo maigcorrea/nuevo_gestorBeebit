@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Delete, Put, Patch, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { TaskStaffService } from './task-staff.service';
 import { CreateTaskStaffDto } from './dto/create-task-staff.dto';
 import { TaskStaffResponseDto } from './dto/task-staff-response.dto';
@@ -12,6 +12,7 @@ import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ParseUUIDPipe } from '@nestjs/common';
 
 @ApiTags('Task_Staff')
 @Controller("tasks_staff")
@@ -42,12 +43,12 @@ export class TaskStaffController{
     }
 
 
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth('jwt')
+    
     @ApiOperation({summary: "Obtener las tareas asignadas a un empleado concreto"})
     @ApiResponse({status:404, description:"Error"})
     @Get("por-usuario/:id")
-    getTasksByUser( @Param('id')id:string):Promise<TaskByUserResponseDto[]>{
+    @ApiParam({ name: 'id', type: 'string', description: 'UUID del usuario' })
+    getTasksByUser( @Param('id', new ParseUUIDPipe()) id:string):Promise<TaskByUserResponseDto[]>{
         return this.taskStaffService.getTasksByUser(id);
     }
 
@@ -60,7 +61,7 @@ export class TaskStaffController{
     @ApiResponse({ status: 200, description: 'Listado de proyectos', type: ProjectByUserResponseDto, isArray: true })
     @ApiResponse({ status: 404, description: 'No se encontraron tareas para este usuario' })
     getProjectsByUser(
-    @Param('id') id: string
+    @Param('id', new ParseUUIDPipe()) id: string
     ): Promise<ProjectByUserResponseDto[]> {
         return this.taskStaffService.getProjectsByUser(id);
     }

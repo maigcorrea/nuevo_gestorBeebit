@@ -35,7 +35,7 @@ import { Injectable } from '@nestjs/common';
     async findAll():Promise<ProjectResponseDto[]>{
         const projects = await this.projectRepository.find();
 
-        return projects.map((project) => ({
+        return projects.map((project:any) => ({
             id: project.id,
             title: project.title,
             description: project.description,

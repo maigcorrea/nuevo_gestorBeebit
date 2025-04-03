@@ -28,16 +28,18 @@ export class TaskService{
           end_date: null,         //Forzamos null al crear
           completed: false,       // Forzamos a false al crear
           status: TaskStatus.PENDING,      // Forzamos a 'pending' por defecto. Así se usa el enum
-          associated_project: { id: associated_project }
+          associated_project: { id: associated_project } as any
         });
       
         return this.taskRepository.save(task);
     }
 
 
-    //Método para mostrar todos los proyectos
+    //Método para mostrar todas las tareas
     async findAll():Promise<Task[]>{
-        return this.taskRepository.find();
+      return this.taskRepository.find({
+        relations: ['associated_project'],
+    });
     }
 
 

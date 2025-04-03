@@ -11,7 +11,7 @@ import { UpdateTaskStaffDto } from './dto/update-task-staff.dto';
 import { DeleteTaskStaffDto } from './dto/delete-task-staff.dto';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
-import { NotFoundException, ConflictException } from '@nestjs/common';
+import { NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class TaskStaffService {
@@ -89,7 +89,7 @@ export class TaskStaffService {
     });
 
     //Mapear cada fila para construir un objeto con el título de la tarea y el nombre del empleado (por individual, tarea1- nombre1, tarea1-nombre2)
-    return relaciones.map(rel => ({
+    return relaciones.filter((rel:any) => rel.task && rel.staff).map((rel:any) => ({
       taskId: rel.task.id,
       taskTitle: rel.task.title,
       staffFullName: `${rel.staff.id, rel.staff.name}`,
@@ -109,6 +109,10 @@ export class TaskStaffService {
   
     //Iteras sobre cada relación y extraes: taskTitle y staffName del empleado
     for (const rel of relaciones) {
+      if (!rel.task || !rel.staff) {
+        console.warn('⚠️ Relación inválida encontrada:', rel);
+        continue; // salta al siguiente
+      }
       const taskId = rel.task.id;
       const taskTitle = rel.task.title;
       const staffId = rel.staff.id;
@@ -143,6 +147,8 @@ export class TaskStaffService {
 
   //Obtener las tareas de un usuario determinado
   async getTasksByUser(id:string): Promise <TaskByUserResponseDto[]>{
+    console.log("Buscando tareas para ID:", id);
+    try {
     const tasks = await this.taskStaffRepo.find({ 
       where: {
         staff:{id} // Busca relaciones donde el staff tenga ese ID
@@ -150,24 +156,33 @@ export class TaskStaffService {
       relations:['task', 'task.associated_project'] // Incluye los datos de la tarea relacionada y del proyecto asociado a esa tarea
      });
 
+     console.log("Tareas encontradas:", tasks);
+
     if (!tasks || tasks.length === 0) {
       throw new NotFoundException(`No se encontraron tareas para el empleado con id ${id}`);
     }
+    
+    const tareasFiltradas = tasks.filter((rel:any) => rel.task && rel.task.associated_project);
 
-    return tasks.map(rel => ({
-      id: rel.task.id,
-      title: rel.task.title,
-      description: rel.task.description,
-      start_date: rel.task.start_date,
-      end_date: rel.task.end_date,
-      status: rel.task.status,
-      completed: rel.task.completed,
-      priority: rel.task.priority,
+    return tareasFiltradas.map((rel:any) => ({
+      id: rel.task.id ?? null,
+      title: rel.task.title ?? null,
+      description: rel.task.description ?? null,
+      start_date: rel.task.start_date ?? null,
+      end_date: rel.task.end_date ?? null,
+      status: rel.task.status ?? null,
+      completed: rel.task.completed ?? null,
+      priority: rel.task.priority ?? null,
       associated_project: {
-          id: rel.task.associated_project.id,
-          name: rel.task.associated_project.title,
+          id: rel.task.associated_project.id ?? null,
+          name: rel.task.associated_project.title ?? null,
       }
     }));
+
+  } catch (err) {
+    console.error("Error interno en getTasksByUser:", err);
+    throw new InternalServerErrorException("Error al obtener tareas");
+  }
     
   }
 
@@ -188,10 +203,17 @@ export class TaskStaffService {
     //Map para evitar proyectos duplicados, la clave es el id del proyecto y el valor el dto que vamos a devolver. Así, si una tarea y otra comparten el mismo proyecto, no lo añadimos dos veces
     const projectsMap= new Map<string, ProjectByUserResponseDto>();
 
+    
     //Iteramos sobre cada relación tarea-empleado (cada fila de task_staff)
     for(const rel of tasks){
       //Desde la fila rel.task.associated_project, accedemos directamente al proyecto relacionado gracias a las relations que incluimos en el find()
       const project=rel.task.associated_project;
+
+
+    if (!project) {
+      console.warn(`⚠️ La tarea ${rel.task?.id} no tiene proyecto asociado.`);
+      continue;
+    }
 
       //Verificamos si ese proyecto ya está añadido al Map. Si no lo está, lo agregamos. Si ya está, no se vuelve a añadir
       if(!projectsMap.has(project.id)){
