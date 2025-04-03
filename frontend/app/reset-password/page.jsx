@@ -5,9 +5,7 @@ import ProtectRoutes from '@/components/ProtectRoutes'
 const page = () => {
   return (
     <>
-      <ProtectRoutes>
         <ResetPasswordForm /> 
-      </ProtectRoutes>
     </>
   )
 }

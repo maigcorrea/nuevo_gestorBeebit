@@ -11,6 +11,7 @@ import { Staff } from './entities/staff.entity';
 import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
 import { InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
+import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 
 @Injectable()
 
@@ -19,6 +20,7 @@ export class StaffService {
         @InjectRepository(Staff)
         private staffRepository: Repository<Staff>,
         private readonly mailService: MailService,
+        private readonly mailQueueService: MailQueueService,
     ) {}
 
     async create(createStaffDto: CreateStaffDto): Promise<Staff>{
@@ -201,14 +203,16 @@ export class StaffService {
       
         // Aquí se puede generar un token de recuperación
         // Generar token aleatorio y caducidad de 1 hora
-        const token = randomBytes(32).toString('hex');
+        const token = randomBytes(32).toString('hex'); //uuid();
         user.resetToken = token;
         user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hora
 
         await this.staffRepository.save(user);
 
         const resetLink = `http://localhost:3001/reset-password?token=${token}`;
-        await this.mailService.sendPasswordResetEmail(email, resetLink);
+
+        //En vez de llamar directamente, lo enviamos a la cola
+        await this.mailQueueService.enqueuePasswordReset(email, resetLink);
         
       
         return { message: 'Correo de recuperación enviado' };

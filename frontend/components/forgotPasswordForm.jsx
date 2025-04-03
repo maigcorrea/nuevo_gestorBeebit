@@ -34,7 +34,7 @@ const ForgotPasswordForm = () => {
                 return;
             }
 
-            // Aquí iría la lógica para enviar el correo con Mailpit (más adelante)
+            // Aquí va la lógica para enviar el correo con Mailpit, el método del servicio a su vez encola la petición
             await fetch('http://localhost:3000/staff/forgot-password', {
                 method: 'POST',
                 headers: {
