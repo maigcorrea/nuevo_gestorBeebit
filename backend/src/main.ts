@@ -2,9 +2,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { setupBullBoard } from './bull-board';
+import { getQueueToken } from '@nestjs/bull';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const queue = app.get(getQueueToken('mail-queue')); // <- la cola que ya registraste
+
+  setupBullBoard(app); // ← aquí montamos Bull Board
 
   //Si el frontend y el backend están en puertos diferentes, es necesario activar el CORS para transferir los datos
   app.enableCors({
