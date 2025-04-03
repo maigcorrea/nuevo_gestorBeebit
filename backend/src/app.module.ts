@@ -8,6 +8,9 @@ import { StaffModule } from './staff/staff.module';
 import { TaskStaffModule } from './tasks_staff/task-staff.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
+import { BullModule } from '@nestjs/bull';
+import { AppController } from './app.controller';
+import { MailQueueModule } from './mail/mail-queue/mail-queue.module';
 // ENTIDADES
 import { User } from './users/entities/user.entity'; // La entidad de usuario
 import { Project } from './project/entities/project.entity';
@@ -28,6 +31,12 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
       synchronize: true, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),
+    BullModule.forRoot({
+      redis: {
+        host: 'redis',
+        port: 6379,
+      },
+    }),
     UsersModule, // Aquí importamos el módulo de usuarios
     ProjectModule,
     TaskModule,
@@ -35,6 +44,8 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
     TaskStaffModule,
     AuthModule,
     MailModule,
+    MailQueueModule
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
