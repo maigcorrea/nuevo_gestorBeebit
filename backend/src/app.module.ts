@@ -11,6 +11,8 @@ import { MailModule } from './mail/mail.module';
 import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { MailQueueModule } from './mail/mail-queue/mail-queue.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SchedulerModule } from './scheduler/sheduler.module';
 // ENTIDADES
 import { User } from './users/entities/user.entity'; // La entidad de usuario
 import { Project } from './project/entities/project.entity';
@@ -37,6 +39,7 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
         port: 6379,
       },
     }),
+    ScheduleModule.forRoot(),
     UsersModule, // Aquí importamos el módulo de usuarios
     ProjectModule,
     TaskModule,
@@ -44,7 +47,8 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
     TaskStaffModule,
     AuthModule,
     MailModule,
-    MailQueueModule
+    MailQueueModule,
+    SchedulerModule,
   ],
   controllers: [AppController],
 })

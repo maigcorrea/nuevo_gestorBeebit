@@ -12,6 +12,7 @@ import { DeleteTaskStaffDto } from './dto/delete-task-staff.dto';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 
 @Injectable()
 export class TaskStaffService {
@@ -21,7 +22,8 @@ export class TaskStaffService {
     @InjectRepository(Task)
     private taskRepo:Repository<Task>,
     @InjectRepository(Staff)
-    private staffRepo:Repository<Staff>
+    private staffRepo:Repository<Staff>,
+    private readonly mailQueueService: MailQueueService,
 
   ) {}
 
@@ -75,6 +77,14 @@ export class TaskStaffService {
       //El método save() devuelve el objeto insertado, incluyendo su id generado automáticamente.
       const saved = await this.taskStaffRepo.save(nuevaRelacion);
       relaciones.push(saved);
+
+      // 📨 Enviar correo de notificación al empleado
+      await this.mailQueueService.sendMail({
+        to: staff.email,
+        subject: `Nueva tarea asignada: ${task.title}`,
+        text: `Hola ${staff.name}, se te ha asignado una nueva tarea: ${task.title}\n\nDescripción: ${task.description}`,
+      });
+      
     }
 
     return relaciones;
@@ -289,5 +299,24 @@ export class TaskStaffService {
     //Si la encuentra, la elimina usando remove()
     await this.taskStaffRepo.remove(relacion);
     return 'Relación eliminada correctamente';
+  }
+
+  //Método para encontrar las tareas que vencen el día posterior al actual
+  async findTasksDueTomorrow(): Promise<{ title: string, deadline: string, email: string }[]> {
+    const mañana = new Date();
+    mañana.setDate(mañana.getDate() + 1);
+    const yyyyMMdd = mañana.toISOString().split('T')[0];
+  
+    return this.taskStaffRepo
+      .createQueryBuilder('ts')
+      .leftJoin('ts.task', 'task') // ajusta el nombre real del campo
+      .leftJoin('ts.staff', 'staff') // ajusta el nombre real del campo
+      .select([
+        'task.title AS title',
+        'task.deadline AS deadline',
+        'staff.email AS email',
+      ])
+      .where('task.deadline = :fecha', { fecha: yyyyMMdd })
+      .getRawMany(); // El resultado de este select no es una entidad completa, sino una lista de objetos con los campos personalizados (title, deadline, email).
   }
 }

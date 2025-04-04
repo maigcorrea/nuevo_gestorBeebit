@@ -4,6 +4,9 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupBullBoard } from './bull-board';
 import { getQueueToken } from '@nestjs/bull';
+import * as crypto from 'crypto';
+// @ts-ignore
+global.crypto = crypto;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

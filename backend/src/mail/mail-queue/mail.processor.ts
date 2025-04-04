@@ -13,4 +13,10 @@ export class MailProcessor {
     const { email, token } = job.data;
     await this.mailService.sendPasswordResetEmail(email, token);
   }
+
+  @Process('sendMail')
+async handleSendMail(job: Job) {
+  const { to, subject, text } = job.data;
+  await this.mailService.sendMail({ to, subject, text });
+}
 }
