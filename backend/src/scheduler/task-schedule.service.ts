@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { TaskStaffService } from 'src/tasks_staff/task-staff.service';
 import { Project } from 'src/project/entities/project.entity';
+import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -14,6 +15,8 @@ export class TaskSchedulerService {
     private readonly taskStaffService: TaskStaffService,
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
+    @InjectRepository(TaskStaff) 
+    private readonly taskStaffRepo: Repository<TaskStaff>,
     private readonly mailQueueService: MailQueueService,
   ) {}
 
@@ -63,13 +66,44 @@ export class TaskSchedulerService {
   
       for (const project of projects) {
         this.logger.warn(`⚠️ Proyecto "${project.title}" tiene deadline mañana.`);
-  
-        // (opcional) Notifica a alguien si lo necesitas
-        await this.mailQueueService.sendMail({
-          to: 'admin@gmail.com', // puedes cambiar esto a quien deba recibir
-          subject: `📅 Deadline mañana: ${project.title}`,
-          text: `El proyecto "${project.title}" vence mañana (${project.deadline}).`,
+
+        // Buscar todos los empleados asignados a tareas del proyecto
+        const taskStaffList = await this.taskStaffRepo.find({
+            relations: {
+              task: {
+                associated_project: true,
+              },
+              staff: true,
+            },
         });
-      }
+
+            // Filtrar por tareas que pertenezcan al proyecto actual
+            const empleadosNotificados = new Set<string>();
+
+            for (const rel of taskStaffList) {
+                if (
+                    rel.task &&
+                    rel.task.associated_project &&
+                    rel.task.associated_project.id === project.id &&
+                    rel.staff?.email
+                  ) {
+                    const staffEmail = rel.staff.email;
+
+                    // Evitar enviar duplicado
+                    if (!empleadosNotificados.has(staffEmail)) {
+                        empleadosNotificados.add(staffEmail);
+
+                        await this.mailQueueService.sendMail({
+                            to: staffEmail,
+                            subject: `⏳ Proyecto próximo a vencer: ${project.title}`,
+                            text: `Hola, el proyecto "${project.title}" al que estás asignado vence mañana (${project.deadline}).`,
+                        });
+
+                        this.logger.log(`📧 Correo enviado a ${staffEmail}`);
+                    }
+                }
+            }
+
+        }
     }
 }
