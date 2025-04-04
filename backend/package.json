@@ -17,11 +17,17 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate -d ./data-source.ts src/migrations/migracion",
+    "migration:run": "npm run typeorm -- migration:run -d ./data-source.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d ./data-source.ts",
+    "seed": "ts-node -r tsconfig-paths/register src/seeds/seed.ts"
   },
   "dependencies": {
     "@bull-board/api": "^6.7.10",
     "@bull-board/express": "^6.7.10",
+    "@faker-js/faker": "^8.4.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/bull": "^11.0.2",
     "@nestjs/common": "^11.0.1",
@@ -40,6 +46,7 @@
     "dotenv": "^16.4.7",
     "ioredis": "^5.6.0",
     "minio": "^8.0.5",
+    "nestjs-seeder": "^0.3.2",
     "nodemailer": "^6.10.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -47,7 +54,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
