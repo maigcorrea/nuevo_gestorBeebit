@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 // MÓDULOS
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
@@ -20,6 +21,9 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // 👈 Así estará disponible en toda la app
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres', // Tipo de base de datos
       host: 'postgres', // Host de la base de datos (puede ser un contenedor de Docker o una IP)

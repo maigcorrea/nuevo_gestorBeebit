@@ -52,34 +52,12 @@ import { ProjectStatus } from '../entities/project.entity';
      deadline?:string | null;
 
 
-
+     //No es necesario incluir el campo file en el dto porque los DTOs están diseñados para validar y documentar campos JSON, mientras que los archivos se reciben por multipart/form-data y se gestionan por Multer con @UploadedFile().
 
 
  
  
-    //  @ApiProperty({
-    //      description:"Última fecha en la que se actualizó/modificó el proyecto. Fecha de la última tarea completada",
-    //      example:"2025-03-21",
-    //  })
-    //  @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
-    //  //COMPROBAR QUE NO SEA UNA FECHA FUTURA, SÓLO PUEDE IR DESDE LA FECHA DE INICIO DEL PROYECTO HASTA LA FECHA PRESENTE
-    //  last_update:string;
- 
- 
-
-
-
-
-    //  @ApiProperty({
-    //      description:"Estado en el que se encuentra el proyecto: En progreso, pausado, finalizado",
-    //      example:"paused"
-    //  })
-    //  @IsString()
-    //  //LIMITAR SÓLO A "EN PROGRESO, FINALIZADO, PAUSADO"
-    //  @IsIn(['pending', 'paused', 'active', 'completed'], {
-    //     message: 'El estado debe ser pending, paused, active o completed',
-    //   })
-    //  status:ProjectStatus;
+    
  
      
  }

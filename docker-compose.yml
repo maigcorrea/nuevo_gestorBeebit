@@ -19,6 +19,8 @@ services:
       - DB_NAME=test
     depends_on: #El contenedor backend no se levantará hasta que el contenedor de postgres esté list
       - postgres
+    env_file:
+      - .env
 
   frontend:
     container_name: frontend

@@ -37,6 +37,8 @@ export enum ProjectStatus {
     })
     status:ProjectStatus;
 
+    @Column({ nullable: true })
+    document_url: string; 
 
     /*
       Asegura que TypeORM entienda la relación entre Task y Project, y puedas usar relations: ['task', 'task.associated_project'] sin errores.

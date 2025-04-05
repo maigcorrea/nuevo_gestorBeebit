@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectResponseDto } from './dto/project-response.dto';
@@ -16,15 +18,17 @@ export class ProjectController{
     constructor(private readonly projectService: ProjectService) {}
 
     @Post()
-
+    @UseInterceptors(FileInterceptor('file')) // Hace que Swagger entienda que debe permitir subir un archivo.
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({description: 'Formulario para crear un proyecto con archivo', type: CreateProjectDto,})
     @ApiOperation({summary:"Crear proyecto"})
     @ApiResponse({ status: 201, description: 'Proyecto creado correctamente', type: ProjectResponseDto})
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
-    create(@Body() createProjectDto: CreateProjectDto) {
+    create(@UploadedFile() file: Express.Multer.File, @Body() createProjectDto: CreateProjectDto) {
         // Recibe el cuerpo de la petición (body) y lo convierte en un CreateUserDto automáticamente.
         // Llama al método create() del servicio, pasándole el DTO.
         try {
-            return this.projectService.create(createProjectDto);       
+            return this.projectService.create(createProjectDto, file);       
         } catch (err) {
             console.error('❌ ERROR en el controlador:', err);
             throw err;

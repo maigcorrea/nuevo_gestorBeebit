@@ -236,6 +236,7 @@ export class TaskStaffService {
           deadline: project.deadline,
           last_update: project.last_update,
           status:project.status,
+          document_url: project.document_url,
         });
       }
     }

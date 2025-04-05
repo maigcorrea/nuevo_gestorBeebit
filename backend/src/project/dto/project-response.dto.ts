@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, } from 'class-validator';
 import { ProjectStatus } from '../entities/project.entity';
 
@@ -46,4 +46,11 @@ export class ProjectResponseDto{
         description:"Estado del proyecto", example:"paused"
     })
     status:ProjectStatus;
+
+
+    @ApiPropertyOptional({
+        description: 'URL pública al documento adjunto del proyecto',
+        example: 'http://localhost:9000/archivos/projects/manual.pdf',
+    })
+    document_url?: string;
 }

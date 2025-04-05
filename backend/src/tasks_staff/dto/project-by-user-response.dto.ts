@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ProjectStatus } from 'src/project/entities/project.entity';
 
 export class ProjectByUserResponseDto{
@@ -22,5 +22,12 @@ export class ProjectByUserResponseDto{
 
     @ApiProperty({example:'2025-02-10', description: 'Última fecha de actualización del proyecto'})
     last_update:Date | null;
+
+
+    @ApiPropertyOptional({
+        description: 'URL pública al documento adjunto del proyecto',
+        example: 'http://localhost:9000/archivos/projects/manual.pdf',
+    })
+    document_url?: string;
 
 }

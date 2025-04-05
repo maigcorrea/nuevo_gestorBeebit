@@ -19,7 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';
 import { Req } from '@nestjs/common';
 import { ParseUUIDPipe } from '@nestjs/common';
-
+import { BadRequestException } from '@nestjs/common';
 
 @ApiTags('Staff')
 @Controller("staff")
@@ -28,9 +28,9 @@ export class StaffController{
         private readonly minioService: MinioService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('admin')
-    @ApiBearerAuth('jwt')
+    //@UseGuards(AuthGuard('jwt'), RolesGuard)
+    //@Roles('admin')
+   // @ApiBearerAuth('jwt')
     @Post()
 
     @ApiOperation({summary:"Introducir empleado en el sistema"})
@@ -178,7 +178,12 @@ export class StaffController{
     async uploadProfilePicture(
     @UploadedFile() file: Express.Multer.File, @Req() req: any // o extrae el ID del token
     ): Promise<{ url: string }> {
-        const url = await this.minioService.upload(file, 'profile-pictures');
+        if (!file) {
+            throw new BadRequestException('No se recibió ningún archivo');
+        }
+
+        const fileName = `profile-pictures/${Date.now()}-${file.originalname}`;
+        const {url} = await this.minioService.upload(file, fileName);
 
          // Extraer ID del usuario autenticado
         const userId = req.user.id;

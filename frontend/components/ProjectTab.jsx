@@ -61,6 +61,18 @@ const TasksTab = () => {
             <p>{proyecto.description}</p>
             <p className="text-sm">📅 {proyecto.start_date} → {proyecto.deadline || 'En curso'}</p>
             <p>⚙️ Estado: {proyecto.status}</p>
+            {proyecto.document_url && (
+              <p className="mt-2">
+                📎 <a
+                  href={proyecto.document_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  Ver documento adjunto
+                </a>
+              </p>
+            )}
           </div>
         ))
       )}

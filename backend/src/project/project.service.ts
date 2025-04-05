@@ -8,23 +8,39 @@ import { Injectable } from '@nestjs/common';
  import { NotFoundException } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
  import { ProjectStatus } from './entities/project.entity';
+ import { MinioService } from 'src/minio/minio.service';
  
  @Injectable()
  export class ProjectService {
     constructor(
         @InjectRepository(Project)
         private projectRepository: Repository<Project>,
+        private readonly minioService: MinioService
     ) {}
  
  
     //Método para crear un proyecto
-    async create(createProjectDto: CreateProjectDto):Promise<Project>{
+    async create(createProjectDto: CreateProjectDto, file?: Express.Multer.File):Promise<Project>{
         //CONTROLAR QUE A LA HORA DE CREAR EL PROYECTO, LA FECHA DE INICIO SEA LA DE HOY
         const { start_date, deadline, ...projectData} = createProjectDto;
+
+        //Para guardar la url del documento de minio
+        let document_url: string | undefined = undefined;
+
+        if (file) {
+            const fileName = `projects/${Date.now()}-${file.originalname}`;
+            const { url, filename } = await this.minioService.upload(file, fileName);
+            document_url = url;
+
+            // Puedes guardar también el filename si quieres añadir otra columna después (De momento no se implementa, sólo se muestra el nombre por consola)
+            console.log('Documento subido:', filename);
+        }
+
         const project= this.projectRepository.create({
             ...projectData,
             start_date: start_date ? new Date(start_date) : new Date(), //Si el DTO (createProjectDto) incluye start_date, lo convierte a Date y lo usa. Si no hay start_date, crea uno nuevo con new Date() (la fecha y hora actuales).
             deadline: deadline ? new Date(deadline) : null,
+            document_url,
         });
  
         return this.projectRepository.save(project);
@@ -43,6 +59,7 @@ import { Injectable } from '@nestjs/common';
             deadline: project.deadline,
             last_update: project.last_update,
             status: project.status,
+            document_url: project.document_url,
         }));
     }
 

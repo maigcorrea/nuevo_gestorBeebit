@@ -15,6 +15,7 @@ const AddProjectForm = () => {
     const [description, setDescription] = useState('');
     const [start_date, setStartDate] = useState('');
     const [deadline, setDeadline] = useState('');
+    const [document, setDocument] = useState(null);
     const [error, setError] = useState('');
     const toast = useRef(null);
 
@@ -57,6 +58,13 @@ const AddProjectForm = () => {
         }
 
 
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('description', description);
+      
+        if (start_date) formData.append('start_date', start_date);
+        if (deadline) formData.append('deadline', deadline);
+        if (document) formData.append('file', document); // 👈 este campo debe llamarse "file" para que Multer lo capture
 
         // if (await checkPhoneExists(phone)) {
         //     setPhoneError('Ya existe un usuario con ese teléfono');
@@ -71,7 +79,7 @@ const AddProjectForm = () => {
         // }
 
 
-        console.log({ title, description, start_date, deadline });
+        console.log({ title, description, start_date, deadline, document });
 
         //Validar si las fechas están vacias, si lo están, asignar undefined para que no de error en el backend
         // const body = {
@@ -87,20 +95,11 @@ const AddProjectForm = () => {
         //     body.deadline = deadline;
         // }
 
-        const body = {
-            title,
-            description,
-            ...(start_date !== '' && { start_date }),
-            ...(deadline !== '' && { deadline }),
-          };
-          
-          console.log('Body enviado:', body);
 
         try {
           const res = await fetch('http://localhost:3000/projects', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
+            body: formData // no ponemos headers, fetch lo hace solo para FormData
           });
     
           const data = await res.json();
@@ -158,6 +157,14 @@ const AddProjectForm = () => {
                     <label htmlFor="deadline" className="block text-900 font-medium mb-2">Fecha de entrega</label>
                     <InputText id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full mb-3" />
                 
+                    <label htmlFor="document" className="block text-900 font-medium mb-2">Documento adjunto</label>
+                    <input
+                      type="file"
+                      id="document"
+                      accept=".pdf,.doc,.docx,.txt"
+                      onChange={(e) => setDocument(e.target.files[0])}
+                      className="w-full mb-3"
+                    />
         
                     {//Mensaje de error
                     }
