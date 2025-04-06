@@ -1,6 +1,6 @@
 import './globals.css';
 import Navbar from '../components/NavBar';
-import 'primereact/resources/themes/bootstrap4-dark-blue/theme.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { UserProvider } from './context/UserContext';
 
 export const metadata = {

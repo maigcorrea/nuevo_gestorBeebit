@@ -6,7 +6,6 @@ const page = () => {
   return (
     <>
       <ProtectRoutes>
-        <h1>MODIFICR PERFIL</h1>
         <UpdateProfileForm />
       </ProtectRoutes>
     </>

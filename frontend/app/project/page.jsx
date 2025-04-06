@@ -6,7 +6,6 @@ const page = () => {
   return (
     <>
       <ProtectRoutes requiredRole={"admin"}>
-        <h1>Nuevo Proyecto</h1>
         <AddProjectForm></AddProjectForm>
       </ProtectRoutes>
     </>

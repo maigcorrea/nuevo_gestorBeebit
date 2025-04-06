@@ -196,10 +196,12 @@ const priorityTaskTypes = [
 
   return (
     <>
+    <div className="p-4 bg-white shadow-md rounded-xl">
         <TabView>
             <TabPanel header="Proyectos">
-                <DataTable value={projects} paginator rows={5} stripedRows  emptyMessage="No hay proyectos disponibles" responsiveLayout="scroll">
-                    <Column field="id" header="ID" />
+            <div className="p-4 bg-gray-400 shadow-md rounded-xl">
+                <DataTable value={projects} paginator rows={5} stripedRows  emptyMessage="No hay proyectos disponibles" responsiveLayout="scroll" className="shadow-xl bg-white rounded-xl">
+                    
                     <Column field="title" header="Título" sortable/>
                     <Column field="description" header="Descripción" />
                     <Column field="start_date" header="Inicio" body={(rowData) => formatDate(rowData.start_date)} sortable />
@@ -213,10 +215,12 @@ const priorityTaskTypes = [
                     }} sortable />
                     <Column header="Acciones" body={(rowData) => actionButtonsTemplate(rowData, 'project')} />
                 </DataTable>
+                </div>
             </TabPanel>
             <TabPanel header="Tareas">
-                <DataTable value={tasks} paginator rows={4} stripedRows  emptyMessage="No hay tareas disponibles" responsiveLayout="scroll">
-                    <Column field="id" header="ID" />
+            <div className="p-4 bg-gray-400 shadow-md rounded-xl">
+                <DataTable value={tasks} paginator rows={4} stripedRows  emptyMessage="No hay tareas disponibles" responsiveLayout="scroll" >
+          
                     <Column field="title" header="Título" sortable />
                     <Column field="description" header="Descripción" />
                     <Column field="priority" header="Prioridad" body={(rowData) => {
@@ -232,8 +236,10 @@ const priorityTaskTypes = [
                     <Column field="completed" header="Completada" />
                     <Column header="Acciones" body={(rowData) => actionButtonsTemplate(rowData, 'task')} />
                 </DataTable>
+              </div>
             </TabPanel>
         </TabView>
+        </div>
     
         {
             //MODAL PARA ELIMINAR

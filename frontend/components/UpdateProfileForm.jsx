@@ -175,7 +175,7 @@ const UpdateProfileForm = () => {
 
             <div className="mb-4">
                 <label className="block font-medium mb-1">Foto de perfil</label>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <input type="file" accept="image/*" onChange={handleImageChange} className='w-full' />
                 <Button
                     label="Subir imagen"
                     onClick={handleUploadImage}
@@ -237,9 +237,10 @@ const UpdateProfileForm = () => {
                 <InputText value={register_date} disabled className="w-full" />
             </div>
 
-
-            <Button label={loading ? "Guardando..." : "Guardar cambios"} onClick={handleUpdate} className="mt-4" disabled={loading} />
-            <UpdatePassword></UpdatePassword>
+            <div className='flex gap-4'>
+                <Button label={loading ? "Guardando..." : "Guardar cambios"} onClick={handleUpdate} className="mt-4" disabled={loading} />
+                <UpdatePassword></UpdatePassword>
+            </div>
         </div>
     </>
   )
