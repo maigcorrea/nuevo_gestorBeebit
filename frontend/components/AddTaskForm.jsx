@@ -229,7 +229,7 @@ const AddTaskForm = () => {
                         //Dropdown de lista de todos los proyectos 
                     } 
                     
-                    <Dropdown value={associated_project} onChange={(e) => setAssociatedProject(e.value)} options={projectOptions} placeholder="Seleciona un proyecto"  className="w-full md:w-14rem" filter showClear />
+                    <Dropdown value={associated_project} onChange={(e) => setAssociatedProject(e.value)} options={projectOptions} placeholder="Seleciona un proyecto"  className="w-full md:w-14rem" filter showClear required />
 
                     <label htmlFor="type" className="block text-900 font-medium mb-2">Prioridad</label>                    
                     <ListBox value={priority} onChange={(e) => setPriority(e.value)} options={priorityTypes} optionLabel="name" className={`w-full md:w-14rem ${fieldErrors.priority ? 'p-invalid' : ''} `} placeholder="Selecciona un tipo" required />
