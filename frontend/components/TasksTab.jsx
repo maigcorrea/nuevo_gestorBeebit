@@ -23,6 +23,13 @@ const TasksTab = () => {
     { name: 'Baja', code: 'low' }
   ];
 
+  //Cambiar vista
+  const [vistaTabla, setVistaTabla] = useState(true);
+
+  //Paginación de la tabla
+  const [currentPage, setCurrentPage] = useState(1);
+  const tareasPorPagina = 6;
+
   //Para que sólo se haga el fetch una vez, usamos el useEffect
   useEffect(() => {
     //Dentro de un useEffect, si necesitas usar await, define una función async interna y llámala justo después.
@@ -145,48 +152,131 @@ const TasksTab = () => {
     return match ? match.name : code;
   };
 
+  const totalPaginas = Math.ceil(tareas.length / tareasPorPagina);
+  const tareasPaginadas = tareas.slice((currentPage - 1) * tareasPorPagina, currentPage * tareasPorPagina);
+
   return (
     <>
-      <h2 className="text-2xl font-bold mb-4">Tareas asignadas</h2>
+      <h2 className="text-5xl font-bold px-5">Tareas asignadas</h2>
+      <div className="flex justify-end mb-4 mx-5">
+        <button
+          className="btn btn-sm bg-[#adcfd1] hover:bg-[#93b9bb] text-black"
+          onClick={() => setVistaTabla(!vistaTabla)}>
+            {vistaTabla ? '🔳 Vista Tarjetas' : '☰ Vista Tabla'}
+        </button>
+      </div>
+
       {tareas.length === 0 ? (
         <p>No hay tareas asignadas</p>
       ) : (
-        tareas.map((tarea) => (
-          <div key={tarea.id} className="bg-white shadow-md rounded p-4 mb-4">
-            <h3 className="font-semibold">{tarea.title}</h3>
-            <p>{tarea.description}</p>
-            <p className="text-sm">📅 {new Date(tarea.start_date).toLocaleDateString('es-ES')} → {tarea.end_date|| 'Sin fecha límite'}</p>
-            <p>🧩 Proyecto: {tarea.associated_project.name}</p>
-            <p>⚡ Prioridad: {getPriorityName(tarea.priority)}</p>
-            <p>⚙️ Estado: {tarea.status}</p>
-            <button
-              onClick={() => {
-                const priorityObj = priorityOptions.find(p => p.code === tarea.priority);
-                const statusObj = statusOptions.find(s => s.code === tarea.status);
-
-                setEditData({
-                  ...tarea,
-                  priority: priorityObj,
-                  status: statusObj
-                });
-                setEditVisible(true);
-              }}
-              className="mt-2 ml-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white"
-            >
-              ✏️ Editar
-            </button>
-            <button onClick={() => completarTarea(tarea.id)} disabled={tarea.status === 'completed'} className={`mt-2 px-4 py-2 rounded transition-all ${
-                tarea.status === 'completed'
-                  ? 'bg-gray-400 cursor-not-allowed text-white'
-                  : 'bg-green-500 hover:bg-green-600 text-white'
-              }`}
-            >
-              {tarea.status === 'completed' ? '✅ Completada' : 'Completar'}
-            </button>
+        vistaTabla ? (
+          <div className="overflow-x-auto shadow-xl rounded-xl bg-white mx-5">
+            <table className="table w-full">
+              <thead>
+                <tr className="text-[#223843] bg-[#ebf5f7] text-sm uppercase tracking-wide">
+                  <th>Título</th>
+                  <th>Fecha inicio</th>
+                  <th>Fecha fin</th>
+                  <th>Proyecto</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th className="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tareasPaginadas.map((tarea) => (
+                  <tr key={tarea.id} className="hover:bg-[#f3f9fa] transition-all">
+                    <td className="font-medium">{tarea.title}</td>
+                    <td>
+                      {new Date(tarea.start_date).toLocaleDateString('es-ES')}
+                    </td>
+                    <td>{tarea.end_date ? new Date(tarea.end_date).toLocaleDateString('es-ES') : '---'}</td>
+                    <td>{tarea.associated_project.name}</td>
+                    <td>{getPriorityName(tarea.priority)}</td>
+                    <td>
+                      <span
+                        className={`badge ${tarea.status === 'completed' ? 'badge-success' : tarea.status === 'active'? 'badge-info' : 'badge-warning'}`}
+                      >
+                        {tarea.status === 'completed' ? 'Completada' : tarea.status ==='active' ? 'Activa' : 'Pendiente'}
+                      </span>
+                    </td>
+                    <td className="flex gap-2 justify-center flex-wrap">
+                      <button
+                        onClick={() => {
+                          const priorityObj = priorityOptions.find((p) => p.code === tarea.priority);
+                          const statusObj = statusOptions.find((s) => s.code === tarea.status);
+                          setEditData({ ...tarea, priority: priorityObj, status: statusObj });
+                          setEditVisible(true);
+                        }}
+                        className="btn btn-sm btn-outline hover:bg-[#d4e5d3]"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => completarTarea(tarea.id)}
+                        disabled={tarea.status === 'completed'}
+                        className={`btn btn-sm text-white ${tarea.status === 'completed'
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-[#8fa372] hover:bg-[#738d4f]'
+                          }`}
+                      >
+                        {tarea.status === 'completed' ? 'Completada' : 'Completar'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mx-5">
+            {tareasPaginadas.map((tarea) => (
+              <div key={tarea.id} className="bg-white rounded-xl shadow-md p-4">
+                <h3 className="text-lg font-semibold">{tarea.title}</h3>
+                <p className="text-sm text-gray-600">{tarea.description}</p>
+                <p>Fecha inicio {new Date(tarea.start_date).toLocaleDateString('es-ES')}</p>
+                <p>Fecha finalización: {tarea.end_date ? new Date(tarea.end_date).toLocaleDateString('es-ES') : '---'}</p>
+                <p>Proyecto: {tarea.associated_project.name}</p>
+                <p>Prioridad: {getPriorityName(tarea.priority)}</p>
+                <p>Estado: {tarea.status === 'completed' ? 'Completada' : tarea.status ==='active' ? 'Activa' : 'Pendiente'}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      const priorityObj = priorityOptions.find(p => p.code === tarea.priority);
+                      const statusObj = statusOptions.find(s => s.code === tarea.status);
+                      setEditData({ ...tarea, priority: priorityObj, status: statusObj });
+                      setEditVisible(true);
+                    }}
+                    className="btn btn-sm btn-outline "
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => completarTarea(tarea.id)}
+                    disabled={tarea.status === 'completed'}
+                    className={`btn btn-sm text-white ${tarea.status === 'completed' ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}`}
+                  >
+                    {tarea.status === 'completed' ? 'Completada' : 'Completar'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))
+          )
       )}
 
+      <div className="flex justify-end mt-4 gap-2">
+        <button className="btn btn-sm" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>«</button>
+        {Array.from({ length: totalPaginas }, (_, i) => (
+          <button
+            key={i + 1}
+            className={`btn btn-sm ${currentPage === i + 1 ? 'btn-active' : ''}`}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button className="btn btn-sm" onClick={() => setCurrentPage(totalPaginas)} disabled={currentPage === totalPaginas}>»</button>
+      </div>
 
 
       <Dialog
