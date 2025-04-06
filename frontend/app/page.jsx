@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
     <ProtectRoutes>
-      <h1 className="text-2xl font-bold">Bienvenido al Dashboard</h1>
+      <h1 className="text-2xl font-bold px-5 mb-6">Bienvenido al Dashboard</h1>
       <TasksTab></TasksTab>
       <ProjectTab></ProjectTab>
       {userType==="admin" ? <OptionButtons></OptionButtons> :null}
