@@ -58,10 +58,10 @@ const LoginForm = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center mx-auto">
-        <div className="surface-card p-4 shadow-2 border-round w-full max-w-3xl">
+      <div className="min-h-screen flex items-center justify-center bg-[#d0e4e5] px-4 ">
+        <div className="w-full max-w-md shadow-xl shadow-[#0d828d] rounded-2xl p-8 space-y-6 bg-white/80 backdrop-blur-md rounded-xl border border-white/20">
           <div className="text-center mb-5">
-            <div className="text-900 text-3xl font-medium mb-3">Iniciar Sesión</div>
+          <h2 className="text-3xl font-medium text-center text-gray-700">Iniciar Sesión</h2>
           </div>
 
           {//Mensaje de error
@@ -69,23 +69,23 @@ const LoginForm = () => {
           {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
           <div>
-            <label htmlFor="email" className="block text-900 font-medium mb-2">Email</label>
-            <InputText id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className="w-full mb-3" />
+            <label htmlFor="email" className="block mb-1 text-gray-600">Email</label>
+            <InputText id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className="input input-bordered w-full" />
 
-            <label htmlFor="password" className="block text-900 font-medium mb-2">Contraseña</label>
-            <InputText id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full mb-3" />
+            <label htmlFor="password" className="block mb-1 text-gray-600">Contraseña</label>
+            <InputText id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="input input-bordered w-full" />
 
 
-            <div className="flex align-items-center justify-content-between mb-6">
+            <div className="flex justify-between items-center text-sm text-gray-500">
               <div className="flex align-items-center mt-3">
                 <Checkbox id="rememberme" onChange={e => setChecked(e.checked)} checked={checked} className="mr-2" />
-                <label htmlFor="rememberme">Remember me</label>
+                <label htmlFor="rememberme" className='block mb-1 text-gray-600'>Remember me</label>
                 <ForgotPasswordForm />
               </div>
             </div>
 
-            <Button label="Sign In" icon="pi pi-user" className="w-full" onClick={handleLogin} />
-            <button className="btn btn-success">¡Hola DaisyUI!</button>
+            <button className="btn bg-[#adcfd1] hover:bg-[#93b9bb] text-gray-900 w-full mt-5 border-none" onClick={handleLogin} >Iniciar Sesión</button>
+            
           </div>
         </div>
       </div>
