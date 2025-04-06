@@ -85,6 +85,7 @@ const LoginForm = () => {
             </div>
 
             <Button label="Sign In" icon="pi pi-user" className="w-full" onClick={handleLogin} />
+            <button className="btn btn-success">¡Hola DaisyUI!</button>
           </div>
         </div>
       </div>
