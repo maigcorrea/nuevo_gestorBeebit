@@ -154,4 +154,9 @@ export class ProjectController{
     async updateProject(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateProjectDto) {
         return this.projectService.updateProject(id, updateDto); //Se parsea a string el id por ni viene en number
     }
+
+    @Get('titleExists/:title')
+    async checkTitleExists(@Param('title') title: string) {
+        return this.projectService.titleExists(title);
+    }
 }

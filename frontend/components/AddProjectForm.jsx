@@ -57,6 +57,15 @@ const AddProjectForm = () => {
             return;
         }
 
+        setTitleError("");
+
+        // Validar que deadline no sea anterior a start_date
+        if (start_date && deadline && new Date(deadline) < new Date(start_date)) {
+          alert("La fecha de entrega no puede ser anterior a la fecha de inicio.");
+          return;
+        }
+
+
 
         const formData = new FormData();
         formData.append('title', title);
@@ -133,6 +142,14 @@ const AddProjectForm = () => {
         }
       };
 
+
+      //Validación de fechas
+      const today = new Date();
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(today.getDate() - 7);
+
+      const formatDateForInput = (date) => date.toISOString().split('T')[0];
+
   return (
     <>
         <Toast ref={toast} />
@@ -152,7 +169,7 @@ const AddProjectForm = () => {
                     <InputText id="desc" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descripción del proyecto" className="w-full mb-3"/>
                     
                     <label htmlFor="start" className="block text-900 font-medium mb-2">Fecha de inicio</label>
-                    <InputText id="start" type="date" value={start_date} onChange={(e) => {setStartDate(e.target.value)}} className="w-full mb-3" />
+                    <InputText id="start" type="date" value={start_date} onChange={(e) => {setStartDate(e.target.value)}} min={formatDateForInput(oneWeekAgo)} className="w-full mb-3" />
             
                     <label htmlFor="deadline" className="block text-900 font-medium mb-2">Fecha de entrega</label>
                     <InputText id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full mb-3" />

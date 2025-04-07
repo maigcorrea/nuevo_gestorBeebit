@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn } from 'class-validator';
+import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, Validate } from 'class-validator';
+import { IsRecentDate } from '../validators/is-recent-date.validator';
+import { IsDeadlineAfterStart } from '../validators/deadline-after-start.validator';
 import { ProjectStatus } from '../entities/project.entity';
  
  export class CreateProjectDto {
@@ -34,6 +36,7 @@ import { ProjectStatus } from '../entities/project.entity';
      })
      @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' }) //Mejor que isDate() porque @IsDate() espera un Date real, y los datos de entrada vienen como string.. Valida strings tipo fecha (ISO). 
      @IsOptional()
+     @Validate(IsRecentDate)
      //LA FECHA PUEDE SER FUTURA POR SI NOS MANDAN UN PROYECTO Y LO QUEREMOS TENER REGISTRADO, PERO NO LO EMPEZAMOS HASTA DENTRO DE UNA SEMANA, POR EJEMPLO
      start_date?: string | null;
 
@@ -48,7 +51,7 @@ import { ProjectStatus } from '../entities/project.entity';
      })
      @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
      @IsOptional()
-     //COMPROBAR QUE LA FECHA SEA FUTURA SÍ O SÍ
+     @Validate(IsDeadlineAfterStart)
      deadline?:string | null;
 
 

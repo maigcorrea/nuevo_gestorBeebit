@@ -170,7 +170,6 @@ export class StaffController{
         return this.staffService.resetPassword(body.token, body.newPassword);
     }
 
-
     //Cargar foto de perfil
     @UseGuards(AuthGuard('jwt'))
     @Post('upload-profile-picture')

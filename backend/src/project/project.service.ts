@@ -171,4 +171,11 @@ import { Injectable } from '@nestjs/common';
       
         // last_update NO SE TOCA 🔒
     }
+
+
+    //Comprobar si un título ya existe a la hora de crear un proyecto
+    async titleExists(title: string): Promise<{ exists: boolean }> {
+        const exists = await this.projectRepository.exist({ where: { title } });
+        return { exists };
+    }
  }
