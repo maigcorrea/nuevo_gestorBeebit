@@ -9,12 +9,16 @@ import { TaskResponseDto } from './dto/task-response.dto';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 import { TaskPriority, TaskStatus } from './entities/task.entity';
+import { Project } from 'src/project/entities/project.entity';
+import { ProjectStatus } from 'src/project/entities/project.entity';
 
 @Injectable()
 export class TaskService{
     constructor(
         @InjectRepository(Task)
         private taskRepository: Repository<Task>,
+        @InjectRepository(Project)
+        private projectRepository: Repository<Project>,
     ) {}
 
 
@@ -99,7 +103,11 @@ export class TaskService{
 
       //Método para actualizar SOLO EL ESTADO de una tarea en concreto
       async updateTaskStatus(id: string, dto: UpdateTaskStatusDto): Promise<{ message: string }> {
-        const task = await this.taskRepository.findOneBy({ id });
+        console.log('🎯 Entró al método updateTaskStatus');
+        const task = await this.taskRepository.findOne({
+          where: { id },
+          relations: ['associated_project'],
+        });
       
         if (!task) {
           throw new NotFoundException(`Tarea con id ${id} no encontrada`);
@@ -116,6 +124,26 @@ export class TaskService{
         }
       
         await this.taskRepository.save(task);
+
+         // Ahora revisamos TODAS las tareas de ese proyecto
+        const allProjectTasks = await this.taskRepository.find({
+          where: { associated_project: { id: task.associated_project.id } },
+        });
+        console.log('EStado de las Tareas del proyecto:', allProjectTasks.map(t => t.status));
+
+        const todasCompletadas = allProjectTasks.every(t => t.status === 'completed');
+
+        const nuevoEstadoProyecto = todasCompletadas ? ProjectStatus.COMPLETED : ProjectStatus.ACTIVE;;
+
+        console.log('Nuevo estado del proyecto:', nuevoEstadoProyecto);
+
+        // Solo actualiza si el estado cambia
+        if (task.associated_project.status !== nuevoEstadoProyecto) {
+          await this.projectRepository.update(task.associated_project.id, {
+            status: nuevoEstadoProyecto,
+            ...(todasCompletadas && { deadline: new Date() })
+          });
+        }
       
         return { message: `Estado de la tarea actualizado a ${dto.status}` };
       }
@@ -136,7 +164,12 @@ export class TaskService{
 
       //Método para editar y actualizar el estado y prioridad de una tarea en concreto
       async updateStatusAndPriority(id: string, status: TaskStatus, priority: TaskPriority) {
-        const task = await this.taskRepository.findOneBy({ id });
+        const task = await this.taskRepository
+  .createQueryBuilder('task')
+  .leftJoinAndSelect('task.associated_project', 'project')
+  .where('task.id = :id', { id })
+  .getOne();
+
         if (!task) throw new NotFoundException('Tarea no encontrada');
 
         if (!Object.values(TaskStatus).includes(status)) {
@@ -149,8 +182,40 @@ export class TaskService{
 
         task.status = status;
         task.priority = priority;
+
+        // Marcar como completada si corresponde
+        if (status === 'completed') {
+          task.completed = true;
+          task.end_date = new Date();
+        } else {
+          task.completed = false;
+          task.end_date = null;
+        }
+
+        await this.taskRepository.save(task);
+
+        // 👉 MISMA LÓGICA QUE EN updateTaskStatus
+        const allProjectTasks = await this.taskRepository.find({
+          where: { associated_project: { id: task.associated_project.id } },
+        });
+
+        const todasCompletadas = allProjectTasks.every(t => t.status === 'completed');
+        const nuevoEstadoProyecto = todasCompletadas  ? ProjectStatus.COMPLETED : ProjectStatus.ACTIVE;
+
+        console.log('Estado actual del proyecto:', task.associated_project.status);
+        // Solo actualizar si cambia
+        if (task.associated_project.status !== nuevoEstadoProyecto) {
+          await this.projectRepository.update(task.associated_project.id, {
+            status: nuevoEstadoProyecto,
+            ...(todasCompletadas && { deadline: new Date() })
+          });
+        }
+        
+        console.log('Nuevo estado calculado:', nuevoEstadoProyecto);
       
-        return await this.taskRepository.save(task);
+        return task;
+
+        
       }
 
 

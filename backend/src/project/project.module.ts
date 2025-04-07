@@ -9,5 +9,6 @@ import { MinioModule } from 'src/minio/minio.module';
   imports: [TypeOrmModule.forFeature([Project]), MinioModule], // Registrar el repositorio Project
   providers: [ProjectService],
   controllers: [ProjectController],
+  exports: [TypeOrmModule],
 })
 export class ProjectModule {}

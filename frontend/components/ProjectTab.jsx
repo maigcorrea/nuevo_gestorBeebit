@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, } from 'react';
 
 const ProjectTab = () => {
   const [proyectos, setProyectos] = useState([]); //Aquí se almacenan las tareas

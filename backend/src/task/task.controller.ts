@@ -83,6 +83,7 @@ export class TaskController{
     @Param('id') id: string,
     @Body() dto: UpdateTaskStatusDto,
     ) {
+        console.log('En controlador');
     return this.taskService.updateTaskStatus(id, dto);
     }
 
@@ -106,6 +107,7 @@ export class TaskController{
         @Param('id', new ParseUUIDPipe()) id: string,
         @Body() dto: UpdateTaskStatusPriorityDto,
     ) {
+        console.log("Entra?");
         return this.taskService.updateStatusAndPriority(id, dto.status, dto.priority);
     }
 
