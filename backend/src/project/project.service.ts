@@ -162,7 +162,7 @@ import { Injectable } from '@nestjs/common';
         if (start_date !== undefined && nuevaDeadline < new Date(start_date)) {
             throw new BadRequestException('La fecha de entrega no puede ser anterior a la fecha de inicio');
         }
-        if (start_date === undefined && nuevaDeadline < project.start_date) {
+        if  (start_date === undefined && project.start_date && nuevaDeadline < project.start_date) {
             throw new BadRequestException('La fecha de entrega no puede ser anterior a la fecha de inicio actual del proyecto');
         }
         project.deadline = nuevaDeadline;
