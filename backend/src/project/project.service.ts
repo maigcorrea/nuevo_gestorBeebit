@@ -132,6 +132,7 @@ import { Injectable } from '@nestjs/common';
     //Método para actualizar un proyecto según su id, cambiándole el titulo, descripción, fecha de inicio, deadline y estado. Dejando la última actualización last_update tal cómo estaba
     async updateProject(id: string, updateDto: UpdateProjectDto): Promise<{message: string}>{ //Se le pasa un objeto por parámetro con  los posibles campos opcionales que puede actualizar
         const project = await this.projectRepository.findOneBy({ id });
+        
       
         if (!project) {
           throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
@@ -144,6 +145,27 @@ import { Injectable } from '@nestjs/common';
 
         if (!title && !description && !start_date && !deadline && !status) {
             throw new BadRequestException('Debes proporcionar al menos un campo para actualizar');
+        }
+
+        const hoy = new Date();
+        const haceUnaSemana = new Date();
+        haceUnaSemana.setDate(hoy.getDate() - 7);
+
+        if (start_date !== undefined) {
+        const nuevaInicio = new Date(start_date);
+        
+        project.start_date = nuevaInicio;
+        }
+
+        if (deadline !== undefined) {
+        const nuevaDeadline = new Date(deadline);
+        if (start_date !== undefined && nuevaDeadline < new Date(start_date)) {
+            throw new BadRequestException('La fecha de entrega no puede ser anterior a la fecha de inicio');
+        }
+        if (start_date === undefined && nuevaDeadline < project.start_date) {
+            throw new BadRequestException('La fecha de entrega no puede ser anterior a la fecha de inicio actual del proyecto');
+        }
+        project.deadline = nuevaDeadline;
         }
 
         

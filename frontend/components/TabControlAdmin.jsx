@@ -118,6 +118,20 @@ const priorityTaskTypes = [
 
   console.log("Datos a enviar:", sanitizedData);
 
+  //Validación de fechas
+  const hoy = new Date();
+const unaSemanaAtras = new Date();
+unaSemanaAtras.setDate(hoy.getDate() - 7);
+
+const inicio = new Date(editData.start_date);
+const fin = new Date(editData.deadline);
+
+
+if (editData.deadline && editData.start_date && fin < inicio) {
+  alert("La fecha de entrega no puede ser anterior a la de inicio.");
+  return;
+}
+
   try {
     const res = await fetch(endpoint, {
       method: 'PUT',
@@ -303,6 +317,7 @@ const priorityTaskTypes = [
                               className="p-inputtext"
                               value={editData.start_date?.slice(0, 10) || ''}
                               onChange={(e) => setEditData({ ...editData, start_date: e.target.value })}
+                              min={new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)} // hoy - 7 días
                           />
 
                           <label>Deadline</label>
@@ -311,6 +326,7 @@ const priorityTaskTypes = [
                               className="p-inputtext"
                               value={editData.deadline?.slice(0, 10) || ''}
                               onChange={(e) => setEditData({ ...editData, deadline: e.target.value })}
+                              min={editData.start_date?.slice(0, 10)} // no puede ser antes de la de inicio
                           />
 
                           <label>Estado</label>

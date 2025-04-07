@@ -172,7 +172,7 @@ const AddProjectForm = () => {
                     <InputText id="start" type="date" value={start_date} onChange={(e) => {setStartDate(e.target.value)}} min={formatDateForInput(oneWeekAgo)} className="w-full mb-3" />
             
                     <label htmlFor="deadline" className="block text-900 font-medium mb-2">Fecha de entrega</label>
-                    <InputText id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full mb-3" />
+                    <InputText id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} min={start_date || formatDateForInput(today)} className="w-full mb-3" />
                 
                     <label htmlFor="document" className="block text-900 font-medium mb-2">Documento adjunto</label>
                     <input
