@@ -24,6 +24,16 @@ export class TaskService{
 
     //Método para crear una tarea
     async create(createTaskDto: CreateTaskDto): Promise<Task> {
+      if (createTaskDto.start_date) {
+        const fechaInicio = new Date(createTaskDto.start_date);
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // eliminar horas para comparación exacta
+      
+        if (fechaInicio < hoy) {
+          throw new BadRequestException('La fecha de inicio no puede ser anterior a hoy');
+        }
+      }
+      
         const { start_date, associated_project, ...restData } = createTaskDto;
       
         const task = this.taskRepository.create({

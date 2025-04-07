@@ -132,6 +132,7 @@ const AddTaskForm = () => {
         // Si no hay errores, limpiamos posibles errores anteriores
         setFieldErrors({});
 
+        //Validaciónd e fechas
 
 
 
@@ -203,6 +204,7 @@ const AddTaskForm = () => {
         }
       };
 
+      const today = new Date().toISOString().split('T')[0];
   return (
     <>
         <Toast ref={toast} />
@@ -222,7 +224,7 @@ const AddTaskForm = () => {
                     <InputText id="desc" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descripción de la tarea" className="w-full mb-3"/>
                     
                     <label htmlFor="start" className="block text-900 font-medium mb-2">Fecha de inicio</label>
-                    <InputText id="start" type="date" value={start_date} onChange={(e) => {setStartDate(e.target.value)}} className="w-full mb-3" />
+                    <InputText id="start" type="date" value={start_date} onChange={(e) => {setStartDate(e.target.value)}} min={today} className="w-full mb-3" />
             
                     <label htmlFor="type" className="block text-900 font-medium mb-2">Proyecto asociado</label> 
                     {
