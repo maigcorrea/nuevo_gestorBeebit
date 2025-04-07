@@ -133,9 +133,7 @@ import { Injectable } from '@nestjs/common';
           throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
         }
 
-        if ('document_url' in updateDto) {
-            project.document_url = updateDto.document_url || null;
-        }
+        
       
         //Al pasarle el objeto, De esta forma, desestructuramos solo una vez:
         const { title, description, start_date, deadline, status } = updateDto;

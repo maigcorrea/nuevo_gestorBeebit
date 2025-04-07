@@ -72,6 +72,7 @@ export class TaskController{
     @ApiResponse({ status: 201, description: 'Tarea actualizada con éxito', type: Task})
     @ApiResponse({ status: 400, description: 'Proyecto no encontrado' })
     async updateTask(@Param('id_tarea', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateTaskDto) {
+        console.log("EStoy");
         return this.taskService.updateTask(id, updateDto);
     }
 

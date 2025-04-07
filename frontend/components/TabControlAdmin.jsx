@@ -107,14 +107,14 @@ const priorityTaskTypes = [
     sanitizedData.start_date = start_date;
 
     // ✅ Asignar fecha actual como deadline si se marca como completado
-    if (sanitizedData.status === 'completed') {
+    /*if (sanitizedData.status === 'completed') {
       const hoy = new Date().toISOString().slice(0, 10);
       sanitizedData.deadline = hoy;
-    }
+    }*/
   }
 
   // Eliminar deadline si está vacío
-  if (!sanitizedData.deadline) delete sanitizedData.deadline;
+  //if (!sanitizedData.deadline) delete sanitizedData.deadline;
 
   console.log("Datos a enviar:", sanitizedData);
 
@@ -239,7 +239,7 @@ const priorityTaskTypes = [
                         const found = statusTaskTypes.find(p => p.code === rowData.status);
                         return found?.name || rowData.status;
                     }} />
-                    <Column field="completed" header="Completada" />
+                    <Column field="completed" header="Completada" body={(rowData) => (rowData.completed ? 'Sí' : 'No')}/>
                     <Column header="Acciones" body={(rowData) => actionButtonsTemplate(rowData, 'task')} />
                 </DataTable>
               </div>

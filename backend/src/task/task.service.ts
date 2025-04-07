@@ -64,7 +64,10 @@ export class TaskService{
 
     //Método para actualizar una tarea en concreto
     async updateTask(id: string, updateDto: UpdateTaskDto): Promise<{ message: string }> {
-        const task = await this.taskRepository.findOneBy({ id });
+        const task = await this.taskRepository.findOne({
+          where: { id },
+          relations: ['associated_project'], // 👈 necesario para acceder al proyecto
+        });
       
         if (!task) {
           throw new NotFoundException(`No se encontró la tarea con id ${id}`);
@@ -81,7 +84,7 @@ export class TaskService{
           //throw new BadRequestException('Debes proporcionar al menos un campo para actualizar.');
         //}
       
-        // 👇 Lógica para cuando se actualiza el estado
+        // Lógica para cuando se actualiza el estado
         if (status !== undefined) {
           task.status = status;
       
@@ -95,6 +98,23 @@ export class TaskService{
         }
       
         await this.taskRepository.save(task);
+
+        // Lógica para actualizar el estado del proyecto si hace falta
+        if (task.associated_project?.id) {
+          const allTasks = await this.taskRepository.find({
+            where: { associated_project: { id: task.associated_project.id } },
+          });
+
+          const todasCompletadas = allTasks.every(t => t.status === 'completed');
+          const nuevoEstado = todasCompletadas ? ProjectStatus.COMPLETED : ProjectStatus.ACTIVE;
+
+          if (task.associated_project.status !== nuevoEstado) {
+            await this.projectRepository.update(task.associated_project.id, {
+              status: nuevoEstado,
+              ...(todasCompletadas && { deadline: new Date() }), // opcional: asignar fecha de finalización
+            });
+          }
+        }
       
         return { message: `Tarea con id ${id} actualizada con éxito` };
       }
