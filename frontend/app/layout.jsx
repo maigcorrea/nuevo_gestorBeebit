@@ -1,3 +1,4 @@
+
 import './globals.css';
 import Navbar from '../components/NavBar';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
