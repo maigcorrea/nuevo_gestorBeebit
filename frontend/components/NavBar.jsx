@@ -70,7 +70,7 @@ export default function Navbar() {
     <>
     <Menu model={userMenuItems} popup ref={menuRef} />
       <Avatar
-        image={profileImage || '/perfil.jpeg'} // Asegúrate de tener esta imagen en /public
+        image={profileImage && profileImage !== '' ? profileImage : '/perfil.jpeg'} // Asegúrate de tener esta imagen en /public
         shape="circle"
         size="large"
         className="cursor-pointer"

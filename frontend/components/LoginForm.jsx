@@ -40,14 +40,21 @@ const LoginForm = () => {
         return;
       }
 
-      //Guardamos el token
+      //Guardamos el token y demás datos
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('type', data.user.type);
       localStorage.setItem('id', data.user.id);
-      localStorage.setItem('profileImage', data.user.profileImage || '');
 
+      // Obtener imagen de perfil actualizada desde /staff/:id
+      const resProfile = await fetch(`http://localhost:3000/staff/${data.user.id}`, {
+        headers: { Authorization: `Bearer ${data.access_token}` },
+      });
+      const profile = await resProfile.json();
+      const updatedImage = profile.profileImage || '';
+
+      localStorage.setItem('profileImage', updatedImage);
       setUserType(data.user.type); //ACTUALIZA el contexto del tipo en tiempo real
-      setProfileImage(data.user.profileImage || '');//Actualiza el contexto de la imagen
+      setProfileImage(updatedImage);//Actualiza el contexto de la imagen
 
       //Redirigimos al dashboard o página principal
       router.push('/');

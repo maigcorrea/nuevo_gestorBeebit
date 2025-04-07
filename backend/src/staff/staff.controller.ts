@@ -186,9 +186,10 @@ export class StaffController{
         const {url} = await this.minioService.upload(file, fileName);
 
          // Extraer ID del usuario autenticado
-        const userId = req.user.id;
-        console.log(req.user.id);
+        const userId = req.user.userId;
+        console.log(req.user.userId);
 
+        console.log("url:",url);
         // Guardar la URL o nombre del archivo en la BD
         await this.staffService.saveProfileImage(userId, url);
 
