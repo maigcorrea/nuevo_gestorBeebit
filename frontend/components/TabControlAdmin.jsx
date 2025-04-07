@@ -214,6 +214,8 @@ if (editData.deadline && editData.start_date && fin < inicio) {
     );
   };
 
+  const today = new Date().toISOString().split('T')[0];
+
   return (
     <>
     <div className="p-4 bg-white shadow-md rounded-xl">
