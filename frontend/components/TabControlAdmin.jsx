@@ -93,7 +93,7 @@ const priorityTaskTypes = [
       : `http://localhost:3000/tasks/update/${editData.id}`;
 
     //id y last update no están permitidos a la hora de editar un proyecto, status hay que desestructurarlo para que no se envíe el objeto completo
-  const { id, last_update, status, start_date, end_date, completed, priority, associated_project, ...rest } = editData;
+  const { id, last_update, status, start_date, end_date, completed, priority, associated_project, document_url, ...rest } = editData;
 
   //Normalizar el status
   const sanitizedData = {
@@ -105,6 +105,12 @@ const priorityTaskTypes = [
   // Agregar start_date si es un proyecto
   if (deleteType === 'project') {
     sanitizedData.start_date = start_date;
+
+    // ✅ Asignar fecha actual como deadline si se marca como completado
+    if (sanitizedData.status === 'completed') {
+      const hoy = new Date().toISOString().slice(0, 10);
+      sanitizedData.deadline = hoy;
+    }
   }
 
   // Eliminar deadline si está vacío

@@ -59,4 +59,9 @@ export class UpdateProjectDto{
     })
     status: ProjectStatus;
 
+
+    @IsOptional()
+    @IsString()
+    document_url?: string;
+
 }
