@@ -9,12 +9,16 @@ import { Injectable } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
  import { ProjectStatus } from './entities/project.entity';
  import { MinioService } from 'src/minio/minio.service';
+ import { Task } from 'src/task/entities/task.entity';
+ import { TaskStatus } from 'src/task/entities/task.entity';
  
  @Injectable()
  export class ProjectService {
     constructor(
         @InjectRepository(Project)
         private projectRepository: Repository<Project>,
+        @InjectRepository(Task)
+        private taskRepository: Repository<Task>,
         private readonly minioService: MinioService
     ) {}
  
@@ -150,6 +154,18 @@ import { Injectable } from '@nestjs/common';
         if (status !== undefined) project.status = status;
 
         await this.projectRepository.save(project);
+
+        // Marcar todas las tareas como completadas si se cambia a 'completed'
+        if (status === ProjectStatus.COMPLETED) {
+            await this.taskRepository.update(
+            { associated_project: { id: project.id } },
+            {
+                status: TaskStatus.COMPLETED,
+                completed: true,
+                end_date: new Date(),
+            }
+            );
+        }
 
         return { message: `Proyecto con id ${id} actualizado con éxito` };
       

@@ -4,9 +4,10 @@ import { ProjectService } from './project.service';
 import { ProjectController } from './project.controller';
 import { Project } from './entities/project.entity'; // Importamos la entidad Project
 import { MinioModule } from 'src/minio/minio.module';
+import { Task } from 'src/task/entities/task.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Project]), MinioModule], // Registrar el repositorio Project
+  imports: [TypeOrmModule.forFeature([Project, Task]), MinioModule], // Registrar el repositorio Project
   providers: [ProjectService],
   controllers: [ProjectController],
   exports: [TypeOrmModule],
