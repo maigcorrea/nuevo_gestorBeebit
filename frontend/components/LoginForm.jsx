@@ -85,8 +85,8 @@ const LoginForm = () => {
 
             <div className="flex justify-between items-center text-sm text-gray-500">
               <div className="flex align-items-center mt-3">
-                <Checkbox id="rememberme" onChange={e => setChecked(e.checked)} checked={checked} className="mr-2" />
-                <label htmlFor="rememberme" className='block mb-1 text-gray-600'>Remember me</label>
+                {/*<Checkbox id="rememberme" onChange={e => setChecked(e.checked)} checked={checked} className="mr-2" />
+                <label htmlFor="rememberme" className='block mb-1 text-gray-600'>Remember me</label>*/}
                 <ForgotPasswordForm />
               </div>
             </div>
