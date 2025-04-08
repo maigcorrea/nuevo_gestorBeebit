@@ -5,6 +5,8 @@ import localizer from '../calendarConfig' // archivo anterior
 
 const ProjectCalendar = () => {
     const [events, setEvents] = useState([])
+    const [currentDate, setCurrentDate] = useState(new Date())
+    const [currentView, setCurrentView] = useState('month')
     //Modal
     const [selectedDate, setSelectedDate] = useState(null)
     const [modalEvents, setModalEvents] = useState([])
@@ -65,6 +67,8 @@ const ProjectCalendar = () => {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500, background: "white", borderRadius: "5px" }}
+          date={currentDate}
+        view={currentView}
           onSelectEvent={handleEventClick}
         onShowMore={handleShowMore}
           messages={{
