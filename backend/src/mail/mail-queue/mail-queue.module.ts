@@ -3,7 +3,6 @@ import { BullModule } from '@nestjs/bull';
 import { MailQueueService } from './mail-queue.service';
 import { MailProcessor } from './mail.processor';
 import { MailService } from '../mail.service';
-import { MailQueueProcessor } from './mail-queue.processor';
 import { MailModule } from '../mail.module';
 
 
@@ -14,7 +13,7 @@ import { MailModule } from '../mail.module';
     }),
     MailModule,
   ],
-  providers: [MailQueueService, MailProcessor, MailService, MailQueueProcessor],
+  providers: [MailQueueService, MailProcessor, MailService],
   exports: [MailQueueService], // Para poder usarlo desde StaffService u otros
 })
 export class MailQueueModule {}

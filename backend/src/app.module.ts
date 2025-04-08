@@ -13,6 +13,7 @@ import { AppController } from './app.controller';
 import { MailQueueModule } from './mail/mail-queue/mail-queue.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/sheduler.module';
+import { MessagesModule } from './messages/messages.module';
 // ENTIDADES
 import { Project } from './project/entities/project.entity';
 import { Task } from './task/entities/task.entity';
@@ -50,6 +51,7 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
     MailModule,
     MailQueueModule,
     SchedulerModule,
+    MessagesModule
   ],
   controllers: [AppController],
 })

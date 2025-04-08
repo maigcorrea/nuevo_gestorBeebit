@@ -14,9 +14,25 @@ export class MailProcessor {
     await this.mailService.sendPasswordResetEmail(email, token);
   }
 
+  @Process('send-mail') // El nombre del job
+  async handleSendMailCustom(job: Job) {
+    const { to, subject, text } = job.data;
+
+    console.log('📨 Procesando correo desde la cola:', job.data);
+
+    await this.mailService.sendMail({
+      to,
+      subject,
+      text,
+    });
+
+    console.log('✅ Correo enviado a:', to);
+  }
+
   @Process('sendMail')
 async handleSendMail(job: Job) {
   const { to, subject, text } = job.data;
   await this.mailService.sendMail({ to, subject, text });
+  console.log(`Correo enviado a ${to}`);
 }
 }
