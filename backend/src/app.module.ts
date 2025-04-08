@@ -19,6 +19,7 @@ import { Project } from './project/entities/project.entity';
 import { Task } from './task/entities/task.entity';
 import { Staff } from './staff/entities/staff.entity';
 import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
+import { Messages } from './messages/entities/messages.entity';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
       username: 'postgres', // Usuario de la base de datos
       password: 'password', // Contraseña de la base de datos
       database: 'test', // Nombre de la base de datos
-      entities: [ Project, Task, Staff, TaskStaff], // Entidades que se utilizarán
+      entities: [ Project, Task, Staff, TaskStaff, Messages], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),

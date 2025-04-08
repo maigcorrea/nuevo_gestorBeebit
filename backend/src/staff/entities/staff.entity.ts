@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BeforeInsert } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Messages } from 'src/messages/entities/messages.entity';
 
 export enum StaffType {
     ADMIN = 'admin',
@@ -47,4 +48,7 @@ export class Staff{
     //Foto de perfil del usuario
     @Column({ nullable: true })
     profileImage: string;
+
+    @OneToMany(() => Messages, message => message.sender)
+    sentMessages: Messages[];
 }

@@ -36,7 +36,12 @@ export default function Navbar() {
       label:"Panel de control",
       icon: 'pi pi-home',
       command: () => router.push('/panel'),
-    }] : [])
+    }] : []),
+    {
+      label: 'Historial mensajes',
+      icon: 'pi pi-home',
+      command: () => router.push('/messages')
+    },
   ], [userType]); // Hace que los ítems se generen cada vez que cambie userType
 
 

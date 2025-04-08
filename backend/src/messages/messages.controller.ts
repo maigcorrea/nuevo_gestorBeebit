@@ -1,4 +1,5 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Req, Get, Param  } from '@nestjs/common';
 import { SendMessageDto } from './dto/send-message.dto';
 import { MessagesService } from './messages.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -18,8 +19,18 @@ export class MessagesController{
     @ApiResponse({ status: 201, description: 'Mensaje enviado correctamente' })
     @ApiResponse({ status: 400, description: 'Solicitud inválida' })
     @ApiResponse({ status: 401, description: 'No autorizado' })
-    async send(@Body() dto: SendMessageDto) {
-        return this.messagesService.sendEmail(dto);
+    async send(@Body() dto: SendMessageDto, @Req() req) {
+        const senderId = req.user.userId; // extraído del JWT
+        return this.messagesService.sendEmail(dto, senderId);
+    }
+
+    @Get('enviados')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiOperation({ summary: 'Obtener mensajes enviados por un usuario' })
+    @ApiResponse({ status: 200, description: 'Mensajes obtenidos correctamente' })
+    async getSentMessages(@Req() req) {
+        const userId = req.user['userId'];
+        return this.messagesService.findSentMessagesByUser(userId);
     }
 
 }
