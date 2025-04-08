@@ -60,6 +60,15 @@ export class StaffController{
     }
 
 
+    //Endpoint que devuelve todos los correos de todos los empleados
+    @UseGuards(AuthGuard('jwt'))
+    @Get('emails')
+        async getAllEmails(): Promise<string[]> {
+        const users = await this.staffService.findAll();
+        return users.map(user => user.email); // solo devuelves los emails
+    }
+
+
 
     // Mostrar un empleado por ID
     //@UseGuards(AuthGuard('jwt')) //No se protege por rol
