@@ -15,12 +15,11 @@ export class MailService {
   async sendPasswordResetEmail(to: string, link: string) {
     
     const info = await this.mailerService.sendMail({
-      from: '"Gestor de Proyectos 👨‍💻" <no-reply@gestor.com>',
       to,
       subject: 'Recuperación de contraseña',
       text: 'Haz clic en este enlace para restablecer tu contraseña',
       html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-      <a href="${link}">${link}</a>`,
+      <a href="${link}">Reestablecer contraseña</a>`,
     });
 
     console.log('Mensaje enviado: %s', info.messageId);

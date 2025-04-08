@@ -12,7 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
         secure: false,
       },
       defaults: {
-        from: '"Gestor Beebit 👻" <no-reply@beebit.com>',
+        from: '"Gestor Beebit" <no-reply@beebit.com>',
       },
     }),
   ],
