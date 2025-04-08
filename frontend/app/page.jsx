@@ -14,10 +14,12 @@ export default function Home() {
   const { userType } = useContext(UserContext);
   const { setUserType } = useContext(UserContext);
 
+  // Obtener tareas del usuario
+  
+
   return (
     <>
     <ProtectRoutes>
-      <h1 className="text-2xl font-bold px-5 mb-6">Bienvenido al Dashboard</h1>
       <div className="flex mb-[80px]">
         <WelcomeMessage></WelcomeMessage>
         <PomodoroTimer></PomodoroTimer>
