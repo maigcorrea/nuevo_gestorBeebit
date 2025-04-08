@@ -4,6 +4,7 @@ import { SendMessageDto } from './dto/send-message.dto';
 import { MessagesService } from './messages.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Messages } from './entities/messages.entity';
 
 @ApiTags('Mensajes') 
 @ApiBearerAuth()
@@ -31,6 +32,14 @@ export class MessagesController{
     async getSentMessages(@Req() req) {
         const userId = req.user['userId'];
         return this.messagesService.findSentMessagesByUser(userId);
+    }
+
+
+    @Get('received')
+    @UseGuards(AuthGuard('jwt'))
+    async getReceivedMessages(@Req() req): Promise<Messages[]> {
+        const userId = req.user['userId'];
+        return this.messagesService.getMessagesByReceiver(userId);
     }
 
 }

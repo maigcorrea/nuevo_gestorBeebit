@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Messages } from './entities/messages.entity';
 import { Queue } from 'bull';
 import { SendMessageDto } from './dto/send-message.dto';
+import { FindOperator } from 'typeorm';
 
 @Injectable()
 export class MessagesService {
@@ -34,8 +35,17 @@ export class MessagesService {
         order: { sentAt: 'DESC' },
       });     
     } catch (err) {
-      console.error('❌ Error al obtener mensajes:', err);
+      console.error('Error al obtener mensajes:', err);
     throw err;
     }
   }
+
+
+  async getMessagesByReceiver(receiverId: number): Promise<Messages[]> {
+    return this.messageRepository.find({
+        where: { receiver: { id: receiverId } },
+        relations: ['sender', 'receiver'],
+        order: { sentAt: 'DESC' },
+    } as any);
+}
 }

@@ -11,10 +11,17 @@ import { UserContext } from '@/app/context/UserContext';
 const page = () => {
   return (
     <>
-    <div className='p-4'>
-        <h2 className='font-bold text-3xl'>MENSAJES</h2>
-        <Link href="/messages">Mensajes enviados</Link><br></br>
-        <Link href="#">Mensajes recibidos</Link>
+    <div className='flex'>
+      <div className='p-4 w-[20%]'>
+          <h2 className='font-bold text-3xl'>MENSAJES</h2><hr></hr>
+          <Link href="/messages">Mensajes enviados</Link><br></br>
+          <Link href="/messagesReceived">Mensajes recibidos</Link>
+      </div>
+      <div className='p-4 w-full'>
+          <h2 className='font-bold text-3xl text-center'>PROYECTOS</h2>
+          
+      </div>
+
     </div>
     </>
   )

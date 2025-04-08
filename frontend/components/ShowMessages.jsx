@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const ShowMessages = () => {
   const [messages, setMessages] = useState([]);
@@ -46,7 +47,16 @@ const ShowMessages = () => {
   return (
     <>
        <div className="max-w-4xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-center">Mensajes Enviados</h2>
+        <div className='flex justify-center items-baseline gap-5'>
+          <h2 className="text-3xl font-bold mb-6 text-center">Mensajes Enviados</h2>
+          <div className='flex gap-1 items-baseline'>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-3">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.49 12 3.74 8.248m0 0 3.75-3.75m-3.75 3.75h16.5V19.5" />
+          </svg>
+          <Link href="/historial"><small className='text-gray-700'>
+            Volver</small></Link>
+          </div>
+        </div>
 
       {messages.length === 0 ? (
         <p className="text-center text-gray-500">No has enviado ningún mensaje todavía.</p>
