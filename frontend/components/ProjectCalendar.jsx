@@ -61,6 +61,7 @@ const ProjectCalendar = () => {
         <>
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-4 text-center">Calendario de Proyectos</h2>
+        {console.log('Localizer test:', localizer)}
         <Calendar
           localizer={localizer}
           events={events}
