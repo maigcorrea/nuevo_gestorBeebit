@@ -9,6 +9,7 @@ import { UserContext } from '@/app/context/UserContext';
 import ProtectRoutes from "@/components/ProtectRoutes";
 import PomodoroTimer from "@/components/PomodoroTimer";
 import WelcomeMessage from "@/components/WelcomeMessage";
+import ButtonEmail from "@/components/ButtonEmail";
 
 export default function Home() {
   const { userType } = useContext(UserContext);
@@ -27,6 +28,7 @@ export default function Home() {
       <TasksTab></TasksTab>
       <ProjectTab></ProjectTab>
       {userType==="admin" ? <OptionButtons></OptionButtons> :null}
+      <ButtonEmail></ButtonEmail>
     </ProtectRoutes>
     </>
   );
