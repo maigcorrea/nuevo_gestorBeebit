@@ -56,7 +56,7 @@ const ProjectTab = () => {
   const totalPaginas = Math.ceil(proyectos.length / proyectosPorPagina);
   const proyectosPaginados = proyectos.slice((currentPage - 1) * proyectosPorPagina, currentPage * proyectosPorPagina);
 
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (error) return <p className="text-3xl p-4">{error}</p>;
 
   return (
     <>

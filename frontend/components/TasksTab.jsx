@@ -72,7 +72,7 @@ const TasksTab = () => {
     fetchTareas();//Se llama a la función que hace fetch, hacemos esto porque useEffect no puede ser async directamente, así que definimos una función async dentro y luego la ejecutamos ahí mismo. Es un patrón muy común en React.
   }, []);
 
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (error) return <p className="text-3xl p-4">{error}</p>;
 
 
 
