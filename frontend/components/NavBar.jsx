@@ -24,22 +24,18 @@ export default function Navbar() {
   const items = useMemo(() => [
     {
       label: 'Inicio',
-      icon: 'pi pi-home',
       command: () => router.push('/')
     },
     ...(userType==='admin' ? [{ //concatena dinámicamente el botón solo si el usuario es admin
       label:"Registrar nuevo usuario",
-      icon: 'pi pi-sign-in',
       command: () => router.push('/registration'),
     }] : []),
     ...(userType==='admin' ? [{ //concatena dinámicamente el botón solo si el usuario es admin
       label:"Panel de control",
-      icon: 'pi pi-home',
       command: () => router.push('/panel'),
     }] : []),
     {
       label: 'Historial mensajes',
-      icon: 'pi pi-home',
       command: () => router.push('/messages')
     },
   ], [userType]); // Hace que los ítems se generen cada vez que cambie userType
