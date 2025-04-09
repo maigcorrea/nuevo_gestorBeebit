@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { ListBox } from 'primereact/listbox';
 import { Button } from 'primereact/button';
+import { useTaskSummary } from '@/app/context/TaskSummaryContext';
 
 const TasksTab = () => {
   const [tareas, setTareas] = useState([]); //Aquí se almacenan las tareas
   const [error, setError] = useState('');
+
   //Para editar prioridad y estado de la tarea
   const [editVisible, setEditVisible] = useState(false);
   const [editData, setEditData] = useState({});
@@ -22,6 +24,9 @@ const TasksTab = () => {
     { name: 'Media', code: 'medium' },
     { name: 'Baja', code: 'low' }
   ];
+
+  //Actualizar resumen del componente de bienvenida (welcomeMessage)
+  const { actualizarResumenTareas } = useTaskSummary();
 
   //Cambiar vista
   const [vistaTabla, setVistaTabla] = useState(true);
@@ -104,6 +109,8 @@ const TasksTab = () => {
             : t
         )
       );
+
+      actualizarResumenTareas();
   
     } catch (error) {
       setError(error.message);
@@ -138,6 +145,8 @@ const TasksTab = () => {
       setTareas(prev =>
         prev.map(t => t.id === updated.id ? { ...t, ...updated } : t)
       );
+
+      actualizarResumenTareas();
   
       setEditVisible(false);
     } catch (err) {

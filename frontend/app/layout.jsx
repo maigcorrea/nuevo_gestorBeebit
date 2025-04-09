@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from '../components/NavBar';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { UserProvider } from './context/UserContext';
+import { TaskSummaryProvider } from './context/TaskSummaryContext';
 
 export const metadata = {
   title: 'Gestor de Tareas',
@@ -14,12 +15,14 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <body className='bg-[#d0e4e5] min-h-screen'>
         <UserProvider>
-          <header>
-            {<Navbar></Navbar>}
-          </header>
-          <main>
-            {children}
-          </main>
+          <TaskSummaryProvider>
+            <header>
+              {<Navbar></Navbar>}
+            </header>
+            <main>
+              {children}
+            </main>
+          </TaskSummaryProvider>
         </UserProvider>
       </body>
     </html>

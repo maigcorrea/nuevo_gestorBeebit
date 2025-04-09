@@ -6,6 +6,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { ListBox } from 'primereact/listbox';
+import { useTaskSummary } from '@/app/context/TaskSummaryContext';
 
 
 const TabControlAdmin = () => {
@@ -38,6 +39,9 @@ const priorityTaskTypes = [
     //Estados para el formulario de edición
     const [editVisible, setEditVisible] = useState(false);
     const [editData, setEditData] = useState({});
+
+    //Actualizar resumen de tareas en el componente de bienvenida (WelcomeMessage)
+    const {actualizarResumenTareas} = useTaskSummary();
 
   useEffect(() => {
     // Obtener proyectos
@@ -158,8 +162,10 @@ if (editData.deadline && editData.start_date && fin < inicio) {
       setTasks(data);
     }
 
+    actualizarResumenTareas();
     setEditVisible(false);
     setEditData({});
+
   } catch (err) {
     console.error("Error al actualizar:", err);
   }
