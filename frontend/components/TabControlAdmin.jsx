@@ -240,7 +240,6 @@ if (editData.deadline && editData.start_date && fin < inicio) {
 
   return (
     <>
-    <DashboardStats></DashboardStats>
     <div className="p-4 bg-white shadow-md rounded-xl">
         <TabView>
             <TabPanel header="Proyectos">
@@ -300,6 +299,8 @@ if (editData.deadline && editData.start_date && fin < inicio) {
         </TabView>
         </div>
     
+        <DashboardStats></DashboardStats>
+        
         {
             //MODAL PARA ELIMINAR
         }

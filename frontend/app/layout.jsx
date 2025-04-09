@@ -5,6 +5,7 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { UserProvider } from './context/UserContext';
 import { TaskSummaryProvider } from './context/TaskSummaryContext';
 import { TaskStatsProvider } from './context/TaskStatsContext';
+import { ProjectStatsProvider } from './context/ProjectsStatsContext';
 
 export const metadata = {
   title: 'Gestor de Tareas',
@@ -22,7 +23,10 @@ export default function RootLayout({ children }) {
             </header>
             <main>
               <TaskStatsProvider>
+              <ProjectStatsProvider>
                 {children}
+
+              </ProjectStatsProvider>
               </TaskStatsProvider>
             </main>
           </TaskSummaryProvider>
