@@ -18,7 +18,7 @@ const page = () => {
           <Link href="/messagesReceived">Mensajes recibidos</Link>
       </div>
       <div className='p-4 w-full'>
-          <h2 className='font-bold text-3xl text-center'>PROYECTOS</h2>
+          <h2 className='font-bold text-3xl text-center'>Proyectos</h2>
           
       </div>
 

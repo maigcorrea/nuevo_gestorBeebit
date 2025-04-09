@@ -7,6 +7,9 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { ListBox } from 'primereact/listbox';
 import { useTaskSummary } from '@/app/context/TaskSummaryContext';
+import TaskChart from './TaskChart';
+import DashboardOverview from './DashboardStats';
+import DashboardStats from './DashboardStats';
 
 
 const TabControlAdmin = () => {
@@ -237,6 +240,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
 
   return (
     <>
+    <DashboardStats></DashboardStats>
     <div className="p-4 bg-white shadow-md rounded-xl">
         <TabView>
             <TabPanel header="Proyectos">
