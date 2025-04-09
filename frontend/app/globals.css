@@ -31,3 +31,7 @@
   .animate-modal {
     animation: showModal 0.4s ease-out forwards;
   }
+
+  .rbc-toolbar {
+    display: none !important;
+  }

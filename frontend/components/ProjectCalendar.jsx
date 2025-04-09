@@ -68,8 +68,6 @@ const ProjectCalendar = () => {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500, background: "white", borderRadius: "5px" }}
-          date={currentDate}
-        view={currentView}
           onSelectEvent={handleEventClick}
         onShowMore={handleShowMore}
           messages={{
