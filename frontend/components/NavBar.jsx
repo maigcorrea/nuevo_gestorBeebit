@@ -35,7 +35,7 @@ export default function Navbar() {
       command: () => router.push('/panel'),
     }] : []),
     {
-      label: 'Historial',
+      label: 'Historial de mensajería',
       command: () => router.push('/historial')
     },
   ], [userType]); // Hace que los ítems se generen cada vez que cambie userType

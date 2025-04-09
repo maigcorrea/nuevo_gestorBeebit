@@ -12,14 +12,16 @@ const page = () => {
   return (
     <>
     <div className='flex'>
-      <div className='p-4 w-[20%]'>
-          <h2 className='font-bold text-3xl'>MENSAJES</h2><hr></hr>
-          <Link href="/messages">Mensajes enviados</Link><br></br>
-          <Link href="/messagesReceived">Mensajes recibidos</Link>
-      </div>
-      <div className='p-4 w-full'>
-          <h2 className='font-bold text-3xl text-center'>Proyectos</h2>
-          
+      <div className='p-4 w-full text-center'>
+          <h2 className='font-bold text-3xl'>MENSAJES</h2>
+          <div className='flex justify-evenly mt-[100px]'>
+            <div>
+              <Link href="/messages" className='bg-white p-[20px] rounded text-3xl hover:bg-gray-100'>Mensajes enviados</Link>
+            </div>
+            <div className=''>
+              <Link href="/messagesReceived" className='bg-white p-[20px] rounded text-3xl hover:bg-gray-100'>Mensajes recibidos</Link>
+            </div>
+          </div>
       </div>
 
     </div>
