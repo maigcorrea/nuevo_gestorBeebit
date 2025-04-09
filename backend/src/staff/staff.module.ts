@@ -6,9 +6,10 @@ import { Staff } from './entities/staff.entity'; // Importamos la entidad Staff
 import { MailService } from 'src/mail/mail.service';
 import { MinioService } from 'src/minio/minio.service';
 import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Staff]), MailQueueModule], // Registrar el repositorio Staff
+  imports: [TypeOrmModule.forFeature([Staff]), MailQueueModule, CaslModule], // Registrar el repositorio Staff
   providers: [StaffService, MailService, MinioService],
   controllers: [StaffController],
 })

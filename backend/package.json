@@ -27,6 +27,8 @@
   "dependencies": {
     "@bull-board/api": "^6.7.10",
     "@bull-board/express": "^6.7.10",
+    "@casl/ability": "^6.6.0",
+    "@casl/mongoose": "^8.0.3",
     "@faker-js/faker": "^8.4.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/bull": "^11.0.2",

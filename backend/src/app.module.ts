@@ -14,6 +14,7 @@ import { MailQueueModule } from './mail/mail-queue/mail-queue.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/sheduler.module';
 import { MessagesModule } from './messages/messages.module';
+import { CaslModule } from './casl/casl.module';
 // ENTIDADES
 import { Project } from './project/entities/project.entity';
 import { Task } from './task/entities/task.entity';
@@ -52,7 +53,8 @@ import { Messages } from './messages/entities/messages.entity';
     MailModule,
     MailQueueModule,
     SchedulerModule,
-    MessagesModule
+    MessagesModule,
+    CaslModule
   ],
   controllers: [AppController],
 })

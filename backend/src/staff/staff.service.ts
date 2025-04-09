@@ -12,6 +12,8 @@ import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
 import { InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { AppAbility } from 'src/casl/casl-ability.factory';
+import { ForbiddenException } from '@nestjs/common';
 
 @Injectable()
 
@@ -23,7 +25,11 @@ export class StaffService {
         private readonly mailQueueService: MailQueueService,
     ) {}
 
-    async create(createStaffDto: CreateStaffDto): Promise<Staff>{
+    async create(createStaffDto: CreateStaffDto, ability: AppAbility): Promise<Staff>{
+        if (!ability.can('create', Staff)) {
+            throw new ForbiddenException('No tienes permiso para crear nuevos empleados');
+        }
+
             // Creamos una nueva instancia de User a partir de los datos que nos llegan del DTO. TypeORM genera un objeto User pero NO lo guarda en la base de datos aún.
         const { register_date,password, ...userData } = createStaffDto;
         console.log("EStá")
@@ -90,7 +96,10 @@ export class StaffService {
 
 
     // Método que devuelve todos los usuarios de la base de datos.
-    async findAll(): Promise<Staff[]> {
+    async findAll(ability: AppAbility): Promise<Staff[]> {
+        if (!ability.can('read', Staff)) {
+            throw new ForbiddenException('No tienes permiso para ver los empleados');
+        }
         // Llama al método find() de TypeORM, que trae todos los registros de la tabla user.
         return this.staffRepository.find();
     }
@@ -98,11 +107,14 @@ export class StaffService {
 
 
     //Método para actualizar la información de un empleado
-    async updateStaff(id: string, updateDto: UpdateStaffDto):Promise<{message:string}>{
+    async updateStaff(id: string, updateDto: UpdateStaffDto, ability:AppAbility):Promise<{message:string}>{
         const staff = await this.staffRepository.findOneBy({ id });
               
         if (!staff) {
             throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
+        }
+        if (!ability.can('update', staff)) {
+            throw new ForbiddenException('No tienes permiso para actualizar la información de un empleado');
         }
         
         //Al pasarle el objeto, De esta forma, desestructuramos solo una vez:
@@ -130,7 +142,17 @@ export class StaffService {
 
 
     //Método para borrar un empleado
-    async deleteStaff(id: string): Promise<{message: string }> {
+    async deleteStaff(id: string, ability: AppAbility): Promise<{message: string }> {
+        const staff = await this.staffRepository.findOneBy({ id });
+
+        if (!staff) {
+            throw new NotFoundException(`No se encontró el empleado con id ${id}`);
+        }
+
+        if (!ability.can('delete', staff)) {
+            throw new ForbiddenException('No tienes permiso para eliminar este empleado');
+        }
+        
         const result = await this.staffRepository.delete(id);
       
         if (result.affected === 0) {
@@ -181,7 +203,12 @@ export class StaffService {
     }
 
      //Método para cambiar nueva contraseña
-     async changePassword(userId: string, newPassword: string): Promise<boolean> {
+     async changePassword(userId: string, newPassword: string, ability: AppAbility): Promise<boolean> {
+        
+        if (!ability.can('update', Staff)) {
+            throw new ForbiddenException('No tienes permiso para cambiar la contraseña');
+        }
+
         const user = await this.staffRepository.findOne({ where: { id: userId } });
         if (!user) return false;
       
@@ -221,7 +248,11 @@ export class StaffService {
     
 
     //Método para establecer nueva contraseña al recuperar contraseña
-    async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    async resetPassword(token: string, newPassword: string, ability: AppAbility): Promise<{ message: string }> {
+        if (!ability.can('update', Staff)) {
+            throw new ForbiddenException('No tienes permiso para modificar la contraseña');
+        }
+
         const user = await this.staffRepository.findOne({ where: { resetToken: token } });
       
         if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {

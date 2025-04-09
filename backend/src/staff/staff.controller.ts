@@ -17,30 +17,39 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinioService } from 'src/minio/minio.service';
-import { Req } from '@nestjs/common';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
+import { CheckAbilities } from 'src/casl/check-abilities.decorator';
+import { AbilitiesGuard } from 'src/casl/abilities.guard';
+import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
+import { Request } from 'express';
+import { Req } from '@nestjs/common';
 
 @ApiTags('Staff')
 @Controller("staff")
 export class StaffController{
     constructor(private readonly staffService: StaffService,
-        private readonly minioService: MinioService
+        private readonly minioService: MinioService,
+        private readonly caslAbilityFactory: CaslAbilityFactory
     ) {}
 
     //@UseGuards(AuthGuard('jwt'), RolesGuard)
     //@Roles('admin')
    // @ApiBearerAuth('jwt')
+   @ApiBearerAuth('jwt')
+   @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'create', subject: Staff })
     @Post()
 
     @ApiOperation({summary:"Introducir empleado en el sistema"})
     @ApiResponse({ status: 201, description: 'Empleado creado correctamente', type: StaffResponseDto})
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
-    async create(@Body() createStaffDto: CreateStaffDto) {
-        console.log("Hola")
+    async create(@Body() createStaffDto: CreateStaffDto, @Req() req:any) {
+        console.log("Hola");
+        const ability = this.caslAbilityFactory.createForUser(req.user);
         // Recibe el cuerpo de la petición (body) y lo convierte en un CreateStaffDto automáticamente.
         // Llama al método create() del servicio, pasándole el DTO.
-        const user= await this.staffService.create(createStaffDto);
+        const user= await this.staffService.create(createStaffDto,ability);
         return user;
     }
 
@@ -48,23 +57,29 @@ export class StaffController{
     //Endpoint para mostrar todos los usuarios de la base de datos.
     //@UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
     //@Roles('admin')
-    //@ApiBearerAuth('jwt') // <- ¡Este es el importante!
+    @ApiBearerAuth('jwt') // <- ¡Este es el importante!
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: Staff }) // Requiere permiso de lectura
     @Get("/all")
     @ApiOperation({summary:"Mostrar todos los empleados"})
     @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })
     @ApiResponse({ status: 404, description: 'No se encontraron empleados' })
 
-    findAll() {
+    findAll(@Req() req: Request) {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
         // Llama al método findAll() del servicio, que devuelve un array de usuarios.
-        return this.staffService.findAll();
+        return this.staffService.findAll(ability);
     }
 
 
     //Endpoint que devuelve todos los correos de todos los empleados
-    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: Staff })
     @Get('emails')
-        async getAllEmails(): Promise<string[]> {
-        const users = await this.staffService.findAll();
+    async getAllEmails(@Req() req: Request): Promise<string[]> {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const users = await this.staffService.findAll(ability);
         return users.map(user => user.email); // solo devuelves los emails
     }
 
@@ -85,7 +100,10 @@ export class StaffController{
 
 
     //Endpoint para actualizar la información de un empleado en concreto
-    @UseGuards(AuthGuard('jwt')) //No rol
+    //@UseGuards(AuthGuard('jwt')) //No rol
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Staff })
     @Put("/update/:id")
     @ApiOperation({summary:"Actualizar una empleado determinado"})
     @ApiResponse({
@@ -96,14 +114,18 @@ export class StaffController{
         },
       })
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async updateStaff(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateStaffDto) {
-        return this.staffService.updateStaff(id, updateDto); //Se parsea a string el id por si viene en number
+    async updateStaff(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateStaffDto, @Req() req: Request) {
+        const ability= this.caslAbilityFactory.createForUser(req.user as Staff);
+        return this.staffService.updateStaff(id, updateDto, ability); //Se parsea a string el id por si viene en number
     }
 
 
 
 
     //Endpoint para eliminar un empleado
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'delete', subject: Staff })
     @Delete("/delete/:id")
     @ApiOperation({summary:"Borrar un empleado determinado"})
     @ApiResponse({ status: 201, description: 'Empleado eliminado con éxito',
@@ -111,8 +133,9 @@ export class StaffController{
           example: { message: 'Empleado actualizado con éxito' },
         },})
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
-    async deleteStaff(@Param('id', new ParseUUIDPipe()) id: string) {
-        return this.staffService.deleteStaff(id); // conviertes el string a número
+    async deleteStaff(@Param('id', new ParseUUIDPipe()) id: string, @Req() req: Request) {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        return this.staffService.deleteStaff(id, ability); // conviertes el string a número
     }
 
 
@@ -151,14 +174,20 @@ export class StaffController{
 
 
       //Endpoint para cambiar nueva contraseña
+      @ApiBearerAuth('jwt')
+      @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+      @CheckAbilities({ action: 'update', subject: Staff })
       @Put('changePassword/:id')
       @ApiParam({ name: 'id', required: true, type: Number })
       @ApiBody({ type: ChangePasswordDto })
       async changePassword(
       @Param('id') id: string,
       @Body() body: ChangePasswordDto,
+      @Req() req: Request
       ) {
-      const success = await this.staffService.changePassword(id, body.password);
+
+        const ability= this.caslAbilityFactory.createForUser(req.user as Staff);
+      const success = await this.staffService.changePassword(id, body.password, ability );
       if (!success) {
           throw new NotFoundException('Usuario no encontrado');
       }
@@ -174,9 +203,13 @@ export class StaffController{
     }
 
     //Endpoint para establecer nueva contraseña al recuperarla
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Staff })
     @Post('reset-password')
-    async resetPassword(@Body() body: ResetPasswordDto) {
-        return this.staffService.resetPassword(body.token, body.newPassword);
+    async resetPassword(@Body() body: ResetPasswordDto, @Req() req: Request) {
+        const ability= this.caslAbilityFactory.createForUser(req.user as Staff);
+        return this.staffService.resetPassword(body.token, body.newPassword, ability);
     }
 
     //Cargar foto de perfil
