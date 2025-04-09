@@ -24,13 +24,15 @@ export default function Home() {
     <ProtectRoutes>
       <div className="flex mb-[80px] flex-wrap gap-2">
         <WelcomeMessage></WelcomeMessage>
+        <ProjectCalendar></ProjectCalendar>
+      </div>
+      <div className="mb-[100px]">
         <PomodoroTimer></PomodoroTimer>
       </div>
       <div>
-        <ProjectCalendar></ProjectCalendar>
+        <TasksTab></TasksTab>
+        <ProjectTab></ProjectTab>
       </div>
-      <TasksTab></TasksTab>
-      <ProjectTab></ProjectTab>
       {userType==="admin" ? <OptionButtons></OptionButtons> :null}
       <ButtonEmail></ButtonEmail>
     </ProtectRoutes>

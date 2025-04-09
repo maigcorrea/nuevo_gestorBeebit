@@ -264,7 +264,7 @@ const TasksTab = () => {
           )
       )}
 
-      <div className="flex justify-end mt-4 gap-2 px-4">
+      <div className="flex justify-end mt-4 gap-2 px-4 mb-[80px]">
         <button className="btn btn-sm" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>«</button>
         {Array.from({ length: totalPaginas }, (_, i) => (
           <button

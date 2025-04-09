@@ -59,7 +59,7 @@ const ProjectCalendar = () => {
 
     return (
         <>
-      <div className="p-4">
+      <div className="p-4 w-[50%] m-auto">
         <h2 className="text-xl font-semibold mb-4 text-center">Calendario de Proyectos</h2>
         {console.log('Localizer test:', localizer)}
         <Calendar
@@ -67,7 +67,7 @@ const ProjectCalendar = () => {
           events={events}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 500, background: "white", borderRadius: "5px" }}
+          style={{ height: 400, background: "white", borderRadius: "5px" }}
           onSelectEvent={handleEventClick}
         onShowMore={handleShowMore}
           messages={{
