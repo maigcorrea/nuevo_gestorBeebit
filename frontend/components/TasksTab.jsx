@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { ListBox } from 'primereact/listbox';
 import { Button } from 'primereact/button';
 import { useTaskSummary } from '@/app/context/TaskSummaryContext';
+import { Toast } from 'primereact/toast';
 
 const TasksTab = () => {
   const [tareas, setTareas] = useState([]); //Aquí se almacenan las tareas
@@ -34,6 +35,9 @@ const TasksTab = () => {
   //Paginación de la tabla
   const [currentPage, setCurrentPage] = useState(1);
   const tareasPorPagina = 6;
+
+  //Para el toast al completar una tarea
+  const toast = useRef(null);
 
   //Para que sólo se haga el fetch una vez, usamos el useEffect
   useEffect(() => {
@@ -110,7 +114,16 @@ const TasksTab = () => {
         )
       );
 
+      //Actualizar resumen del componente de bienvenida
       actualizarResumenTareas();
+
+      //Mostrar toast de +1
+      toast.current?.show({
+        severity: 'success',
+        summary: '+1',
+        detail: '',
+        life: 1500,
+      });
   
     } catch (error) {
       setError(error.message);
@@ -147,6 +160,16 @@ const TasksTab = () => {
       );
 
       actualizarResumenTareas();
+
+      if(editData.status.code==="completed"){
+        //Mostrar toast de +1
+        toast.current?.show({
+          severity: 'success',
+          summary: '+1',
+          detail: '',
+          life: 1500,
+        });
+      }
   
       setEditVisible(false);
     } catch (err) {
@@ -320,6 +343,12 @@ const TasksTab = () => {
           />
         </div>
       </Dialog>
+
+
+      {
+        //Toast que salta al completar una tarea
+        <Toast ref={toast} position="bottom-right" className="custom-toast mb-[80px]" />
+      }
     </>
   );
 };
