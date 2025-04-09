@@ -6,6 +6,7 @@ import { UserProvider } from './context/UserContext';
 import { TaskSummaryProvider } from './context/TaskSummaryContext';
 import { TaskStatsProvider } from './context/TaskStatsContext';
 import { ProjectStatsProvider } from './context/ProjectsStatsContext';
+import { TaskRankingProvider } from './context/TaskRankingContext';
 
 export const metadata = {
   title: 'Gestor de Tareas',
@@ -24,8 +25,9 @@ export default function RootLayout({ children }) {
             <main>
               <TaskStatsProvider>
               <ProjectStatsProvider>
+              <TaskRankingProvider>
                 {children}
-
+              </TaskRankingProvider>
               </ProjectStatsProvider>
               </TaskStatsProvider>
             </main>

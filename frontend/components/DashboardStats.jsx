@@ -4,6 +4,7 @@ import TaskChart from './TaskChart';
 import { useTaskStats } from '@/app/context/TaskStatsContext';
 import { useProjectStats } from '@/app/context/ProjectsStatsContext';
 import ProjectChart from './ProjectChart';
+import StaffRankingChart from './StaffRankingChart';
 
 const DashboardStats = () => {
     const { taskStats } = useTaskStats();
@@ -23,6 +24,9 @@ const DashboardStats = () => {
             </div>
             <div>
                 <ProjectChart></ProjectChart>
+            </div>
+            <div>
+                <StaffRankingChart></StaffRankingChart>
             </div>
         </div>
 

@@ -97,12 +97,15 @@ export class TaskStaffService {
     const relaciones = await this.taskStaffRepo.find({
       relations: ['task', 'staff'],
     });
-
+    console.log("joder");
     //Mapear cada fila para construir un objeto con el título de la tarea y el nombre del empleado (por individual, tarea1- nombre1, tarea1-nombre2)
-    return relaciones.filter((rel:any) => rel.task && rel.staff).map((rel:any) => ({
-      taskId: rel.task.id,
-      taskTitle: rel.task.title,
-      staffFullName: `${rel.staff.id, rel.staff.name}`,
+    return relaciones.map((rel) => ({
+      staff: {
+        name: rel.staff.name,
+      },
+      tarea: {
+        completed: rel.task.completed,
+      },
     }));
   }
 

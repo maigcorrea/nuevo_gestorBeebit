@@ -30,7 +30,7 @@ export class TaskStaffController{
 
     @ApiOperation({summary:"Obtener todas las relaciones tarea-empleado"})
     @ApiResponse({ status: 404, description: 'Error.' })
-    @Get()
+    @Get('todo')
     findAll(): Promise<TaskStaffResponseDto[]> {
         return this.taskStaffService.findAll();
     }
