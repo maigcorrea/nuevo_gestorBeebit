@@ -7,6 +7,9 @@ const ShowMessages = () => {
   const [selectedMessage, setSelectedMessage] = useState(null); // Estado para el mensaje seleccionado
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar si el modal está abierto
 
+  //Buscador
+  const [search, setSearch] = useState('');
+
   useEffect(() => {
     const fetchMessages = async () => {
       const token = localStorage.getItem('token');
@@ -44,8 +47,21 @@ const ShowMessages = () => {
     setSelectedMessage(null);
   };
 
+  //Buscar
+  const filteredMessages = messages.filter((msg) => {
+    const searchLower = search.toLowerCase();
+    return (
+      msg.subject.toLowerCase().includes(searchLower) ||
+      msg.receiver.email.toLowerCase().includes(searchLower)
+    );
+  });
+  
+
   return (
     <>
+    <div className='text-center'>
+      <input type="text" placeholder='Buscar por asunto o email' className="p-2 border rounded w-full sm:w-1/2" value={search} onChange={(e) => setSearch(e.target.value)}/>
+    </div>
        <div className="max-w-4xl mx-auto px-4 py-8">
         <div className='flex justify-center items-baseline gap-5'>
           <h2 className="text-3xl font-bold mb-6 text-center">Mensajes Enviados</h2>
@@ -58,11 +74,11 @@ const ShowMessages = () => {
           </div>
         </div>
 
-      {messages.length === 0 ? (
+      {filteredMessages.length === 0 ? (
         <p className="text-center text-gray-500">No has enviado ningún mensaje todavía.</p>
       ) : (
         <div className="space-y-4">
-          {messages.map((msg) => (
+          {filteredMessages.map((msg) => (
             <div
               key={msg.id}
               className="bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300 border border-gray-200 px-6 py-4 flex justify-between items-start cursor-pointer"
