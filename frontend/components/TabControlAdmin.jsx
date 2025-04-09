@@ -43,6 +43,10 @@ const priorityTaskTypes = [
     //Actualizar resumen de tareas en el componente de bienvenida (WelcomeMessage)
     const {actualizarResumenTareas} = useTaskSummary();
 
+    //Buscador
+    const [projectSearch, setProjectSearch] = useState('');
+    const [taskSearch, setTaskSearch] = useState('');
+
   useEffect(() => {
     // Obtener proyectos
     const fetchProjects = async () => {
@@ -222,13 +226,29 @@ if (editData.deadline && editData.start_date && fin < inicio) {
 
   const today = new Date().toISOString().split('T')[0];
 
+  //Búsqueda
+  const filteredProjects = projects.filter(project =>
+    project.title.toLowerCase().includes(projectSearch.toLowerCase())
+  );
+  
+  const filteredTasks = tasks.filter(task =>
+    task.title.toLowerCase().includes(taskSearch.toLowerCase())
+  );
+
   return (
     <>
     <div className="p-4 bg-white shadow-md rounded-xl">
         <TabView>
             <TabPanel header="Proyectos">
-            <div className="p-4 bg-gray-400 shadow-md rounded-xl">
-                <DataTable value={projects} paginator rows={5} stripedRows  emptyMessage="No hay proyectos disponibles" responsiveLayout="scroll" className="shadow-xl bg-white rounded-xl">
+            <input
+              type="text"
+              className="p-inputtext mb-3 w-full"
+              placeholder="Buscar proyecto por título..."
+              value={projectSearch}
+              onChange={(e) => setProjectSearch(e.target.value)}
+            />
+            <div className="p-4 bg-gray-400 shadow-md rounded-xl mt-6">
+                <DataTable value={filteredProjects} paginator rows={5} stripedRows  emptyMessage="No hay proyectos disponibles" responsiveLayout="scroll" className="shadow-xl bg-white rounded-xl">
                     
                     <Column field="title" header="Título" sortable/>
                     <Column field="description" header="Descripción" />
@@ -246,8 +266,15 @@ if (editData.deadline && editData.start_date && fin < inicio) {
                 </div>
             </TabPanel>
             <TabPanel header="Tareas">
-            <div className="p-4 bg-gray-400 shadow-md rounded-xl">
-                <DataTable value={tasks} paginator rows={4} stripedRows  emptyMessage="No hay tareas disponibles" responsiveLayout="scroll" >
+            <input
+              type="text"
+              className="p-inputtext mb-4 w-full"
+              placeholder="Buscar tarea por título..."
+              value={taskSearch}
+              onChange={(e) => setTaskSearch(e.target.value)}
+            />
+            <div className="p-4 bg-gray-400 shadow-md rounded-xl mt-6">
+                <DataTable value={filteredTasks} paginator rows={4} stripedRows  emptyMessage="No hay tareas disponibles" responsiveLayout="scroll" >
           
                     <Column field="title" header="Título" sortable />
                     <Column field="description" header="Descripción" />
