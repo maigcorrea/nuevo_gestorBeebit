@@ -152,7 +152,7 @@ const UpdateProfileForm = () => {
             localStorage.setItem('profileImage', data.url);
             
 
-            setUploadMessage("✅ Imagen subida correctamente: " + data.filename);
+            setUploadMessage("✅ Imagen subida correctamente ");
 
                 // Esto dispara de nuevo el useEffect
             setRefreshData(prev => !prev);
