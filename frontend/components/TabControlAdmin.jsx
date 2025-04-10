@@ -159,7 +159,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
   try {
     const res = await fetch(endpoint, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(sanitizedData), //Se usan sólo los campos válidos
     });
 
@@ -217,6 +217,9 @@ if (editData.deadline && editData.start_date && fin < inicio) {
     try {
       await fetch(endpoint, {
         method: 'DELETE',
+        headers:{
+            Authorization: `Bearer ${token}`,
+        }
       });
   
       // Refrescar datos
