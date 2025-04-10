@@ -47,6 +47,36 @@ const ProjectTab = () => {
       console.error('Error al exportar Excel:', err);
     }
   };
+
+  //PDF
+  const handleExportarPDF = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch('http://localhost:3000/tasks_staff/export-pdf', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ids: proyectosSeleccionados }),
+      });
+  
+      if (!res.ok) throw new Error('Error al generar PDF');
+  
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'proyectos.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error('Error al exportar PDF:', err);
+    }
+  };
+  
   
   
   //Para que sólo se haga el fetch una vez, usamos el useEffect
@@ -108,7 +138,7 @@ const ProjectTab = () => {
         </button>
       </div>
       <div>
-          <div className="flex justify-end mx-5 mt-4">
+          <div className="flex justify-end mx-5 mt-4 gap-2">
             <button
               className="btn bg-blue-600 text-white hover:bg-blue-700"
               onClick={handleExportarExcel}
@@ -116,6 +146,13 @@ const ProjectTab = () => {
             >
               Exportar a Excel
             </button>
+            <button
+      className="btn bg-red-600 text-white hover:bg-red-700"
+      onClick={handleExportarPDF}
+      disabled={proyectosSeleccionados.length === 0}
+    >
+      Exportar a PDF
+    </button>
           </div>
       </div>
       {proyectos.length === 0 ? (

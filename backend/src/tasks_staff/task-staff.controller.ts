@@ -139,4 +139,29 @@ async exportToExcel(
   res.end(buffer);
 }
 
+
+
+
+
+
+@UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+@CheckAbilities({ action: 'read', subject: TaskStaff })
+@Post('export-pdf')
+@ApiOperation({ summary: 'Exportar proyectos a PDF' })
+@ApiBearerAuth('jwt')
+@ApiResponse({ status: 200, description: 'PDF generado' })
+async exportProjectsPDF(
+  @Body('ids') ids: string[],
+  @Res() res: Response,
+  @Req() req: Request
+) {
+  const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+  const pdfBuffer = await this.taskStaffService.exportProjectsToPDF(ids, ability);
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename=proyectos.pdf');
+  res.end(pdfBuffer);
+}
+
+
 }
