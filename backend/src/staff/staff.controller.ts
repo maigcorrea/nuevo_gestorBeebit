@@ -116,6 +116,8 @@ export class StaffController{
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
     async updateStaff(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateDto: UpdateStaffDto, @Req() req: Request) {
         const ability= this.caslAbilityFactory.createForUser(req.user as Staff);
+        console.log('User en req.user:', req.user);
+
         return this.staffService.updateStaff(id, updateDto, ability); //Se parsea a string el id por si viene en number
     }
 

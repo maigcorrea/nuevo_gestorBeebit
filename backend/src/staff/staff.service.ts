@@ -113,7 +113,11 @@ export class StaffService {
         if (!staff) {
             throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
         }
-        if (!ability.can('update', staff)) {
+        console.log('Staff recuperado:', staff);
+        console.log('ID usuario logueado:', ability.rulesFor('update', Staff)[0]?.conditions);
+
+
+        if (!ability.can('update',staff )) {
             throw new ForbiddenException('No tienes permiso para actualizar la información de un empleado');
         }
         
