@@ -74,7 +74,11 @@ const AddTaskForm = () => {
     useEffect(() => {
       const staff = async() =>{
         try {
-            const staff = await fetch(`http://localhost:3000/staff/all`);
+            const staff = await fetch(`http://localhost:3000/staff/all`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             const dataStaff = await staff.json();
             console.log("Proyectos recibidos:",dataStaff);
             setStaffList(dataStaff);
