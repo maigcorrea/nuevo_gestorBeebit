@@ -11,6 +11,8 @@ import { BadRequestException } from '@nestjs/common';
 import { TaskPriority, TaskStatus } from './entities/task.entity';
 import { Project } from 'src/project/entities/project.entity';
 import { ProjectStatus } from 'src/project/entities/project.entity';
+import { AppAbility } from 'src/casl/casl-ability.factory';
+import { ForbiddenException } from '@nestjs/common';
 
 @Injectable()
 export class TaskService{
@@ -23,7 +25,11 @@ export class TaskService{
 
 
     //Método para crear una tarea
-    async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    async create(createTaskDto: CreateTaskDto, ability:AppAbility): Promise<Task> {
+      if (!ability.can('create', Task)) {
+        throw new ForbiddenException('No tienes permiso para crear nuevas tareas');
+      }
+
       if (createTaskDto.start_date) {
         const fechaInicio = new Date(createTaskDto.start_date);
         const hoy = new Date();
@@ -50,7 +56,11 @@ export class TaskService{
 
 
     //Método para mostrar todas las tareas
-    async findAll():Promise<Task[]>{
+    async findAll(ability:AppAbility):Promise<Task[]>{
+      if (!ability.can('read', Task)) {
+        throw new ForbiddenException('No tienes permiso para acceder a las tareas');
+      }
+
       return this.taskRepository.find({
         relations: ['associated_project'],
     });
@@ -58,7 +68,7 @@ export class TaskService{
 
 
     //Método para mostrar todas las tareas de un proyecto en concreto
-    async findByProject(projectId:string):Promise<Task[]>{
+    async findByProject(projectId:string, ability:AppAbility):Promise<Task[]>{
         const tasks = await this.taskRepository.find({
             where:{ associated_project: { id: projectId }},
             //relations: ['associated_project'], // opcional: para incluir los datos del proyecto si los necesitas. Esto hace que se cargue el proyecto junto con la tarea
@@ -68,12 +78,19 @@ export class TaskService{
             throw new NotFoundException(`No se encontraron tareas para este proyecto`);
         }
 
-        return tasks;
+        const allowedTasks = tasks.filter(task => ability.can('update', task));
+
+        if (allowedTasks.length === 0) {
+          throw new ForbiddenException('No tienes permiso para ver estas tareas');
+        }
+  
+        return allowedTasks;
     }
 
 
     //Método para actualizar una tarea en concreto
-    async updateTask(id: string, updateDto: UpdateTaskDto): Promise<{ message: string }> {
+    async updateTask(id: string, updateDto: UpdateTaskDto, ability:AppAbility): Promise<{ message: string }> {
+
         const task = await this.taskRepository.findOne({
           where: { id },
           relations: ['associated_project'], // 👈 necesario para acceder al proyecto
@@ -81,6 +98,10 @@ export class TaskService{
       
         if (!task) {
           throw new NotFoundException(`No se encontró la tarea con id ${id}`);
+        }
+
+        if (!ability.can('update', task)) {
+          throw new ForbiddenException('No tienes permiso para actualizar esta tarea');
         }
       
         //La fecha de inicio de la tarea no se puede modificar, es la fecha del momento de creación de la tarea
@@ -136,7 +157,7 @@ export class TaskService{
 
 
       //Método para actualizar SOLO EL ESTADO de una tarea en concreto
-      async updateTaskStatus(id: string, dto: UpdateTaskStatusDto): Promise<{ message: string }> {
+      async updateTaskStatus(id: string, dto: UpdateTaskStatusDto, ability:AppAbility): Promise<{ message: string }> {
         console.log('Entro al método updateTaskStatus');
         const task = await this.taskRepository.findOne({
           where: { id },
@@ -145,6 +166,10 @@ export class TaskService{
       
         if (!task) {
           throw new NotFoundException(`Tarea con id ${id} no encontrada`);
+        }
+
+        if (!ability.can('update', task)) {
+          throw new ForbiddenException('No tienes permiso para actualizar el estado de esta tarea');
         }
       
         task.status = dto.status;
@@ -197,7 +222,20 @@ export class TaskService{
 
 
       //Método para borrar una tarea en concreto
-      async deleteTask(id:string):Promise<{message:string}>{
+      async deleteTask(id:string, ability:AppAbility):Promise<{message:string}>{
+        const task = await this.taskRepository.findOne({
+          where: { id },
+          relations: ['associated_project'],
+        });
+      
+        if (!task) {
+          throw new NotFoundException(`Tarea con id ${id} no encontrada`);
+        }
+
+        if (!ability.can('delete', task)) {
+          throw new ForbiddenException('No tienes permiso para borrar esta tarea');
+        }
+
         const result = await this.taskRepository.delete(id);
       
         if (result.affected === 0) {
@@ -209,7 +247,7 @@ export class TaskService{
 
 
       //Método para editar y actualizar el estado y prioridad de una tarea en concreto
-      async updateStatusAndPriority(id: string, status: TaskStatus, priority: TaskPriority) {
+      async updateStatusAndPriority(id: string, status: TaskStatus, priority: TaskPriority, ability:AppAbility) {
         const task = await this.taskRepository
   .createQueryBuilder('task')
   .leftJoinAndSelect('task.associated_project', 'project')
@@ -217,6 +255,10 @@ export class TaskService{
   .getOne();
 
         if (!task) throw new NotFoundException('Tarea no encontrada');
+
+        if (!ability.can('update', task)) {
+          throw new ForbiddenException('No tienes permiso para modificar el estado y prioridad de esta tarea');
+        }
 
         if (!Object.values(TaskStatus).includes(status)) {
           throw new BadRequestException('Estado no válido');
