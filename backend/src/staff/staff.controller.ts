@@ -44,9 +44,9 @@ export class StaffController{
     @ApiOperation({summary:"Introducir empleado en el sistema"})
     @ApiResponse({ status: 201, description: 'Empleado creado correctamente', type: StaffResponseDto})
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
-    async create(@Body() createStaffDto: CreateStaffDto, @Req() req:any) {
+    async create(@Body() createStaffDto: CreateStaffDto, @Req() req: Request) {
         console.log("Hola");
-        const ability = this.caslAbilityFactory.createForUser(req.user);
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
         // Recibe el cuerpo de la petición (body) y lo convierte en un CreateStaffDto automáticamente.
         // Llama al método create() del servicio, pasándole el DTO.
         const user= await this.staffService.create(createStaffDto,ability);

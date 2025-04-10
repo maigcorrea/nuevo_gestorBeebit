@@ -7,6 +7,8 @@ import { InputText } from 'primereact/inputtext';
 import { FloatLabel } from 'primereact/floatlabel';
 import { ListBox } from 'primereact/listbox';
 import { Toast } from 'primereact/toast';
+import { UserContext } from '@/app/context/UserContext';
+import { useContext } from 'react';
 
 const AddProjectForm = () => {
 
@@ -18,6 +20,8 @@ const AddProjectForm = () => {
     const [document, setDocument] = useState(null);
     const [error, setError] = useState('');
     const toast = useRef(null);
+
+    const { token } = useContext(UserContext); //Pillar el token del contexto
 
 
     //ERRORES
@@ -104,9 +108,12 @@ const AddProjectForm = () => {
         //     body.deadline = deadline;
         // }
 
-
+        console.log('Token enviado:', token);
         try {
           const res = await fetch('http://localhost:3000/projects', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
             method: 'POST',
             body: formData // no ponemos headers, fetch lo hace solo para FormData
           });

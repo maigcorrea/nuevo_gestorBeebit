@@ -1,5 +1,7 @@
 'use client';
 import { createContext, useState, useEffect } from 'react';
+import { useMemo } from 'react';
+
 
 // Un contexto en React es como una "memoria compartida" entre componentes.
 // En este caso, el contexto guarda el tipo de usuario (userType) y tiene una función setUserType para cambiarlo.
@@ -35,6 +37,7 @@ export const UserProvider = ({ children }) => {
     const storedType = localStorage.getItem('type');
     const storedImage = localStorage.getItem('profileImage');
     const storedToken = localStorage.getItem('token');
+    console.log('t',storedToken);
 
     // Si lo encuentra, lo actualiza en el estado 
     if (storedType) {
@@ -52,9 +55,17 @@ export const UserProvider = ({ children }) => {
     setIsLoading(false); //Ya se ha cargado el contexto
   }, []);
 
+
+  //Por si muchos componentes se están re-renderizando más de la cuenta por el contexto
+  //Usa el hook useMemo para memorizar (guardar en caché) el objeto contextValue, evitando que cambie en cada render si sus dependencias no han cambiado.
+  const contextValue = useMemo(() => ({
+    userType, setUserType, profileImage, setProfileImage, logout, isLoading, token, setToken
+  }), [userType, profileImage, isLoading, token]);
+  
+
   return (
     // Envolvemos a toda la app (o una parte de ella) en un Provider que comparte ese estado a todos los componentes hijos. 
-    <UserContext.Provider value={{ userType, setUserType, profileImage, setProfileImage, logout, isLoading, token, setToken }}>
+    <UserContext.Provider value={ contextValue }>
       {children}
     </UserContext.Provider>
   );

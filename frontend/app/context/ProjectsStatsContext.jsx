@@ -1,9 +1,14 @@
 'use client'
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { UserContext } from '@/app/context/UserContext';
+import { useAuthReady } from '../hooks/useAuthReady';
 
 const ProjectStatsContext = createContext();
 
+
 export const ProjectStatsProvider = ({ children }) => {
+    const { token, ready } = useAuthReady(); //Pillar el token del contexto mediante el hook sólo si se ha cargado todo el documento anterior antes
+    
     const [projectStats, setProjectStats] = useState({
         pending: 0,
         active: 0,
@@ -13,9 +18,16 @@ export const ProjectStatsProvider = ({ children }) => {
     });
 
     useEffect(() => {
+        if(!ready) return;
+        console.log('Token actuaaal:', token);
+
         const fetchStats = async () => {
             try {
-                const res = await fetch('http://localhost:3000/projects');
+                const res = await fetch('http://localhost:3000/projects', {
+                    headers:{
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
                 const data = await res.json();
 
                 if (Array.isArray(data)) {
@@ -34,7 +46,7 @@ export const ProjectStatsProvider = ({ children }) => {
         };
 
         fetchStats();
-    }, []);
+    }, [token]);
 
     return (
         <ProjectStatsContext.Provider value={{ projectStats }}>

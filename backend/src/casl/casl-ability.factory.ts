@@ -23,19 +23,27 @@ export type AppAbility = PureAbility<[Actions, Subjects]>;
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: Staff) {
+    console.log('hola');
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(PureAbility as AbilityClass<AppAbility>);
+    console.log('[CASL] Usuario recibido:', user);
+    console.log('[CASL] Tipo de usuario:', user.type);
 
-    if (user.type === 'admin') {
+
+    if (user.type?.toLowerCase().trim() === 'admin') {
       can('manage', 'all'); // puede hacer TODO
+       
     } else {
+      console.log('[CASL] Tipo de usuario:', user.type);
       can('read', Project);
+      can('create', Project);
       can('read', Task);
       can('update', Task, { assigned_to: user.id });
-      cannot('delete', Project);
+      can('delete', Project, {created_by: user.id});
       can('read', Staff); // puede ver la lista de empleados (opcional)
       can('update', Staff, { id: user.id }); // puede actualizar su propio perfil
       cannot('delete', Staff); // no puede borrar empleados
     }
+
 
     return build({
       detectSubjectType: (item) =>

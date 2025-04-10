@@ -17,6 +17,7 @@ import {
     ) {}
   
     canActivate(context: ExecutionContext): boolean {
+      console.log("en abilities.guard");
       const rules =
         this.reflector.get<RequiredRule[]>(
           CHECK_ABILITY_KEY,
@@ -25,14 +26,18 @@ import {
   
       const request = context.switchToHttp().getRequest();
       const user = request.user; // debe estar definido por tu estrategia JWT
+      console.log('[GUARD] req.user:', request.user);
+
   
       const ability = this.caslAbilityFactory.createForUser(user);
   
       const isAllowed = rules.every((rule) =>
         ability.can(rule.action, rule.subject),
       );
-  
-      if (!isAllowed) throw new ForbiddenException('No tienes permisos');
+      console.log('[AbilitiesGuard] Usuario:', user);
+      console.log('[Guard] Rules:', rules);
+
+      if (!isAllowed) throw new ForbiddenException('No tienes permisossss');
   
       return true;
     }

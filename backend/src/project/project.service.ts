@@ -11,6 +11,8 @@ import { Injectable } from '@nestjs/common';
  import { MinioService } from 'src/minio/minio.service';
  import { Task } from 'src/task/entities/task.entity';
  import { TaskStatus } from 'src/task/entities/task.entity';
+import { AppAbility } from 'src/casl/casl-ability.factory';
+import { ForbiddenException } from '@nestjs/common';
  
  @Injectable()
  export class ProjectService {
@@ -24,7 +26,11 @@ import { Injectable } from '@nestjs/common';
  
  
     //Método para crear un proyecto
-    async create(createProjectDto: CreateProjectDto, file?: Express.Multer.File):Promise<Project>{
+    async create(createProjectDto: CreateProjectDto, ability:AppAbility, file?: Express.Multer.File):Promise<Project>{
+        console.log('ability', ability);
+        if (!ability.can('create', Project)) {
+            throw new ForbiddenException('No tienes permiso para crear nuevos proyectoss');
+        }
         //CONTROLAR QUE A LA HORA DE CREAR EL PROYECTO, LA FECHA DE INICIO SEA LA DE HOY
         const { start_date, deadline, ...projectData} = createProjectDto;
 
@@ -52,7 +58,11 @@ import { Injectable } from '@nestjs/common';
 
 
     //Método para mostrar todos los proyectos
-    async findAll():Promise<ProjectResponseDto[]>{
+    async findAll(ability:AppAbility):Promise<ProjectResponseDto[]>{
+        if (!ability.can('read', Project)) {
+            throw new ForbiddenException('No tienes permiso para ver los proyectos');
+        }
+
         const projects = await this.projectRepository.find();
 
         return projects.map((project:any) => ({
@@ -117,7 +127,18 @@ import { Injectable } from '@nestjs/common';
 
 
     //Método para borrar un proyecto según su id. Si no quiero que me devuelva nada, en la promesa poner void
-    async deleteProject(id: string): Promise<{message: string }> {
+    async deleteProject(id: string, ability:AppAbility): Promise<{message: string }> {
+        const project = await this.projectRepository.findOneBy({ id });
+        
+      
+        if (!project) {
+          throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
+        }
+
+        if (!ability.can('delete', project)) {
+            throw new ForbiddenException('No tienes permiso para eliminar este proyecto');
+        }
+
         const result = await this.projectRepository.delete(id);
       
         if (result.affected === 0) {
@@ -130,7 +151,7 @@ import { Injectable } from '@nestjs/common';
 
 
     //Método para actualizar un proyecto según su id, cambiándole el titulo, descripción, fecha de inicio, deadline y estado. Dejando la última actualización last_update tal cómo estaba
-    async updateProject(id: string, updateDto: UpdateProjectDto): Promise<{message: string}>{ //Se le pasa un objeto por parámetro con  los posibles campos opcionales que puede actualizar
+    async updateProject(id: string, updateDto: UpdateProjectDto, ability: AppAbility): Promise<{message: string}>{ //Se le pasa un objeto por parámetro con  los posibles campos opcionales que puede actualizar
         const project = await this.projectRepository.findOneBy({ id });
         
       
@@ -138,7 +159,9 @@ import { Injectable } from '@nestjs/common';
           throw new NotFoundException(`No se encontró el proyecto con id ${id}`);
         }
 
-        
+        if (!ability.can('update', project)) {
+            throw new ForbiddenException('No tienes permiso para modificar este proyecto');
+        }
       
         //Al pasarle el objeto, De esta forma, desestructuramos solo una vez:
         const { title, description, start_date, deadline, status } = updateDto;

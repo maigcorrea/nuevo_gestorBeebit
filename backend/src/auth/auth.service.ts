@@ -29,7 +29,7 @@ export class AuthService {
 
   async login(user: any) {
     //Crea el payload que se incluirá en el JWT. sub (subject) suele ser el ID del usuario
-    const payload = { sub: user.id, email: user.email, role: user.type, profileImage:user.profileImage};
+    const payload = { sub: user.id, email: user.email, type: user.type, profileImage:user.profileImage};
     return {
       //Devuelve el token con access_token. También devuelve los datos del usuario (sin password, porque ya la eliminaste en validateUser()).
       access_token: this.jwtService.sign(payload),

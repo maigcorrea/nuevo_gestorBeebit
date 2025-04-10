@@ -50,7 +50,11 @@ const AddTaskForm = () => {
     useEffect(() => {
         const projectList= async() =>{
             try {
-                const projects = await fetch(`http://localhost:3000/projects/`);
+                const projects = await fetch(`http://localhost:3000/projects/`,{
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 const dataProjects = await projects.json();
                 console.log("Proyectos recibidos:",dataProjects);
                 setProjectsList(dataProjects);
@@ -167,7 +171,7 @@ const AddTaskForm = () => {
         if (staff.length > 0 && taskData.id) {
             const assignRes = await fetch('http://localhost:3000/tasks_staff', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({
                 id_task: taskData.id,
                 id_staff: staff
