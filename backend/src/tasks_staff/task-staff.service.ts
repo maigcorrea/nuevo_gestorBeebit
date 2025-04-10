@@ -13,6 +13,8 @@ import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { AppAbility } from 'src/casl/casl-ability.factory';
+import { ForbiddenException } from '@nestjs/common';
 
 @Injectable()
 export class TaskStaffService {
@@ -27,12 +29,18 @@ export class TaskStaffService {
 
   ) {}
 
-  async create(dto: CreateTaskStaffDto): Promise<TaskStaff[]> {
+  async create(dto: CreateTaskStaffDto, ability:AppAbility): Promise<TaskStaff[]> {
     const task = await this.taskRepo.findOne({ where: { id: dto.id_task } });
+    
 
     //Verificas si alguno de los dos (task o staff) no fue encontrado
     if (!task) {
       throw new NotFoundException('Tarea no encontrada');
+    }
+
+
+    if (!ability.can('create', task)) {
+      throw new ForbiddenException('No tienes permiso para crear nuevas relaciones tarea-empleados');
     }
 
     const relaciones: TaskStaff[] = [];
@@ -93,11 +101,15 @@ export class TaskStaffService {
 
 
   //Buscas todas las filas de task_staff, y pides que también se carguen los datos de las relaciones: task (tarea) y staff (empleado)
-  async findAll(): Promise<TaskStaffResponseDto[]> {
+  async findAll(ability:AppAbility): Promise<TaskStaffResponseDto[]> {
     const relaciones = await this.taskStaffRepo.find({
       relations: ['task', 'staff'],
     });
-    console.log("joder");
+    
+    if (!ability.can('read', TaskStaff)) {
+      throw new ForbiddenException('No tienes permiso para acceder a las relaciones tarea-empleado(s)');
+    }
+
     //Mapear cada fila para construir un objeto con el título de la tarea y el nombre del empleado (por individual, tarea1- nombre1, tarea1-nombre2)
     return relaciones.map((rel) => ({
       staff: {
@@ -112,10 +124,14 @@ export class TaskStaffService {
 
 
   //Agrupar resultados de varios empleados para una tarea. Igual que antes, trae todas las relaciones con la info de tareas y empleados.
-  async findGroupedByTask(): Promise<TaskWithStaffResponseDto[]> {
+  async findGroupedByTask(ability:AppAbility): Promise<TaskWithStaffResponseDto[]> {
     const relaciones = await this.taskStaffRepo.find({
       relations: ['task', 'staff'],
     });
+
+    if (!ability.can('read', TaskStaff)) {
+      throw new ForbiddenException('No tienes permiso para acceder a las relaciones tarea-empleado(s)');
+    }
   
     //Crear un Map para agrupar los nombres por cada taskTitle.
     const mapa = new Map<string, { taskTitle: string, staff: { id: string, name: string }[] }>(); // título → array de empleados
@@ -159,7 +175,7 @@ export class TaskStaffService {
 
 
   //Obtener las tareas de un usuario determinado
-  async getTasksByUser(id:string): Promise <TaskByUserResponseDto[]>{
+  async getTasksByUser(id:string, ability: AppAbility): Promise <TaskByUserResponseDto[]>{
     console.log("Buscando tareas para ID:", id);
     try {
     const tasks = await this.taskStaffRepo.find({ 
@@ -174,10 +190,17 @@ export class TaskStaffService {
     if (!tasks || tasks.length === 0) {
       throw new NotFoundException(`No se encontraron tareas para el empleado con id ${id}`);
     }
-    
-    const tareasFiltradas = tasks.filter((rel:any) => rel.task && rel.task.associated_project);
 
-    return tareasFiltradas.map((rel:any) => ({
+     // ✅ Filtrar tareas que el usuario tiene permiso de leer
+     const tareasFiltradas = tasks.filter((rel: any) => ability.can('read', rel.task));
+
+     if (tareasFiltradas.length === 0) {
+       throw new ForbiddenException('No tienes permiso para ver estas tareas');
+     }
+    
+    //const tareasFiltradas = tasks.filter((rel:any) => rel.task && rel.task.associated_project);
+
+    return tareasFiltradas.map((rel: any) => ({
       id: rel.task.id ?? null,
       title: rel.task.title ?? null,
       description: rel.task.description ?? null,
@@ -187,8 +210,8 @@ export class TaskStaffService {
       completed: rel.task.completed ?? null,
       priority: rel.task.priority ?? null,
       associated_project: {
-          id: rel.task.associated_project.id ?? null,
-          name: rel.task.associated_project.title ?? null,
+        id: rel.task.associated_project.id ?? null,
+        name: rel.task.associated_project.title ?? null,
       }
     }));
 
@@ -201,7 +224,7 @@ export class TaskStaffService {
 
 
   //Obtener los proyectos de un usuario determinado
-  async getProjectsByUser(id:string): Promise<ProjectByUserResponseDto[]>{
+  async getProjectsByUser(id:string, ability: AppAbility): Promise<ProjectByUserResponseDto[]>{
 
     //Busca en la tabla intermedia task_staff todas las asignaciones donde el staff.id coincida con el que pasamos.
     const tasks= await this.taskStaffRepo.find({
@@ -228,6 +251,8 @@ export class TaskStaffService {
       continue;
     }
 
+    if (!ability.can('read', project)) continue;
+
       //Verificamos si ese proyecto ya está añadido al Map. Si no lo está, lo agregamos. Si ya está, no se vuelve a añadir
       if(!projectsMap.has(project.id)){
         //Agrega el proyecto al Map con su ID como clave y con todos los campos definidos en el DTO.
@@ -249,7 +274,7 @@ export class TaskStaffService {
   }
 
   //Actualizar algún campo de la tabla (Uno sólo o los dos)
-  async update(dto: UpdateTaskStaffDto) { //Recibe el DTO dto, que contiene: old_task_id, old_staff_id, new_task_id, new_staff_id
+  async update(dto: UpdateTaskStaffDto, ability: AppAbility) { //Recibe el DTO dto, que contiene: old_task_id, old_staff_id, new_task_id, new_staff_id
     //Busca la relación con findOne usando combinación de task.id y staff.id. Es decir, busca la fila actual en la tabla task_staff que conecta La tarea con ID old_task_id y el empleado con ID old_staff_id
     const relacion = await this.taskStaffRepo.findOne({
       where: {
@@ -261,6 +286,10 @@ export class TaskStaffService {
   
     //Si no encuentra la relación, lanza NotFoundException.
     if (!relacion) throw new NotFoundException('Relación no encontrada');
+
+    if (!ability.can('update', relacion)) {
+      throw new ForbiddenException('No tienes permiso para crear modificar relaciones tarea-empleados');
+    }
   
     //Solo actualiza los valores si vienen en el DTO.
     if (dto.new_task_id) {
@@ -286,7 +315,7 @@ export class TaskStaffService {
 
 
   //Borrar una relación entre tarea y empleado
-  async deleteByTaskAndStaff(dto: DeleteTaskStaffDto): Promise<string> {
+  async deleteByTaskAndStaff(dto: DeleteTaskStaffDto, ability:AppAbility): Promise<string> {
     //Busca la relación por combinación de task.id + staff.id
     const relacion = await this.taskStaffRepo.findOne({
       where: {
@@ -298,6 +327,11 @@ export class TaskStaffService {
     // Si no la encuentra, lanza error 404
     if (!relacion) {
       throw new NotFoundException('Relación no encontrada');
+    }
+
+    
+    if (!ability.can('delete', relacion)) {
+      throw new ForbiddenException('No tienes permiso para crear modificar relaciones tarea-empleados');
     }
   
     //Si la encuentra, la elimina usando remove()

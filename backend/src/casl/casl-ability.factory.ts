@@ -14,9 +14,10 @@ import { mongoQueryMatcher } from '@casl/ability';
 import { Project } from 'src/project/entities/project.entity';
 import { Task } from 'src/task/entities/task.entity';
 import { Staff } from 'src/staff/entities/staff.entity'; // tu entidad de usuario
+import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
-type Subjects = InferSubjects<typeof Project | typeof Task | typeof Staff> | 'all';
+type Subjects = InferSubjects<typeof Project | typeof Task | typeof Staff | typeof TaskStaff> | 'all';
 
 export type AppAbility = PureAbility<[Actions, Subjects]>;
 
@@ -42,6 +43,9 @@ export class CaslAbilityFactory {
       can('read', Staff); // puede ver la lista de empleados (opcional)
       can('update', Staff, { id: user.id }); // puede actualizar su propio perfil
       cannot('delete', Staff); // no puede borrar empleados
+      can('read', TaskStaff, { staff: {id: user.id} }); // puede ver sus propias asignaciones
+      cannot('create', TaskStaff); // no puede asignarse
+      cannot('delete', TaskStaff); // no puede quitarse
     }
 
 
