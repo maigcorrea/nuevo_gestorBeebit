@@ -1,13 +1,12 @@
 'use client'
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { UserContext } from '@/app/context/UserContext';
-import { useAuthReady } from '../hooks/useAuthReady';
 
 const ProjectStatsContext = createContext();
 
 
 export const ProjectStatsProvider = ({ children }) => {
-    const { token, ready } = useAuthReady(); //Pillar el token del contexto mediante el hook sólo si se ha cargado todo el documento anterior antes
+    const { token, isLoading } = useContext(UserContext);
     
     const [projectStats, setProjectStats] = useState({
         pending: 0,
@@ -18,7 +17,7 @@ export const ProjectStatsProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        if(!ready) return;
+        if (isLoading || !token) return;
         console.log('Token actuaaal:', token);
 
         const fetchStats = async () => {
@@ -46,7 +45,7 @@ export const ProjectStatsProvider = ({ children }) => {
         };
 
         fetchStats();
-    }, [token]);
+    }, [isLoading|token]);
 
     return (
         <ProjectStatsContext.Provider value={{ projectStats }}>

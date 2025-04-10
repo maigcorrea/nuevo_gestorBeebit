@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { TabView, TabPanel } from 'primereact/tabview';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -10,9 +10,13 @@ import { useTaskSummary } from '@/app/context/TaskSummaryContext';
 import TaskChart from './TaskChart';
 import DashboardOverview from './DashboardStats';
 import DashboardStats from './DashboardStats';
+import { UserContext } from '@/app/context/UserContext';
+
+
 
 
 const TabControlAdmin = () => {
+  const { token } = useContext(UserContext);
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const statusProjectTypes = [
@@ -51,9 +55,14 @@ const priorityTaskTypes = [
     const [taskSearch, setTaskSearch] = useState('');
 
   useEffect(() => {
+
     // Obtener proyectos
     const fetchProjects = async () => {
-      const res = await fetch('http://localhost:3000/projects');
+      const res = await fetch('http://localhost:3000/projects', {
+        headers:{
+            Authorization: `Bearer ${token}`,
+        }
+    });
       const data = await res.json();
       setProjects(Array.isArray(data) ? data : []);
     };
@@ -61,7 +70,11 @@ const priorityTaskTypes = [
 
     // Obtener tareas
     const fetchTasks = async () => {
-      const res = await fetch('http://localhost:3000/tasks');
+      const res = await fetch('http://localhost:3000/tasks', {
+        headers:{
+            Authorization: `Bearer ${token}`,
+        }
+    });
       const data = await res.json();
       setTasks(Array.isArray(data) ? data : []);
     };
@@ -160,11 +173,19 @@ if (editData.deadline && editData.start_date && fin < inicio) {
 
     // Actualizar tabla correspondiente
     if (deleteType === 'project') {
-      const res = await fetch('http://localhost:3000/projects');
+      const res = await fetch('http://localhost:3000/projects', {
+        headers:{
+            Authorization: `Bearer ${token}`,
+        }
+    });
       const data = await res.json();
       setProjects(data);
     } else {
-      const res = await fetch('http://localhost:3000/tasks');
+      const res = await fetch('http://localhost:3000/tasks', {
+        headers:{
+            Authorization: `Bearer ${token}`,
+        }
+    });
       const data = await res.json();
       setTasks(data);
     }
@@ -200,11 +221,19 @@ if (editData.deadline && editData.start_date && fin < inicio) {
   
       // Refrescar datos
       if (deleteType === 'project') {
-        const res = await fetch('http://localhost:3000/projects');
+        const res = await fetch('http://localhost:3000/projects',{
+          headers:{
+            Authorization: `Bearer ${token}`,
+          }
+        });
         const data = await res.json();
         setProjects(data);
       } else {
-        const res = await fetch('http://localhost:3000/tasks');
+        const res = await fetch('http://localhost:3000/tasks',{
+          headers:{
+            Authorization: `Bearer ${token}`,
+          }
+        });
         const data = await res.json();
         setTasks(data);
       }

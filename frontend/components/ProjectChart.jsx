@@ -19,6 +19,7 @@ const ProjectChart = () => {
     return (
         <div className="flex flex-col items-center bg-white p-4 rounded-xl shadow-md">
             <h3 className="text-xl font-semibold mb-2">Estado de proyectos</h3>
+            {console.log('Estado de proyectos data: ',data)}
             <PieChart width={300} height={300}>
                 <Pie
                     data={data}

@@ -21,6 +21,7 @@ const TaskChart = () => {
   
   return (
     <div className="flex flex-col items-center bg-white p-4 rounded-xl shadow-md">
+      {console.log('Progreso general de tareas',data)}
       <h3 className="text-xl font-semibold mb-2">Progreso general de tareas</h3>
       <PieChart width={300} height={300}>
         <Pie

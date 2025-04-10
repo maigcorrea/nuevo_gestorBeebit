@@ -1,17 +1,23 @@
 'use client'
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
+import { UserContext } from './UserContext';
 
 const TaskRankingContext = createContext();
 
 export const TaskRankingProvider = ({ children }) => {
   
   const [ranking, setRanking] = useState([]);
+  const { token, isLoading } = useContext(UserContext);
 
   useEffect(() => {
+    if (isLoading || !token) return;
     const fetchRanking = async () => {
       try {
-        const res = await fetch('http://localhost:3000/tasks_staff/todo');
+        const res = await fetch('http://localhost:3000/tasks_staff/todo',{
+          headers:{
+              Authorization: `Bearer ${token}`,
+          }
+      });
         if (!res.ok) {
           throw new Error(`Error ${res.status}`);
         }
@@ -41,7 +47,7 @@ export const TaskRankingProvider = ({ children }) => {
     };
   
     fetchRanking();
-  }, []);
+  }, [isLoading| token]);
 
   return (
     <TaskRankingContext.Provider value={{ ranking }}>
