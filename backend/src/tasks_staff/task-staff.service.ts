@@ -438,12 +438,14 @@ async exportProjectsToPDF(ids: string[], ability: AppAbility): Promise<Buffer> {
     });
   }
 
+   // Inicializar PDFDocument
   const doc = new PDFDocument();
-  const stream = new PassThrough();
+  const stream = new PassThrough(); // Crear un stream para capturar los datos
   const chunks: any[] = [];
 
-  doc.pipe(stream);
+  doc.pipe(stream);// Poner el documento en el stream
 
+  // Agregar los proyectos y sus tareas al PDF
   for (const proyecto of proyectosMap.values()) {
     doc.fontSize(16).text(`Proyecto: ${proyecto.title}`, { underline: true });
     doc.text(`Descripción: ${proyecto.description || '---'}`);
@@ -457,7 +459,7 @@ async exportProjectsToPDF(ids: string[], ability: AppAbility): Promise<Buffer> {
       doc.fontSize(12).text(`- ${tarea.title} (${tarea.completed ? 'Completada' : 'Pendiente'}) - Empleado: ${tarea.empleados.join(', ')}`);
     });
 
-    doc.addPage();
+    doc.addPage();// Agregar nueva página después de cada proyecto
   }
 
   doc.end();
