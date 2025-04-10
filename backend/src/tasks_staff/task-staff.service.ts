@@ -15,6 +15,9 @@ import { NotFoundException, ConflictException, InternalServerErrorException } fr
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { AppAbility } from 'src/casl/casl-ability.factory';
 import { ForbiddenException } from '@nestjs/common';
+import * as ExcelJS from 'exceljs';
+import { Buffer } from 'buffer';
+
 
 @Injectable()
 export class TaskStaffService {
@@ -357,4 +360,48 @@ export class TaskStaffService {
       .where('task.deadline = :fecha', { fecha: yyyyMMdd })
       .getRawMany(); // El resultado de este select no es una entidad completa, sino una lista de objetos con los campos personalizados (title, deadline, email).
   }
+
+
+async exportProjectsToExcel(ids: string[], ability: AppAbility): Promise<Buffer> {
+  const relaciones = await this.taskStaffRepo
+  .createQueryBuilder('ts')
+  .leftJoinAndSelect('ts.task', 'task')
+  .leftJoinAndSelect('ts.staff', 'staff')
+  .leftJoinAndSelect('task.associated_project', 'project')
+  .where('project.id IN (:...ids)', { ids })
+  .getMany();
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Proyectos');
+
+  worksheet.columns = [
+    { header: 'Proyecto', key: 'project', width: 30 },
+    { header: 'Descripción', key: 'description', width: 30 },
+    { header: 'Inicio', key: 'start', width: 15 },
+    { header: 'Deadline', key: 'deadline', width: 15 },
+    { header: 'Tarea', key: 'task', width: 30 },
+    { header: 'Completada', key: 'completed', width: 12 },
+    { header: 'Empleado', key: 'staff', width: 25 },
+  ];
+
+  for (const rel of relaciones) {
+    const proyecto = rel.task.associated_project;
+    if (!proyecto || !ability.can('read', rel)) continue;
+
+    worksheet.addRow({
+      project: proyecto.title,
+      description: proyecto.description,
+      start: proyecto.start_date ? new Date(proyecto.start_date).toLocaleDateString() : '',
+      deadline: proyecto.deadline ? new Date(proyecto.deadline).toLocaleDateString() : '',
+      task: rel.task.title,
+      completed: rel.task.completed ? 'Sí' : 'No',
+      staff: rel.staff.name,
+    });
+  }
+
+  const arrayBuffer = await workbook.xlsx.writeBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  return buffer;
+}
+
 }

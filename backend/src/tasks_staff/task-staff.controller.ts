@@ -16,8 +16,8 @@ import { ParseUUIDPipe } from '@nestjs/common';
 import { CheckAbilities } from 'src/casl/check-abilities.decorator';
 import { AbilitiesGuard } from 'src/casl/abilities.guard';
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
-import { Request } from 'express';
-import { Req } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { Req, Res } from '@nestjs/common';
 import { Staff } from 'src/staff/entities/staff.entity';
 
 @ApiTags('Task_Staff')
@@ -116,4 +116,27 @@ export class TaskStaffController{
         const ability= this.caslAbilityFactory.createForUser(req.user as Staff);
         return this.taskStaffService.deleteByTaskAndStaff(dto, ability);
     }
+
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+@CheckAbilities({ action: 'read', subject: TaskStaff })
+@Post('export-excel')
+@ApiOperation({ summary: 'Exportar proyectos seleccionados a Excel' })
+@ApiBearerAuth('jwt')
+@ApiResponse({ status: 200, description: 'Archivo Excel generado' })
+async exportToExcel(
+  @Body('ids') ids: string[],
+  @Res() res: Response,
+  @Req() req: Request,
+) {
+  const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+  const buffer = await this.taskStaffService.exportProjectsToExcel(ids, ability);
+
+  res.set({
+    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'Content-Disposition': 'attachment; filename=proyectos.xlsx',
+  });
+
+  res.end(buffer);
+}
+
 }

@@ -4,6 +4,8 @@ import { useEffect, useState, } from 'react';
 const ProjectTab = () => {
   const [proyectos, setProyectos] = useState([]); //Aquí se almacenan las tareas
   const [error, setError] = useState('');
+  const [proyectosSeleccionados, setProyectosSeleccionados] = useState([]);
+
 
   //Paginación
   
@@ -11,6 +13,42 @@ const ProjectTab = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const proyectosPorPagina = 6;
 
+  //EXCEL
+  const toggleSeleccionProyecto = (id) => {
+    setProyectosSeleccionados((prev) =>
+      prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
+    );
+  };
+
+  const handleExportarExcel = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch('http://localhost:3000/tasks_staff/export-excel', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ids: proyectosSeleccionados }),
+      });
+  
+      if (!res.ok) throw new Error('Error al generar Excel');
+  
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'proyectos.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error('Error al exportar Excel:', err);
+    }
+  };
+  
+  
   //Para que sólo se haga el fetch una vez, usamos el useEffect
   useEffect(() => {
     //Dentro de un useEffect, si necesitas usar await, define una función async interna y llámala justo después.
@@ -69,6 +107,17 @@ const ProjectTab = () => {
           {vistaTabla ? '🔳 Vista Tarjetas' : '☰ Vista Tabla'}
         </button>
       </div>
+      <div>
+          <div className="flex justify-end mx-5 mt-4">
+            <button
+              className="btn bg-blue-600 text-white hover:bg-blue-700"
+              onClick={handleExportarExcel}
+              disabled={proyectosSeleccionados.length === 0}
+            >
+              Exportar a Excel
+            </button>
+          </div>
+      </div>
       {proyectos.length === 0 ? (
         <p className="px-5">No hay proyectos asignados</p>
       ) : vistaTabla ? (
@@ -82,6 +131,7 @@ const ProjectTab = () => {
                 <th>Fecha entrega</th>
                 <th>Estado</th>
                 <th>Documento</th>
+                <th>Seleccionar</th>
               </tr>
             </thead>
             <tbody>
@@ -110,6 +160,13 @@ const ProjectTab = () => {
                         Ver documento
                       </a>
                     ) : '---'}
+                  </td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={proyectosSeleccionados.includes(proyecto.id)}
+                      onChange={() => toggleSeleccionProyecto(proyecto.id)}
+                    />
                   </td>
                 </tr>
               ))}
