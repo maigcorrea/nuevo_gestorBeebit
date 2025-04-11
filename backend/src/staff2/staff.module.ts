@@ -8,6 +8,7 @@ import { MailService } from 'src/mail/mail.service';
 import { MinioService } from 'src/minio/minio.service';
 import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
 import { CaslModule } from 'src/casl/casl.module';
+import { FindStaffByIdUseCase } from './application/use-cases/find-staff-by-id.use-case';
 
 @Module({
   imports: [
@@ -23,6 +24,11 @@ import { CaslModule } from 'src/casl/casl.module';
     {
       provide: CreateStaffUseCase,
       useFactory: (staffRepo: StaffRepository) => new CreateStaffUseCase(staffRepo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: FindStaffByIdUseCase,
+      useFactory: (repo: StaffRepository) => new FindStaffByIdUseCase(repo),
       inject: [StaffRepository],
     },
   ],

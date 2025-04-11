@@ -25,16 +25,18 @@ import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Req } from '@nestjs/common';*/
 
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Req, UseGuards, Get, Param } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilitiesGuard } from 'src/casl/abilities.guard';
 import { CheckAbilities } from 'src/casl/check-abilities.decorator';
+import { ParseUUIDPipe } from '@nestjs/common';
 import { Staff } from '../../domain/entities/staff.entity';
 import { CreateStaffDto } from '../../infrastructure/dto/create-staff.dto';
 import { CreateStaffUseCase } from 'src/staff2/application/use-cases/create-staff.use-case';
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
+import { FindStaffByIdUseCase } from 'src/staff2/application/use-cases/find-staff-by-id.use-case';
 import { StaffResponseDto } from '../../infrastructure/dto/staff-response.dto'; // si lo usas como return
 
 @ApiTags('Staff')
@@ -43,7 +45,8 @@ import { StaffResponseDto } from '../../infrastructure/dto/staff-response.dto'; 
 @Controller("staff")
 export class StaffController{
     constructor(private readonly createStaffUseCase: CreateStaffUseCase,
-        private readonly caslAbilityFactory: CaslAbilityFactory
+        private readonly caslAbilityFactory: CaslAbilityFactory,
+        private readonly findStaffByIdUseCase: FindStaffByIdUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -55,6 +58,20 @@ export class StaffController{
         const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
         return await this.createStaffUseCase.execute(createStaffDto, ability);
     }
+
+
+
+    @UseGuards(AuthGuard('jwt')) // Solo autenticación, sin roles
+    @Get(':id')
+    @ApiParam({ name: 'id', type: 'string', description: 'ID del empleado (UUID)' })
+    @ApiOperation({ summary: 'Mostrar un empleado por ID' })
+    @ApiResponse({ status: 200, description: 'Empleado encontrado', type: StaffResponseDto })
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    async findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<StaffResponseDto> {
+      const staff = await this.findStaffByIdUseCase.execute(id);
+      return StaffResponseDto.fromEntity(staff);
+    }
+
 
 
     /*
