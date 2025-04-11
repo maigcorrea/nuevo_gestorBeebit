@@ -22,6 +22,10 @@ import { Staff } from './staff/entities/staff.entity';
 import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
 import { Messages } from './messages/entities/messages.entity';
 
+
+//Ejemplo arquitectura hexagonal
+import { TaskController } from './EjemploArquitectura/infrastructure/controllers/task.controller';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -56,6 +60,6 @@ import { Messages } from './messages/entities/messages.entity';
     MessagesModule,
     CaslModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, TaskController],
 })
 export class AppModule {}
