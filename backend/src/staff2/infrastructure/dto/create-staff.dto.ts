@@ -1,42 +1,35 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsEmail, IsNotEmpty, Length, Matches, IsDateString, MinLength, MaxLength, IsOptional, IsEnum } from 'class-validator';
-import { StaffType } from '../entities/staff.entity';
+import { StaffType } from '../../domain/entities/staff.entity';
+import { CreateStaffInput } from '../../domain/interfaces/create-staff.input';
 
-
-export class CreateStaffDto{
-    @ApiProperty({
-        description: 'Nombre del usuario',
-        example: 'Juan Pérez',
-    })
-    @IsString({ message: 'El nombre debe ser un texto' })
-    @Length(2, 100, { message: 'El nombre debe tener entre 2 y 100 caracteres' })
+export class CreateStaffDto implements CreateStaffInput{
+    @ApiProperty({ description: 'Nombre del usuario', example: 'Juan Pérez' })
+    @IsString()
+    @Length(2, 100)
     @IsNotEmpty()
     name: string;
 
 
 
-    @ApiProperty({
-        description: 'Correo electrónico del usuario',
-        example: 'juanperez@gmail.com',
-    })
-    @IsEmail({}, { message: 'El email no es válido' })
+    @ApiProperty({ description: 'Correo electrónico', example: 'juan@gmail.com' })
+    @IsEmail()
     @IsNotEmpty()
     email: string;
 
 
 
-    //register_date SE ESTABLECE AUTOMÁTICAMENTE AL CREAR UN USUARIO A LA FECHA DE ESE DÍA
     @ApiPropertyOptional({
-        description: "Fecha de registro en el sistema",
-        example: "2025-02-20"
+        description: 'Fecha de registro (ISO)',
+        example: '2025-02-20',
     })
     @IsOptional()
     @IsDateString({}, { message: 'La fecha debe estar en formato ISO (yyyy-mm-dd)' })
-    register_date?:Date
+    register_date?: Date;
 
 
 
-
+    
     @ApiProperty({
         description:"Teléfono del empleado",
         example:"682543621"

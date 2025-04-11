@@ -13,7 +13,7 @@ import { mongoQueryMatcher } from '@casl/ability';
 
 import { Project } from 'src/project/entities/project.entity';
 import { Task } from 'src/task/entities/task.entity';
-import { Staff } from 'src/staff/entities/staff.entity'; // tu entidad de usuario
+import { Staff } from 'src/staff2/domain/entities/staff.entity'; // tu entidad de usuario
 import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';

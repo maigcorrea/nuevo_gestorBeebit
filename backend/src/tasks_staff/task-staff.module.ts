@@ -4,7 +4,7 @@ import { TaskStaffService } from './task-staff.service';
 import { TaskStaffController } from './task-staff.controller';
 import { TaskStaff } from './entities/taskStaff.entity'; // Importamos la entidad Task
 import { Task } from 'src/task/entities/task.entity';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
 import { CaslModule } from 'src/casl/casl.module';
 

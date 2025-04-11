@@ -1,7 +1,7 @@
 import { Seeder } from 'nestjs-seeder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Staff, StaffType } from 'src/staff/entities/staff.entity';
+import { Staff, StaffType } from 'src/staff2/domain/entities/staff.entity';
 import { faker } from '@faker-js/faker';
 
 export class StaffSeeder implements Seeder {

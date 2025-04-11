@@ -6,7 +6,7 @@ import { MailService } from '../mail.service';
 import { MailModule } from '../mail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Messages } from 'src/messages/entities/messages.entity';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 
 
 @Module({

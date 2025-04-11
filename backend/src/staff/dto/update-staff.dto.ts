@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Length, Matches, IsOptional, IsDate, IsDateString, IsIn, IsEmail, MinLength, IsEnum } from 'class-validator';
-import { StaffType } from '../entities/staff.entity';
+import { StaffType } from '../../staff2/domain/entities/staff.entity';
 
 export class UpdateStaffDto{
     //TODOS LOS CAMPOS SON OPCIONALES PORQUE PUEDEN MODIFICARSE O NO, SI NO SE MODIFICAN O NO SE INTRODUCE NADA, SE QUEDA EL VALOR ANTERIOR

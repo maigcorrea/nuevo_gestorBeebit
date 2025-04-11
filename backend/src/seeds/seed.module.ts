@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 import { Project } from 'src/project/entities/project.entity';
 import { StaffSeeder } from './staff.seed';
 import { ProjectSeeder } from './project.seed';

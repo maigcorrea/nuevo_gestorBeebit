@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
+/*import { Controller, Get, Post, Delete, Put, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth , ApiParam, ApiBody} from '@nestjs/swagger';
 import { StaffService } from './staff.service';
-import { CreateStaffDto } from './dto/create-staff.dto';
+import { CreateStaffDto } from '../staff2/infrastructure/dto/create-staff.dto';
 import { StaffResponseDto } from './dto/staff-response.dto';
 import { UpdateStaffDto } from './dto/update-staff.dto';
-import { Staff } from './entities/staff.entity';
+import { Staff } from '../staff2/domain/entities/staff.entity';
 import { ParseIntPipe } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common';
@@ -23,37 +23,41 @@ import { CheckAbilities } from 'src/casl/check-abilities.decorator';
 import { AbilitiesGuard } from 'src/casl/abilities.guard';
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Request } from 'express';
-import { Req } from '@nestjs/common';
+import { Req } from '@nestjs/common';*/
+
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { AbilitiesGuard } from 'src/casl/abilities.guard';
+import { CheckAbilities } from 'src/casl/check-abilities.decorator';
+import { Staff } from '../../domain/entities/staff.entity';
+import { CreateStaffDto } from '../../infrastructure/dto/create-staff.dto';
+import { CreateStaffUseCase } from 'src/staff2/application/use-cases/create-staff.use-case';
+import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
+import { StaffResponseDto } from '../../infrastructure/dto/staff-response.dto'; // si lo usas como return
 
 @ApiTags('Staff')
+@ApiBearerAuth('jwt')
+@UseGuards(AuthGuard('jwt'), AbilitiesGuard)
 @Controller("staff")
 export class StaffController{
-    constructor(private readonly staffService: StaffService,
-        private readonly minioService: MinioService,
+    constructor(private readonly createStaffUseCase: CreateStaffUseCase,
         private readonly caslAbilityFactory: CaslAbilityFactory
     ) {}
 
-    //@UseGuards(AuthGuard('jwt'), RolesGuard)
-    //@Roles('admin')
-   // @ApiBearerAuth('jwt')
-   @ApiBearerAuth('jwt')
-   @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
     @CheckAbilities({ action: 'create', subject: Staff })
     @Post()
-
-    @ApiOperation({summary:"Introducir empleado en el sistema"})
-    @ApiResponse({ status: 201, description: 'Empleado creado correctamente', type: StaffResponseDto})
+    @ApiOperation({ summary: 'Introducir empleado en el sistema' })
+    @ApiResponse({ status: 201, description: 'Empleado creado correctamente', type: StaffResponseDto })
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
     async create(@Body() createStaffDto: CreateStaffDto, @Req() req: Request) {
-        console.log("Hola");
         const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
-        // Recibe el cuerpo de la petición (body) y lo convierte en un CreateStaffDto automáticamente.
-        // Llama al método create() del servicio, pasándole el DTO.
-        const user= await this.staffService.create(createStaffDto,ability);
-        return user;
+        return await this.createStaffUseCase.execute(createStaffDto, ability);
     }
 
 
+    /*
     //Endpoint para mostrar todos los usuarios de la base de datos.
     //@UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
     //@Roles('admin')
@@ -237,5 +241,5 @@ export class StaffController{
         await this.staffService.saveProfileImage(userId, url);
 
         return { url };
-    }
+    }*/
 }

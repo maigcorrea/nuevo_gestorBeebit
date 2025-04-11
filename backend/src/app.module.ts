@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 // MÓDULOS
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
-import { StaffModule } from './staff/staff.module';
+import { StaffModule } from './staff2/staff.module';
 import { TaskStaffModule } from './tasks_staff/task-staff.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
@@ -18,7 +18,7 @@ import { CaslModule } from './casl/casl.module';
 // ENTIDADES
 import { Project } from './project/entities/project.entity';
 import { Task } from './task/entities/task.entity';
-import { Staff } from './staff/entities/staff.entity';
+import { Staff } from './staff2/domain/entities/staff.entity';
 import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
 import { Messages } from './messages/entities/messages.entity';
 import { TareaOrmEntity } from './EjemploArquitectura/infrastructure/persistence/tarea.orm-entity';

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
  import { InjectRepository } from '@nestjs/typeorm';
  import { Repository } from 'typeorm';
- import { CreateStaffDto } from './dto/create-staff.dto';
+ import { CreateStaffDto } from '../staff2/infrastructure/dto/create-staff.dto';
  import { UpdateStaffDto } from './dto/update-staff.dto';
  import { StaffResponseDto } from './dto/staff-response.dto';
  import { NotFoundException } from '@nestjs/common';
  import { BadRequestException } from '@nestjs/common';
  import { MailService } from 'src/mail/mail.service';
-import { Staff } from './entities/staff.entity';
+import { Staff } from '../staff2/domain/entities/staff.entity';
 import * as bcryptjs from 'bcryptjs';//Importamos bcrypt
 import { InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { randomBytes } from 'crypto';

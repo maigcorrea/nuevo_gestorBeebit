@@ -4,7 +4,7 @@ import { MailService } from '../mail.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Messages } from 'src/messages/entities/messages.entity';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 
 //Escucha los eventos de la cola. El código que se ejecuta cuando la cola lo dispare.
 
