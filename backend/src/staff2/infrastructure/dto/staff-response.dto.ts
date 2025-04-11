@@ -41,4 +41,16 @@ export class StaffResponseDto{
 
 
     //La contraseña no la devolvemos en la respuesta
+
+
+    static fromEntity(staff: import('../../domain/entities/staff.entity').Staff): StaffResponseDto {
+        const dto = new StaffResponseDto();
+        dto.id = staff.id;
+        dto.name = staff.name;
+        dto.email = staff.email;
+        dto.phone = staff.phone;
+        dto.type = staff.type;
+        dto.register_date = staff.register_date;
+        return dto;
+    }
 }
