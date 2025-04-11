@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskStaff } from './entities/taskStaff.entity';
 import { Task } from 'src/task/entities/task.entity';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 import { Repository } from 'typeorm';
 import { TaskStaffResponseDto } from './dto/task-staff-response.dto';
 import { TaskWithStaffResponseDto } from './dto/task-with-staff.response.dto';

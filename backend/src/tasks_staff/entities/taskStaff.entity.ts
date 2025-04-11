@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Task } from 'src/task/entities/task.entity';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 
 // Esta entidad representa la relación entre empleados (Staff) y tareas (Task), muchas a muchas (con tabla intermedia).
 @Entity()

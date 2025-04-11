@@ -16,7 +16,7 @@ import { AbilitiesGuard } from 'src/casl/abilities.guard';
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Req } from '@nestjs/common';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 
 
 @ApiTags('Projects')

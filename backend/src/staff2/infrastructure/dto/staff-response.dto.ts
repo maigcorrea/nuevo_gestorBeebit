@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { StaffType } from '../entities/staff.entity';
+import { StaffType } from "../../domain/entities/staff.entity";
 
 export class StaffResponseDto{
     @ApiProperty({
-        description: 'ID del empleado', example:1
+        description: 'ID del empleado', example:'e1b2c3d4-1234-5678-9876-abcd1234efgh'
     })
     id:string;
 
@@ -19,7 +19,7 @@ export class StaffResponseDto{
 
 
     @ApiProperty({
-        description:"Fecha de registro del empleado en el sistema", example:"2025-02-20"
+        description:"Fecha de registro del empleado en el sistema", example:"2025-02-20T00:00:00.000Z"
     })
     register_date:Date;
 

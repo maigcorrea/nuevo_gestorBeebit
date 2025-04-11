@@ -2,7 +2,7 @@ import { Seeder } from 'nestjs-seeder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from 'src/task/entities/task.entity';
-import { Staff } from 'src/staff/entities/staff.entity';
+import { Staff } from 'src/staff2/domain/entities/staff.entity';
 import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
 import { faker } from '@faker-js/faker';
 
