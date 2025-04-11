@@ -38,6 +38,7 @@ import { CreateStaffUseCase } from 'src/staff2/application/use-cases/create-staf
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { FindStaffByIdUseCase } from 'src/staff2/application/use-cases/find-staff-by-id.use-case';
 import { StaffResponseDto } from '../../infrastructure/dto/staff-response.dto'; // si lo usas como return
+import { FindAllStaffUseCase } from 'src/staff2/application/use-cases/find-all-staff.use-case';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -47,6 +48,7 @@ export class StaffController{
     constructor(private readonly createStaffUseCase: CreateStaffUseCase,
         private readonly caslAbilityFactory: CaslAbilityFactory,
         private readonly findStaffByIdUseCase: FindStaffByIdUseCase,
+        private readonly findAllStaffUseCase: FindAllStaffUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -73,7 +75,20 @@ export class StaffController{
     }
 
 
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: Staff })
+    @Get('/all')
+    @ApiOperation({ summary: 'Mostrar todos los empleados' })
+    @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })
+    @ApiResponse({ status: 403, description: 'No tienes permiso para ver los empleados' })
+    async findAll(@Req() req: Request): Promise<StaffResponseDto[]> {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const empleados = await this.findAllStaffUseCase.execute(ability);
+        return empleados.map(StaffResponseDto.fromEntity);
+    }
 
+
+    
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.
     //@UseGuards(AuthGuard('jwt'), RolesGuard) //Para proteger también por rol, se añade RolesGuard
