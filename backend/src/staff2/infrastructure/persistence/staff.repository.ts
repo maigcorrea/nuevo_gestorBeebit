@@ -36,6 +36,12 @@ export class StaffRepository implements StaffRepositoryPort {
     return entity ? this.mapToDomain(entity) : null;
   }
 
+  async findAll(): Promise<Staff[]> {
+    const entities = await this.repo.find();
+    return entities.map(this.mapToDomain);
+  }
+  
+
   async findById(id: string): Promise<Staff | null> {
     const entity = await this.repo.findOneBy({ id });
     return entity ? this.mapToDomain(entity) : null;
