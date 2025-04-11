@@ -21,6 +21,8 @@ import { Task } from './task/entities/task.entity';
 import { Staff } from './staff/entities/staff.entity';
 import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
 import { Messages } from './messages/entities/messages.entity';
+import { TareaOrmEntity } from './EjemploArquitectura/infrastructure/persistence/tarea.orm-entity';
+import { TareaRepository } from './EjemploArquitectura/infrastructure/persistence/tarea.repository';
 
 
 //Ejemplo arquitectura hexagonal
@@ -42,6 +44,7 @@ import { TaskController } from './EjemploArquitectura/infrastructure/controllers
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),
+    TypeOrmModule.forFeature([TareaOrmEntity]),
     BullModule.forRoot({
       redis: {
         host: 'redis',
@@ -61,5 +64,6 @@ import { TaskController } from './EjemploArquitectura/infrastructure/controllers
     CaslModule
   ],
   controllers: [AppController, TaskController],
+  providers: [TareaRepository],
 })
 export class AppModule {}

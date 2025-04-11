@@ -1,6 +1,6 @@
 import { Tarea } from '../../domain/entities/tarea.entity';
 import { TareaRepositoryPort } from '../../domain/ports/tarea.repository.port';
-import { CrearTareaDto } from '../dto/crear-tarea.dto';
+import { CrearTareaDto } from '../../infrastructure/dto/crear-tarea.dto';
 import { randomUUID } from 'crypto';
 
 export class CrearTareaUseCase {
