@@ -12,6 +12,7 @@ import { FindStaffByIdUseCase } from './application/use-cases/find-staff-by-id.u
 import { FindAllStaffUseCase } from './application/use-cases/find-all-staff.use-case';
 import { UpdateStaffUseCase } from './application/use-cases/update-staff.use-case';
 import { DeleteStaffUseCase } from './application/use-cases/delete-staff.use-case';
+import { CheckNameExistsUseCase } from './application/use-cases/check-name-exists.use-case';
 
 
 @Module({
@@ -50,6 +51,12 @@ import { DeleteStaffUseCase } from './application/use-cases/delete-staff.use-cas
       useFactory: (repo: StaffRepository) => new DeleteStaffUseCase(repo),
       inject: [StaffRepository],
     },
+    {
+      provide: CheckNameExistsUseCase,
+      useFactory: (repo: StaffRepository) => new CheckNameExistsUseCase(repo),
+      inject: [StaffRepository],
+    },
+    
   ],
 })
 export class StaffModule {}

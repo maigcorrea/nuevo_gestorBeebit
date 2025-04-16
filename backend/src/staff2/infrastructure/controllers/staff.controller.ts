@@ -42,6 +42,7 @@ import { FindAllStaffUseCase } from 'src/staff2/application/use-cases/find-all-s
 import { UpdateStaffUseCase } from 'src/staff2/application/use-cases/update-staff.use-case';
 import { UpdateStaffDto } from '../dto/update-staff.dto';
 import { DeleteStaffUseCase } from 'src/staff2/application/use-cases/delete-staff.use-case';
+import { CheckNameExistsUseCase } from 'src/staff2/application/use-cases/check-name-exists.use-case';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -54,6 +55,7 @@ export class StaffController{
         private readonly findAllStaffUseCase: FindAllStaffUseCase,
         private readonly updateStaffUseCase: UpdateStaffUseCase,
         private readonly deleteStaffUseCase: DeleteStaffUseCase,
+        private readonly checkNameExistsUseCase: CheckNameExistsUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -141,6 +143,11 @@ export class StaffController{
     }
 
 
+    @Get('nameExists/:name')
+    async nameExists(@Param('name') name: string): Promise<{ exists: boolean }> {
+      const exists = await this.checkNameExistsUseCase.execute(name);
+      return { exists };
+    }
     
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.
