@@ -26,12 +26,13 @@ import { Request } from 'express';
 import { Req } from '@nestjs/common';*/
 
 import { Body, Controller, Post, Req, UseGuards, Get, Param, Put, Delete } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AbilitiesGuard } from 'src/casl/abilities.guard';
 import { CheckAbilities } from 'src/casl/check-abilities.decorator';
 import { ParseUUIDPipe } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Staff } from '../../domain/entities/staff.entity';
 import { CreateStaffDto } from '../../infrastructure/dto/create-staff.dto';
 import { CreateStaffUseCase } from 'src/staff2/application/use-cases/create-staff.use-case';
@@ -47,6 +48,8 @@ import { CheckEmailExistsUseCase } from 'src/staff2/application/use-cases/check-
 import { CheckPhoneExistsUseCase } from 'src/staff2/application/use-cases/check-phone-exists.use-case';
 import { VerifyPasswordUseCase } from 'src/staff2/application/use-cases/verify-password.use-case';
 import { VerifyPasswordDto } from '../dto/verify-password.dto';
+import { ChangePasswordUseCase } from 'src/staff2/application/use-cases/change-password.use-case';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -63,6 +66,7 @@ export class StaffController{
         private readonly checkEmailExistsUseCase: CheckEmailExistsUseCase,
         private readonly checkPhoneExistsUseCase: CheckPhoneExistsUseCase,
         private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
+        private readonly changePasswordUseCase: ChangePasswordUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -180,6 +184,37 @@ export class StaffController{
     async verifyPassword(@Body() body: VerifyPasswordDto): Promise<{ valid: boolean }> {
         const isValid = await this.verifyPasswordUseCase.execute(body);
         return { valid: isValid };
+    }
+
+
+
+
+    @Put('changePassword/:id')
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Staff })
+    @ApiParam({ name: 'id', required: true, type: String })
+    @ApiBody({ type: ChangePasswordDto })
+    @ApiOperation({ summary: 'Cambiar la contraseña de un usuario' })
+    @ApiResponse({ status: 200, description: 'Contraseña actualizada correctamente' })
+    @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+    async changePassword(
+    @Param('id') id: string,
+    @Body() body: ChangePasswordDto,
+    @Req() req: Request,
+    ): Promise<{ message: string }> {
+    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+
+    const success = await this.changePasswordUseCase.execute(
+        { userId: id, newPassword: body.newPassword },
+        ability,
+    );
+
+    if (!success) {
+        throw new NotFoundException('Usuario no encontrado');
+    }
+
+    return { message: 'Contraseña actualizada correctamente' };
     }
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.

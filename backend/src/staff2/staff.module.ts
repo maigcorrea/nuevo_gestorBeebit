@@ -16,6 +16,7 @@ import { CheckNameExistsUseCase } from './application/use-cases/check-name-exist
 import { CheckEmailExistsUseCase } from './application/use-cases/check-email-exists.use-case';
 import { CheckPhoneExistsUseCase } from './application/use-cases/check-phone-exists.use-case';
 import { VerifyPasswordUseCase } from './application/use-cases/verify-password.use-case';
+import { ChangePasswordUseCase } from './application/use-cases/change-password.use-case';
 
 
 @Module({
@@ -72,6 +73,11 @@ import { VerifyPasswordUseCase } from './application/use-cases/verify-password.u
     {
       provide: VerifyPasswordUseCase,
       useFactory: (repo: StaffRepository) => new VerifyPasswordUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: ChangePasswordUseCase,
+      useFactory: (repo: StaffRepository) => new ChangePasswordUseCase(repo),
       inject: [StaffRepository],
     },
     
