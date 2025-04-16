@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+/*import { Injectable } from '@nestjs/common';
  import { InjectRepository } from '@nestjs/typeorm';
  import { Repository } from 'typeorm';
  import { CreateStaffDto } from '../staff2/infrastructure/dto/create-staff.dto';
@@ -61,7 +61,7 @@ export class StaffService {
                 register_date:"2025-02-20",
                 phone: "682543620",
                 password:"holaMundo_2"
-            }*/
+            }/*
 
 
             
@@ -311,3 +311,4 @@ export class StaffService {
   //}
 
 }
+*/

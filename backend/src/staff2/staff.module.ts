@@ -10,6 +10,7 @@ import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
 import { CaslModule } from 'src/casl/casl.module';
 import { FindStaffByIdUseCase } from './application/use-cases/find-staff-by-id.use-case';
 import { FindAllStaffUseCase } from './application/use-cases/find-all-staff.use-case';
+import { UpdateStaffUseCase } from './application/use-cases/update-staff.use-case';
 
 
 @Module({
@@ -36,6 +37,11 @@ import { FindAllStaffUseCase } from './application/use-cases/find-all-staff.use-
     {
       provide: FindAllStaffUseCase,
       useFactory: (repo: StaffRepository) => new FindAllStaffUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: UpdateStaffUseCase,
+      useFactory: (repo: StaffRepository) => new UpdateStaffUseCase(repo),
       inject: [StaffRepository],
     },
   ],

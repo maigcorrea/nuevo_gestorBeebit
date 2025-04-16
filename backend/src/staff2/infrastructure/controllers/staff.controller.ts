@@ -25,7 +25,7 @@ import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Req } from '@nestjs/common';*/
 
-import { Body, Controller, Post, Req, UseGuards, Get, Param } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, Get, Param, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -39,6 +39,8 @@ import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { FindStaffByIdUseCase } from 'src/staff2/application/use-cases/find-staff-by-id.use-case';
 import { StaffResponseDto } from '../../infrastructure/dto/staff-response.dto'; // si lo usas como return
 import { FindAllStaffUseCase } from 'src/staff2/application/use-cases/find-all-staff.use-case';
+import { UpdateStaffUseCase } from 'src/staff2/application/use-cases/update-staff.use-case';
+import { UpdateStaffDto } from '../dto/update-staff.dto';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -49,6 +51,7 @@ export class StaffController{
         private readonly caslAbilityFactory: CaslAbilityFactory,
         private readonly findStaffByIdUseCase: FindStaffByIdUseCase,
         private readonly findAllStaffUseCase: FindAllStaffUseCase,
+        private readonly updateStaffUseCase: UpdateStaffUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -87,6 +90,29 @@ export class StaffController{
         return empleados.map(StaffResponseDto.fromEntity);
     }
 
+
+
+
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Staff })
+    @Put('/update/:id')
+    @ApiOperation({ summary: 'Actualizar un empleado determinado' })
+    @ApiResponse({
+      status: 200,
+      description: 'Empleado actualizado con éxito',
+      schema: {
+        example: { message: 'Empleado actualizado con éxito' },
+      },
+    })
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    async updateStaff(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Body() updateDto: UpdateStaffDto,
+      @Req() req: Request,
+    ): Promise<{ message: string }> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      return this.updateStaffUseCase.execute(id, updateDto, ability);
+    }
 
     
     /*
