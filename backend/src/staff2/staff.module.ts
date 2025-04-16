@@ -11,6 +11,7 @@ import { CaslModule } from 'src/casl/casl.module';
 import { FindStaffByIdUseCase } from './application/use-cases/find-staff-by-id.use-case';
 import { FindAllStaffUseCase } from './application/use-cases/find-all-staff.use-case';
 import { UpdateStaffUseCase } from './application/use-cases/update-staff.use-case';
+import { DeleteStaffUseCase } from './application/use-cases/delete-staff.use-case';
 
 
 @Module({
@@ -42,6 +43,11 @@ import { UpdateStaffUseCase } from './application/use-cases/update-staff.use-cas
     {
       provide: UpdateStaffUseCase,
       useFactory: (repo: StaffRepository) => new UpdateStaffUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: DeleteStaffUseCase,
+      useFactory: (repo: StaffRepository) => new DeleteStaffUseCase(repo),
       inject: [StaffRepository],
     },
   ],

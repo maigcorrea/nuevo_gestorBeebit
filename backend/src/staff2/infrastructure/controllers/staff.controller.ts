@@ -25,7 +25,7 @@ import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Req } from '@nestjs/common';*/
 
-import { Body, Controller, Post, Req, UseGuards, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, Get, Param, Put, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,6 +41,7 @@ import { StaffResponseDto } from '../../infrastructure/dto/staff-response.dto'; 
 import { FindAllStaffUseCase } from 'src/staff2/application/use-cases/find-all-staff.use-case';
 import { UpdateStaffUseCase } from 'src/staff2/application/use-cases/update-staff.use-case';
 import { UpdateStaffDto } from '../dto/update-staff.dto';
+import { DeleteStaffUseCase } from 'src/staff2/application/use-cases/delete-staff.use-case';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -52,6 +53,7 @@ export class StaffController{
         private readonly findStaffByIdUseCase: FindStaffByIdUseCase,
         private readonly findAllStaffUseCase: FindAllStaffUseCase,
         private readonly updateStaffUseCase: UpdateStaffUseCase,
+        private readonly deleteStaffUseCase: DeleteStaffUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -113,6 +115,31 @@ export class StaffController{
       const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
       return this.updateStaffUseCase.execute(id, updateDto, ability);
     }
+
+
+
+
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'delete', subject: Staff })
+    @Delete('/delete/:id')
+    @ApiBearerAuth('jwt')
+    @ApiOperation({ summary: 'Borrar un empleado determinado' })
+    @ApiResponse({
+    status: 200,
+    description: 'Empleado eliminado con éxito',
+    schema: {
+        example: { message: 'Empleado eliminado con éxito' },
+    },
+    })
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    async deleteStaff(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Req() req: Request,
+    ): Promise<{ message: string }> {
+    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+    return this.deleteStaffUseCase.execute(id, ability);
+    }
+
 
     
     /*
