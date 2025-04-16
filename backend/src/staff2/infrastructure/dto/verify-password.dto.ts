@@ -1,6 +1,7 @@
 import { IsNumber, IsString, Length, Matches, IsNotEmpty, IsUUID } from 'class-validator';
+import { VerifyPasswordInput } from 'src/staff2/domain/interfaces/verify-password.input';
 
-export class VerifyPasswordDto {
+export class VerifyPasswordDto implements VerifyPasswordInput {
   @IsUUID()
   userId: string;
 
@@ -10,5 +11,5 @@ export class VerifyPasswordDto {
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/, {
       message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
     })
-password: string;
+  password: string;
 }

@@ -45,6 +45,8 @@ import { DeleteStaffUseCase } from 'src/staff2/application/use-cases/delete-staf
 import { CheckNameExistsUseCase } from 'src/staff2/application/use-cases/check-name-exists.use-case';
 import { CheckEmailExistsUseCase } from 'src/staff2/application/use-cases/check-email-exists.use-case';
 import { CheckPhoneExistsUseCase } from 'src/staff2/application/use-cases/check-phone-exists.use-case';
+import { VerifyPasswordUseCase } from 'src/staff2/application/use-cases/verify-password.use-case';
+import { VerifyPasswordDto } from '../dto/verify-password.dto';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -60,6 +62,7 @@ export class StaffController{
         private readonly checkNameExistsUseCase: CheckNameExistsUseCase,
         private readonly checkEmailExistsUseCase: CheckEmailExistsUseCase,
         private readonly checkPhoneExistsUseCase: CheckPhoneExistsUseCase,
+        private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -168,6 +171,15 @@ export class StaffController{
     async phoneExists(@Param('phone') phone: string): Promise<{ exists: boolean }> {
         const exists = await this.checkPhoneExistsUseCase.execute(phone);
         return { exists };
+    }
+
+
+
+
+    @Post('passwordVerify')
+    async verifyPassword(@Body() body: VerifyPasswordDto): Promise<{ valid: boolean }> {
+        const isValid = await this.verifyPasswordUseCase.execute(body);
+        return { valid: isValid };
     }
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.

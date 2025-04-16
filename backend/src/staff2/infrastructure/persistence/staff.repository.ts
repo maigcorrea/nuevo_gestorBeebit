@@ -76,9 +76,25 @@ export class StaffRepository implements StaffRepositoryPort {
     return this.mapToDomain(updated);
   }
 
+
+
   async delete(id: string): Promise<void> {
     await this.repo.delete(id);
   }
+
+
+
+  async findByIdWithPassword(id: string): Promise<Staff | null> {
+    const entity = await this.repo
+      .createQueryBuilder('staff')
+      .addSelect('staff.password') // <-- forzamos a seleccionar el password
+      .where('staff.id = :id', { id })
+      .getOne();
+  
+    return entity ? this.mapToDomain(entity) : null;
+  }
+  
+
 
   private mapToDomain(entity: StaffOrmEntity): Staff {
     return new Staff(
