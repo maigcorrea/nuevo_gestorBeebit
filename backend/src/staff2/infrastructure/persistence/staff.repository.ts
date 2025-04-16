@@ -50,7 +50,14 @@ export class StaffRepository implements StaffRepositoryPort {
   async findByName(name: string): Promise<Staff | null> {
     const entity = await this.repo.findOne({ where: { name } });
     return entity ? this.mapToDomain(entity) : null;
-  }  
+  }
+  
+  
+  async findByPhone(phone: string): Promise<Staff | null> {
+    const entity = await this.repo.findOne({ where: { phone } });
+    return entity ? this.mapToDomain(entity) : null;
+  }
+  
 
   async update(staff: Staff): Promise<Staff> {
     await this.repo.update({ id: staff.id }, {

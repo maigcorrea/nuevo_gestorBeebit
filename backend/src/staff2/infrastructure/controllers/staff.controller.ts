@@ -44,6 +44,7 @@ import { UpdateStaffDto } from '../dto/update-staff.dto';
 import { DeleteStaffUseCase } from 'src/staff2/application/use-cases/delete-staff.use-case';
 import { CheckNameExistsUseCase } from 'src/staff2/application/use-cases/check-name-exists.use-case';
 import { CheckEmailExistsUseCase } from 'src/staff2/application/use-cases/check-email-exists.use-case';
+import { CheckPhoneExistsUseCase } from 'src/staff2/application/use-cases/check-phone-exists.use-case';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -58,6 +59,7 @@ export class StaffController{
         private readonly deleteStaffUseCase: DeleteStaffUseCase,
         private readonly checkNameExistsUseCase: CheckNameExistsUseCase,
         private readonly checkEmailExistsUseCase: CheckEmailExistsUseCase,
+        private readonly checkPhoneExistsUseCase: CheckPhoneExistsUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -157,6 +159,14 @@ export class StaffController{
     @Get('emailExists/:email')
     async existeEmail(@Param('email') email: string): Promise<{ exists: boolean }> {
         const exists = await this.checkEmailExistsUseCase.execute(email);
+        return { exists };
+    }
+
+
+
+    @Get('phoneExists/:phone')
+    async phoneExists(@Param('phone') phone: string): Promise<{ exists: boolean }> {
+        const exists = await this.checkPhoneExistsUseCase.execute(phone);
         return { exists };
     }
     /*

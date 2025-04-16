@@ -14,6 +14,7 @@ import { UpdateStaffUseCase } from './application/use-cases/update-staff.use-cas
 import { DeleteStaffUseCase } from './application/use-cases/delete-staff.use-case';
 import { CheckNameExistsUseCase } from './application/use-cases/check-name-exists.use-case';
 import { CheckEmailExistsUseCase } from './application/use-cases/check-email-exists.use-case';
+import { CheckPhoneExistsUseCase } from './application/use-cases/check-phone-exists.use-case';
 
 
 @Module({
@@ -60,6 +61,11 @@ import { CheckEmailExistsUseCase } from './application/use-cases/check-email-exi
     {
       provide: CheckEmailExistsUseCase,
       useFactory: (repo: StaffRepository) => new CheckEmailExistsUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: CheckPhoneExistsUseCase,
+      useFactory: (repo: StaffRepository) => new CheckPhoneExistsUseCase(repo),
       inject: [StaffRepository],
     },
     
