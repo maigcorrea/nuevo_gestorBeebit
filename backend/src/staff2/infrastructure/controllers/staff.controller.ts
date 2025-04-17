@@ -25,7 +25,8 @@ import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Req } from '@nestjs/common';*/
 
-import { Body, Controller, Post, Req, UseGuards, Get, Param, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, Get, Param, Put, Delete, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -54,6 +55,11 @@ import { ForgotPasswordDto } from '../dto/forgot-password.dto';
 import { HandleForgotPasswordUseCase } from 'src/staff2/application/use-cases/handle-forgot-password.use-case';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { ResetPasswordUseCase } from 'src/staff2/application/use-cases/reset-password.use-case';
+import { SaveProfileImageDto } from '../dto/save-profile-image.dto';
+import { SaveProfileImageUseCase } from 'src/staff2/application/use-cases/save-profile-image.use-case';
+import { MinioService } from 'src/minio/minio.service';
+import { Express } from 'express';
+
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -73,6 +79,8 @@ export class StaffController{
         private readonly changePasswordUseCase: ChangePasswordUseCase,
         private readonly handleForgotPasswordUseCase: HandleForgotPasswordUseCase,
         private readonly resetPasswordUseCase: ResetPasswordUseCase,
+        private readonly saveProfileImageUseCase: SaveProfileImageUseCase,
+        private readonly minioService: MinioService,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -259,6 +267,30 @@ export class StaffController{
     async resetPassword(@Body() body: ResetPasswordDto, @Req() req: Request) {
     const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
         return this.resetPasswordUseCase.execute(body, ability);
+    }
+
+
+
+
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('upload-profile-picture')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadProfilePicture(
+      @UploadedFile() file: Express.Multer.File,
+      @Req() req: any,
+    ): Promise<{ url: string }> {
+      if (!file) {
+        throw new BadRequestException('No se recibió ningún archivo');
+      }
+  
+      const fileName = `profile-pictures/${Date.now()}-${file.originalname}`;
+      const { url } = await this.minioService.upload(file, fileName);
+  
+      const userId = req.user.userId;
+      await this.saveProfileImageUseCase.execute({ userId, imageUrl: url });
+  
+      return { url };
     }
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.

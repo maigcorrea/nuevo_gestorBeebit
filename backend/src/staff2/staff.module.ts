@@ -20,6 +20,8 @@ import { ChangePasswordUseCase } from './application/use-cases/change-password.u
 import { HandleForgotPasswordUseCase } from './application/use-cases/handle-forgot-password.use-case';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { ResetPasswordUseCase } from './application/use-cases/reset-password.use-case';
+import { SaveProfileImageUseCase } from './application/use-cases/save-profile-image.use-case';
+import { StaffRepositoryPort } from './domain/ports/staff.repository.port';
 
 
 @Module({
@@ -92,6 +94,11 @@ import { ResetPasswordUseCase } from './application/use-cases/reset-password.use
     {
       provide: ResetPasswordUseCase,
       useFactory: (repo: StaffRepository) => new ResetPasswordUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: SaveProfileImageUseCase,
+      useFactory: (repo: StaffRepositoryPort) => new SaveProfileImageUseCase(repo),
       inject: [StaffRepository],
     },
     
