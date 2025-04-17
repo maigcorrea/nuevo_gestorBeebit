@@ -52,6 +52,8 @@ import { ChangePasswordUseCase } from 'src/staff2/application/use-cases/change-p
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { ForgotPasswordDto } from '../dto/forgot-password.dto';
 import { HandleForgotPasswordUseCase } from 'src/staff2/application/use-cases/handle-forgot-password.use-case';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { ResetPasswordUseCase } from 'src/staff2/application/use-cases/reset-password.use-case';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -70,6 +72,7 @@ export class StaffController{
         private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
         private readonly changePasswordUseCase: ChangePasswordUseCase,
         private readonly handleForgotPasswordUseCase: HandleForgotPasswordUseCase,
+        private readonly resetPasswordUseCase: ResetPasswordUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -235,6 +238,27 @@ export class StaffController{
     })
     async forgotPassword(@Body() body: ForgotPasswordDto) {
         return this.handleForgotPasswordUseCase.execute(body);
+    }
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Staff })
+    @Post('reset-password')
+    @ApiOperation({ summary: 'Restablecer contraseña con token de recuperación' })
+    @ApiResponse({
+        status: 200,
+        schema: {
+        example: { message: 'Contraseña actualizada correctamente' },
+    },
+    })
+    @ApiResponse({ status: 400, description: 'Token inválido o expirado' })
+    async resetPassword(@Body() body: ResetPasswordDto, @Req() req: Request) {
+    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        return this.resetPasswordUseCase.execute(body, ability);
     }
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.

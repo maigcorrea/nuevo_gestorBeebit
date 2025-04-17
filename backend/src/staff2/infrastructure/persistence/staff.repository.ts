@@ -95,6 +95,12 @@ export class StaffRepository implements StaffRepositoryPort {
   }
   
 
+  async findByToken(token: string): Promise<Staff | null> {
+    const entity = await this.repo.findOneBy({ resetToken: token });
+    return entity ? this.mapToDomain(entity) : null;
+  }
+
+  
 
   private mapToDomain(entity: StaffOrmEntity): Staff {
     return new Staff(

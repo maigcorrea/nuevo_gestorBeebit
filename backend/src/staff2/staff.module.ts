@@ -19,6 +19,7 @@ import { VerifyPasswordUseCase } from './application/use-cases/verify-password.u
 import { ChangePasswordUseCase } from './application/use-cases/change-password.use-case';
 import { HandleForgotPasswordUseCase } from './application/use-cases/handle-forgot-password.use-case';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { ResetPasswordUseCase } from './application/use-cases/reset-password.use-case';
 
 
 @Module({
@@ -87,7 +88,12 @@ import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
       useFactory: (repo: StaffRepository, mailQueue: MailQueueService) =>
         new HandleForgotPasswordUseCase(repo, mailQueue),
       inject: [StaffRepository, MailQueueService],
-    }
+    },
+    {
+      provide: ResetPasswordUseCase,
+      useFactory: (repo: StaffRepository) => new ResetPasswordUseCase(repo),
+      inject: [StaffRepository],
+    },
     
     
   ],

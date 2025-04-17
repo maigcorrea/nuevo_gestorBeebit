@@ -8,6 +8,7 @@ export interface StaffRepositoryPort {
   findByName(name: string): Promise<Staff | null>;
   findByPhone(phone: string): Promise<Staff | null>;
   findByIdWithPassword(id: string): Promise<Staff | null>;
+  findByToken(token: string): Promise<Staff | null>;
   update(staff: Staff): Promise<Staff>;              // útil para edición o recuperación
   delete(id: string): Promise<void>;                 // si luego añades soft/hard delete
 }

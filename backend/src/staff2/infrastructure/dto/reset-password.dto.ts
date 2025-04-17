@@ -1,6 +1,7 @@
 import { IsString, Length, Matches, IsNotEmpty } from 'class-validator';
+import { ResetPasswordInput } from '../../domain/interfaces/reset-password.input';
 
-export class ResetPasswordDto {
+export class ResetPasswordDto implements ResetPasswordInput {
   @IsString()
   token: string;
 
@@ -11,5 +12,4 @@ export class ResetPasswordDto {
     message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
   })
   newPassword: string;
-  
 }
