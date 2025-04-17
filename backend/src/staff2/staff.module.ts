@@ -17,6 +17,8 @@ import { CheckEmailExistsUseCase } from './application/use-cases/check-email-exi
 import { CheckPhoneExistsUseCase } from './application/use-cases/check-phone-exists.use-case';
 import { VerifyPasswordUseCase } from './application/use-cases/verify-password.use-case';
 import { ChangePasswordUseCase } from './application/use-cases/change-password.use-case';
+import { HandleForgotPasswordUseCase } from './application/use-cases/handle-forgot-password.use-case';
+import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 
 
 @Module({
@@ -80,6 +82,13 @@ import { ChangePasswordUseCase } from './application/use-cases/change-password.u
       useFactory: (repo: StaffRepository) => new ChangePasswordUseCase(repo),
       inject: [StaffRepository],
     },
+    {
+      provide: HandleForgotPasswordUseCase,
+      useFactory: (repo: StaffRepository, mailQueue: MailQueueService) =>
+        new HandleForgotPasswordUseCase(repo, mailQueue),
+      inject: [StaffRepository, MailQueueService],
+    }
+    
     
   ],
 })

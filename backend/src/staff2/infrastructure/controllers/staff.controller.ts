@@ -50,6 +50,8 @@ import { VerifyPasswordUseCase } from 'src/staff2/application/use-cases/verify-p
 import { VerifyPasswordDto } from '../dto/verify-password.dto';
 import { ChangePasswordUseCase } from 'src/staff2/application/use-cases/change-password.use-case';
 import { ChangePasswordDto } from '../dto/change-password.dto';
+import { ForgotPasswordDto } from '../dto/forgot-password.dto';
+import { HandleForgotPasswordUseCase } from 'src/staff2/application/use-cases/handle-forgot-password.use-case';
 
 @ApiTags('Staff')
 @ApiBearerAuth('jwt')
@@ -67,6 +69,7 @@ export class StaffController{
         private readonly checkPhoneExistsUseCase: CheckPhoneExistsUseCase,
         private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
         private readonly changePasswordUseCase: ChangePasswordUseCase,
+        private readonly handleForgotPasswordUseCase: HandleForgotPasswordUseCase,
     ) {}
 
     @CheckAbilities({ action: 'create', subject: Staff })
@@ -215,6 +218,23 @@ export class StaffController{
     }
 
     return { message: 'Contraseña actualizada correctamente' };
+    }
+
+
+
+
+    @Post('forgot-password')
+    @ApiOperation({ summary: 'Enviar correo para recuperar la contraseña' })
+    @ApiResponse({
+    status: 200,
+    schema: {
+        example: {
+        message: 'Si el email está registrado, recibirás un correo',
+        },
+    },
+    })
+    async forgotPassword(@Body() body: ForgotPasswordDto) {
+        return this.handleForgotPasswordUseCase.execute(body);
     }
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.
