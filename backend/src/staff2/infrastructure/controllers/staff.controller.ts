@@ -122,6 +122,27 @@ export class StaffController{
 
 
 
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: Staff })
+    @Get('emails')
+    @ApiOperation({ summary: 'Obtener todos los correos electrónicos de los empleados' })
+    @ApiResponse({
+        status: 200,
+        description: 'Lista de correos electrónicos',
+        schema: {
+            example: ['correo1@example.com', 'correo2@example.com']
+        }
+    })
+    async getAllEmails(@Req() req: Request): Promise<string[]> {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const users = await this.findAllStaffUseCase.execute(ability);
+        return users.map(user => user.email);
+    }
+
+
+
+
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
     @CheckAbilities({ action: 'update', subject: Staff })
     @Put('/update/:id')
