@@ -35,6 +35,7 @@ import {
   import { FindProjectsByTitleUseCase } from 'src/project2/application/use-cases/find-projects-by-title.use-case';
   import { FindProjectsByStatusUseCase } from 'src/project2/application/use-cases/find-projects-by-status.use-case';
   import { OrderProjectsByStartDateDescUseCase } from 'src/project2/application/use-cases/order-projects-by-start-date-desc.use-case';
+  import { OrderProjectsByStartDateAscUseCase } from 'src/project2/application/use-cases/order-projects-by-start-date-asc.use-case';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -46,6 +47,7 @@ import {
       private readonly findProjectsByTitleUseCase: FindProjectsByTitleUseCase,
       private readonly findProjectsByStatusUseCase: FindProjectsByStatusUseCase,
       private readonly orderProjectsByStartDateDescUseCase: OrderProjectsByStartDateDescUseCase,
+      private readonly orderProjectsByStartDateAscUseCase: OrderProjectsByStartDateAscUseCase,
     ) {}
 
 
@@ -188,6 +190,28 @@ import {
         throw new NotFoundException('No se encontraron proyectos');
       }
   
+      return projects.map(ProjectMapper.toResponseDto);
+    }
+
+
+
+
+
+    @Get('order/start-date/asc')
+    @ApiOperation({ summary: 'Listar proyectos ordenados por fecha de inicio (más antigua a más reciente)' })
+    @ApiResponse({
+      status: 200,
+      description: 'Listado de proyectos ordenados',
+      type: [ProjectResponseDto],
+    })
+    @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
+    async orderByStartDateAsc(): Promise<ProjectResponseDto[]> {
+      const projects = await this.orderProjectsByStartDateAscUseCase.execute();
+
+      if (!projects.length) {
+        throw new NotFoundException('No se encontraron proyectos');
+      }
+
       return projects.map(ProjectMapper.toResponseDto);
     }
 

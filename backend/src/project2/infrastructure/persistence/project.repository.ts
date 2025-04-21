@@ -69,6 +69,19 @@ export class ProjectRepository implements ProjectRepositoryPort {
   }
 
 
+
+
+
+  async orderByStartDateAsc(): Promise<Project[]> {
+    const projects = await this.ormRepo.find({
+      order: {
+        start_date: 'ASC',
+      },
+    });
+  
+    return projects.map(ProjectMapper.toDomainEntity);
+  }
+
   
 
 
