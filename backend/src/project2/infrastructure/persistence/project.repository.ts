@@ -58,6 +58,20 @@ export class ProjectRepository implements ProjectRepositoryPort {
 
 
 
+  async orderByStartDateDesc(): Promise<Project[]> {
+    const projects = await this.ormRepo.find({
+      order: {
+        start_date: 'DESC',
+      },
+    });
+  
+    return projects.map(ProjectMapper.toDomainEntity);
+  }
+
+
+  
+
+
   async findById(id: string): Promise<Project | null> {
     throw new Error('Method not implemented.');
   }

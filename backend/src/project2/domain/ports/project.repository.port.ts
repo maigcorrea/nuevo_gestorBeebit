@@ -8,4 +8,5 @@ export abstract class ProjectRepositoryPort {
   abstract delete(id: string): Promise<void>;
   abstract findByTitle(letter: string): Promise<Project[]>;
   abstract findByStatus(status: ProjectStatus): Promise<Project[]>;
+  abstract orderByStartDateDesc(): Promise<Project[]>;
 }

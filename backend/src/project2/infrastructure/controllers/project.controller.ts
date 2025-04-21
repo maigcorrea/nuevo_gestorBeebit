@@ -34,6 +34,7 @@ import {
   import { Project as ProjectSubject } from 'src/project/entities/project.entity';
   import { FindProjectsByTitleUseCase } from 'src/project2/application/use-cases/find-projects-by-title.use-case';
   import { FindProjectsByStatusUseCase } from 'src/project2/application/use-cases/find-projects-by-status.use-case';
+  import { OrderProjectsByStartDateDescUseCase } from 'src/project2/application/use-cases/order-projects-by-start-date-desc.use-case';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -44,6 +45,7 @@ import {
       private readonly findAllProjectsUseCase: FindAllProjectsUseCase,
       private readonly findProjectsByTitleUseCase: FindProjectsByTitleUseCase,
       private readonly findProjectsByStatusUseCase: FindProjectsByStatusUseCase,
+      private readonly orderProjectsByStartDateDescUseCase: OrderProjectsByStartDateDescUseCase,
     ) {}
 
 
@@ -164,6 +166,28 @@ import {
         );
       }
 
+      return projects.map(ProjectMapper.toResponseDto);
+    }
+
+    
+
+
+
+    @Get('order/start-date/desc')
+    @ApiOperation({ summary: 'Listar proyectos ordenados por fecha de inicio (más reciente a más antigua)' })
+    @ApiResponse({
+      status: 200,
+      description: 'Listado de proyectos ordenados',
+      type: [ProjectResponseDto],
+    })
+    @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
+    async orderByStartDateDesc(): Promise<ProjectResponseDto[]> {
+      const projects = await this.orderProjectsByStartDateDescUseCase.execute();
+  
+      if (!projects.length) {
+        throw new NotFoundException('No se encontraron proyectos');
+      }
+  
       return projects.map(ProjectMapper.toResponseDto);
     }
 

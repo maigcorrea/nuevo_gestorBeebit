@@ -10,6 +10,7 @@ import { ProjectRepositoryPort } from './domain/ports/project.repository.port';
 import { FindAllProjectsUseCase } from './application/use-cases/find-all-projects.use-case';
 import { FindProjectsByTitleUseCase } from './application/use-cases/find-projects-by-title.use-case';
 import { FindProjectsByStatusUseCase } from './application/use-cases/find-projects-by-status.use-case';
+import { OrderProjectsByStartDateDescUseCase } from './application/use-cases/order-projects-by-start-date-desc.use-case';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FindProjectsByStatusUseCase } from './application/use-cases/find-projec
     FindAllProjectsUseCase,
     FindProjectsByTitleUseCase,
     FindProjectsByStatusUseCase,
+    OrderProjectsByStartDateDescUseCase,
     {
       provide: ProjectRepositoryPort,
       useClass: ProjectRepository,
