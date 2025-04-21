@@ -6,4 +6,5 @@ export abstract class ProjectRepositoryPort {
   abstract findById(id: string): Promise<Project | null>;
   abstract update(id: string, project: Partial<Project>): Promise<Project>;
   abstract delete(id: string): Promise<void>;
+  abstract findByTitle(letter: string): Promise<Project[]>;
 }

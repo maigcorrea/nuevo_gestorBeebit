@@ -30,6 +30,16 @@ export class ProjectRepository implements ProjectRepositoryPort {
       ProjectMapper.toDomainEntity(project),
     );
   }
+
+
+  async findByTitle(letter: string): Promise<Project[]> {
+    const results = await this.ormRepo
+      .createQueryBuilder('project')
+      .where('LOWER(project.title) ILIKE LOWER(:title)', { title: `%${letter}%` })
+      .getMany();
+  
+    return results.map(ProjectMapper.toDomainEntity);
+  }
   
   async findById(id: string): Promise<Project | null> {
     throw new Error('Method not implemented.');

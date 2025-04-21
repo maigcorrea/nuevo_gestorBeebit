@@ -7,7 +7,8 @@ import {
     UseInterceptors,
     UploadedFile,
     Get,
-    NotFoundException
+    NotFoundException,
+    Param
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
   import {
@@ -31,6 +32,7 @@ import {
   import { ProjectMapper } from '../mappers/project.mapper';
   import { FindAllProjectsUseCase } from 'src/project2/application/use-cases/find-all-projects.use-case';
   import { Project as ProjectSubject } from 'src/project/entities/project.entity';
+  import { FindProjectsByTitleUseCase } from 'src/project2/application/use-cases/find-projects-by-title.use-case';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -39,6 +41,7 @@ import {
       private readonly createProjectUseCase: CreateProjectUseCase,
       private readonly caslAbilityFactory: CaslAbilityFactory,
       private readonly findAllProjectsUseCase: FindAllProjectsUseCase,
+      private readonly findProjectsByTitleUseCase: FindProjectsByTitleUseCase,
     ) {}
 
 
@@ -105,6 +108,33 @@ import {
         return projects.map(ProjectMapper.toResponseDto);
     }
 
+
+
+
+
+
+
+
+
+
+
+    @Get('filter/title/:title')
+    @ApiOperation({ summary: 'Listar proyectos según su título' })
+    @ApiResponse({
+        status: 200,
+        description: 'Listado de proyectos según título',
+        type: [ProjectResponseDto],
+    })
+    @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
+    async findByTitle(@Param('title') title: string): Promise<ProjectResponseDto[]> {
+        const projects = await this.findProjectsByTitleUseCase.execute(title);
+
+        if (!projects.length) {
+            throw new NotFoundException('No se encontraron proyectos con ese título');
+        }
+
+        return projects.map(ProjectMapper.toResponseDto);
+    }
 
   }
   

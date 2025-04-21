@@ -8,6 +8,7 @@ import { MinioModule } from '../minio/minio.module';
 import { CaslModule } from '../casl/casl.module';
 import { ProjectRepositoryPort } from './domain/ports/project.repository.port';
 import { FindAllProjectsUseCase } from './application/use-cases/find-all-projects.use-case';
+import { FindProjectsByTitleUseCase } from './application/use-cases/find-projects-by-title.use-case';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { FindAllProjectsUseCase } from './application/use-cases/find-all-project
   providers: [
     CreateProjectUseCase,
     FindAllProjectsUseCase,
+    FindProjectsByTitleUseCase,
     {
       provide: ProjectRepositoryPort,
       useClass: ProjectRepository,
