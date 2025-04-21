@@ -9,6 +9,7 @@ import { CaslModule } from '../casl/casl.module';
 import { ProjectRepositoryPort } from './domain/ports/project.repository.port';
 import { FindAllProjectsUseCase } from './application/use-cases/find-all-projects.use-case';
 import { FindProjectsByTitleUseCase } from './application/use-cases/find-projects-by-title.use-case';
+import { FindProjectsByStatusUseCase } from './application/use-cases/find-projects-by-status.use-case';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FindProjectsByTitleUseCase } from './application/use-cases/find-project
     CreateProjectUseCase,
     FindAllProjectsUseCase,
     FindProjectsByTitleUseCase,
+    FindProjectsByStatusUseCase,
     {
       provide: ProjectRepositoryPort,
       useClass: ProjectRepository,

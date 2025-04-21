@@ -33,6 +33,7 @@ import {
   import { FindAllProjectsUseCase } from 'src/project2/application/use-cases/find-all-projects.use-case';
   import { Project as ProjectSubject } from 'src/project/entities/project.entity';
   import { FindProjectsByTitleUseCase } from 'src/project2/application/use-cases/find-projects-by-title.use-case';
+  import { FindProjectsByStatusUseCase } from 'src/project2/application/use-cases/find-projects-by-status.use-case';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -42,6 +43,7 @@ import {
       private readonly caslAbilityFactory: CaslAbilityFactory,
       private readonly findAllProjectsUseCase: FindAllProjectsUseCase,
       private readonly findProjectsByTitleUseCase: FindProjectsByTitleUseCase,
+      private readonly findProjectsByStatusUseCase: FindProjectsByStatusUseCase,
     ) {}
 
 
@@ -134,6 +136,35 @@ import {
         }
 
         return projects.map(ProjectMapper.toResponseDto);
+    }
+
+
+
+
+
+
+
+
+    @Get('filter/state/:state')
+    @ApiOperation({ summary: 'Listar proyectos según su estado' })
+    @ApiResponse({
+      status: 200,
+      description: 'Listado de proyectos según estado',
+      type: [ProjectResponseDto],
+    })
+    @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
+    async findByStatus(
+      @Param('state') state: string,
+    ): Promise<ProjectResponseDto[]> {
+      const projects = await this.findProjectsByStatusUseCase.execute(state);
+
+      if (!projects.length) {
+        throw new NotFoundException(
+          'No se encontraron proyectos con ese estado',
+        );
+      }
+
+      return projects.map(ProjectMapper.toResponseDto);
     }
 
   }

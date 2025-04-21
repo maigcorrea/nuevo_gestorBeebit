@@ -1,4 +1,4 @@
-import { Project } from '../entities/project.entity';
+import { Project, ProjectStatus } from '../entities/project.entity';
 
 export abstract class ProjectRepositoryPort {
   abstract create(project: Project): Promise<Project>;
@@ -7,4 +7,5 @@ export abstract class ProjectRepositoryPort {
   abstract update(id: string, project: Partial<Project>): Promise<Project>;
   abstract delete(id: string): Promise<void>;
   abstract findByTitle(letter: string): Promise<Project[]>;
+  abstract findByStatus(status: ProjectStatus): Promise<Project[]>;
 }

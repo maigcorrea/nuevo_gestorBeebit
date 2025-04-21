@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProjectTypeOrmEntity } from './project.typeorm.entity';
 import { ProjectRepositoryPort } from 'src/project2/domain/ports/project.repository.port';
-import { Project } from 'src/project2/domain/entities/project.entity';
+import { Project, ProjectStatus } from 'src/project2/domain/entities/project.entity';
 import { ProjectMapper } from '../mappers/project.mapper';
 
 @Injectable()
@@ -41,6 +41,23 @@ export class ProjectRepository implements ProjectRepositoryPort {
     return results.map(ProjectMapper.toDomainEntity);
   }
   
+
+
+
+
+
+  async findByStatus(status: ProjectStatus): Promise<Project[]> {
+    const projects = await this.ormRepo.find({
+      where: { status },
+    });
+  
+    return projects.map(ProjectMapper.toDomainEntity);
+  }
+
+
+
+
+
   async findById(id: string): Promise<Project | null> {
     throw new Error('Method not implemented.');
   }
