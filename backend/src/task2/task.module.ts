@@ -9,6 +9,7 @@ import { TaskRepositoryPort } from './domain/ports/task.repository.port';
 
 import { CreateTaskUseCase } from './application/use-cases/create-task.use-case';
 import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-case';
+import { FindTasksByProjectUseCase } from './application/use-cases/find-tasks-by-project.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TaskOrmEntity])],
@@ -27,8 +28,13 @@ import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-
         provide: FindAllTasksUseCase,
         useFactory: (repo: TaskRepositoryPort) => new FindAllTasksUseCase(repo),
         inject: [TASK_REPOSITORY],
-      },
+    },
+    {
+        provide: FindTasksByProjectUseCase,
+        useFactory: (repo: TaskRepositoryPort) => new FindTasksByProjectUseCase(repo),
+        inject: [TASK_REPOSITORY],
+    },
   ],
-  exports: [CreateTaskUseCase], // Exportamos si se usará desde el controlador
+  exports: [CreateTaskUseCase, FindTasksByProjectUseCase], // Exportamos si se usará desde el controlador
 })
 export class TaskModule {}

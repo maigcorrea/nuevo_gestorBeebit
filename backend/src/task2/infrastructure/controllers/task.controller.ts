@@ -6,7 +6,9 @@ import {
     UseGuards,
     ForbiddenException,
     NotFoundException,
-    Get
+    Get,
+    Param,
+    ParseUUIDPipe
   } from '@nestjs/common';
   import { Request } from 'express';
   import { CreateTaskUseCase } from '../../application/use-cases/create-task.use-case';
@@ -21,6 +23,7 @@ import {
   import { Staff } from 'src/staff2/domain/entities/staff.entity';
   import { FindAllTasksUseCase } from 'src/task2/application/use-cases/find-all-tasks.use-case';
   import { TaskResponseDto } from '../dto/task-response.dto';
+  import { FindTasksByProjectUseCase } from 'src/task2/application/use-cases/find-tasks-by-project.use-case';
   
   @ApiTags('Tareas')
   @Controller('task')
@@ -29,6 +32,7 @@ import {
         private readonly createTaskUseCase: CreateTaskUseCase,
         private readonly caslAbilityFactory: CaslAbilityFactory,
         private readonly findAllTasksUseCase: FindAllTasksUseCase,
+        private readonly findTasksByProjectUseCase: FindTasksByProjectUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -76,6 +80,34 @@ import {
       }
   
       return tasks.map(TaskResponseDto.fromEntity);
+    }
+
+
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: Task })
+    @Get('por-proyecto/:id_proyecto')
+    @ApiOperation({ summary: 'Obtener tareas para un proyecto determinado' })
+    @ApiResponse({
+        status: 200,
+        description: 'Lista de tareas asociadas al proyecto',
+        type: [TaskResponseDto],
+    })
+    @ApiResponse({ status: 403, description: 'No autorizado' })
+    @ApiResponse({ status: 404, description: 'No se encontraron tareas' })
+    async findByProject(
+        @Param('id_proyecto', new ParseUUIDPipe()) id_proyecto: string,
+        @Req() req: Request,
+    ): Promise<TaskResponseDto[]> {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+
+        const tasks = await this.findTasksByProjectUseCase.execute(id_proyecto, ability);
+        return tasks.map(TaskResponseDto.fromEntity);
     }
   }
   
