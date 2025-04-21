@@ -100,14 +100,26 @@ export class ProjectRepository implements ProjectRepositoryPort {
 
 
   async findById(id: string): Promise<Project | null> {
-    throw new Error('Method not implemented.');
+    const entity = await this.ormRepo.findOne({ where: { id } });
+  
+    if (!entity) return null;
+  
+    return ProjectMapper.toDomainEntity(entity);
   }
+
+
+
+
+
+  async delete(id: string): Promise<void> {
+    await this.ormRepo.delete(id);
+  }
+
+
+  
   
   async update(id: string, updates: Partial<Project>): Promise<Project> {
     throw new Error('Method not implemented.');
   }
   
-  async delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
 }

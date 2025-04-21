@@ -8,7 +8,9 @@ import {
     UploadedFile,
     Get,
     NotFoundException,
-    Param
+    Param,
+    Delete,
+    ParseUUIDPipe
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
   import {
@@ -37,6 +39,7 @@ import {
   import { OrderProjectsByStartDateDescUseCase } from 'src/project2/application/use-cases/order-projects-by-start-date-desc.use-case';
   import { OrderProjectsByStartDateAscUseCase } from 'src/project2/application/use-cases/order-projects-by-start-date-asc.use-case';
   import { OrderProjectsByDeadlineUseCase } from 'src/project2/application/use-cases/order-projects-by-deadline.use-case';
+  import { DeleteProjectUseCase } from 'src/project2/application/use-cases/delete-project.use-case';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -50,6 +53,7 @@ import {
       private readonly orderProjectsByStartDateDescUseCase: OrderProjectsByStartDateDescUseCase,
       private readonly orderProjectsByStartDateAscUseCase: OrderProjectsByStartDateAscUseCase,
       private readonly orderProjectsByDeadlineUseCase: OrderProjectsByDeadlineUseCase,
+      private readonly deleteProjectUseCase: DeleteProjectUseCase,
     ) {}
 
 
@@ -239,6 +243,26 @@ import {
   
       return projects.map(ProjectMapper.toResponseDto);
     }
+
+
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @Delete(':id')
+    @ApiOperation({ summary: 'Eliminar proyecto por ID' })
+    @ApiResponse({ status: 200, description: 'Proyecto eliminado' })
+    @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
+    async deleteProject(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Req() req: Request,
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      return this.deleteProjectUseCase.execute(id, ability);
+    }
+
 
   }
   
