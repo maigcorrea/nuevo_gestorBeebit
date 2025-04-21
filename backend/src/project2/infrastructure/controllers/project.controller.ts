@@ -6,6 +6,8 @@ import {
     UseGuards,
     UseInterceptors,
     UploadedFile,
+    Get,
+    NotFoundException
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
   import {
@@ -27,6 +29,8 @@ import {
   import { Request } from 'express';
   import { Staff } from 'src/staff2/domain/entities/staff.entity';
   import { ProjectMapper } from '../mappers/project.mapper';
+  import { FindAllProjectsUseCase } from 'src/project2/application/use-cases/find-all-projects.use-case';
+  import { Project as ProjectSubject } from 'src/project/entities/project.entity';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -34,7 +38,11 @@ import {
     constructor(
       private readonly createProjectUseCase: CreateProjectUseCase,
       private readonly caslAbilityFactory: CaslAbilityFactory,
+      private readonly findAllProjectsUseCase: FindAllProjectsUseCase,
     ) {}
+
+
+
   
     @ApiBearerAuth('jwt')
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
@@ -68,5 +76,35 @@ import {
   
       return ProjectMapper.toResponseDto(createdProject);
     }
+
+
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: ProjectSubject })
+    @Get()
+    @ApiOperation({ summary: 'Listar todos los proyectos' })
+    @ApiResponse({
+        status: 200,
+        description: 'Listado de proyectos',
+        type: [ProjectResponseDto],
+    })
+    @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
+    async findAll(@Req() req: Request): Promise<ProjectResponseDto[]> {
+        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const projects = await this.findAllProjectsUseCase.execute(ability);
+
+        if (!projects.length) {
+            throw new NotFoundException('No se encontraron proyectos');
+        }
+
+        return projects.map(ProjectMapper.toResponseDto);
+    }
+
+
   }
   

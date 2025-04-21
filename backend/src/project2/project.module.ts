@@ -7,6 +7,7 @@ import { CreateProjectUseCase } from './application/use-cases/create-project.use
 import { MinioModule } from '../minio/minio.module';
 import { CaslModule } from '../casl/casl.module';
 import { ProjectRepositoryPort } from './domain/ports/project.repository.port';
+import { FindAllProjectsUseCase } from './application/use-cases/find-all-projects.use-case';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProjectRepositoryPort } from './domain/ports/project.repository.port';
   controllers: [ProjectController],
   providers: [
     CreateProjectUseCase,
+    FindAllProjectsUseCase,
     {
       provide: ProjectRepositoryPort,
       useClass: ProjectRepository,

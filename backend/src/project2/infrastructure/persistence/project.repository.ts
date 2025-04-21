@@ -25,7 +25,10 @@ export class ProjectRepository implements ProjectRepositoryPort {
   // async update(...) { ... }
   // async delete(...) { ... }
   async findAll(): Promise<Project[]> {
-    throw new Error('Method not implemented.');
+    const projects = await this.ormRepo.find();
+    return projects.map((project) =>
+      ProjectMapper.toDomainEntity(project),
+    );
   }
   
   async findById(id: string): Promise<Project | null> {
