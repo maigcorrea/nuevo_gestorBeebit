@@ -14,6 +14,7 @@ import { OrderProjectsByStartDateDescUseCase } from './application/use-cases/ord
 import { OrderProjectsByStartDateAscUseCase } from './application/use-cases/order-projects-by-start-date-asc.use-case';
 import { OrderProjectsByDeadlineUseCase } from './application/use-cases/order-projects-by-deadline.use-case';
 import { DeleteProjectUseCase } from './application/use-cases/delete-project.use-case';
+import { UpdateProjectUseCase } from './application/use-cases/update-project.use-case';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DeleteProjectUseCase } from './application/use-cases/delete-project.use
     OrderProjectsByStartDateAscUseCase,
     OrderProjectsByDeadlineUseCase,
     DeleteProjectUseCase,
+    UpdateProjectUseCase,
     {
       provide: ProjectRepositoryPort,
       useClass: ProjectRepository,

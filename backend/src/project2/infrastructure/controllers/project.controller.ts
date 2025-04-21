@@ -1,5 +1,6 @@
 import {
     Controller,
+    Patch,
     Post,
     Body,
     Req,
@@ -40,6 +41,8 @@ import {
   import { OrderProjectsByStartDateAscUseCase } from 'src/project2/application/use-cases/order-projects-by-start-date-asc.use-case';
   import { OrderProjectsByDeadlineUseCase } from 'src/project2/application/use-cases/order-projects-by-deadline.use-case';
   import { DeleteProjectUseCase } from 'src/project2/application/use-cases/delete-project.use-case';
+  import { UpdateProjectUseCase } from 'src/project2/application/use-cases/update-project.use-case';
+  import { UpdateProjectDto } from '../dto/update-project.dto';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -54,6 +57,7 @@ import {
       private readonly orderProjectsByStartDateAscUseCase: OrderProjectsByStartDateAscUseCase,
       private readonly orderProjectsByDeadlineUseCase: OrderProjectsByDeadlineUseCase,
       private readonly deleteProjectUseCase: DeleteProjectUseCase,
+      private readonly updateProjectUseCase: UpdateProjectUseCase,
     ) {}
 
 
@@ -261,6 +265,27 @@ import {
     ) {
       const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
       return this.deleteProjectUseCase.execute(id, ability);
+    }
+
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Project })
+    @Patch(':id')
+    @ApiOperation({ summary: 'Actualizar proyecto' })
+    @ApiResponse({ status: 200, description: 'Proyecto actualizado con éxito' })
+    @ApiResponse({ status: 404, description: 'Proyecto no encontrado' })
+    async updateProject(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Body() updateDto: UpdateProjectDto,
+      @Req() req: Request,
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      return this.updateProjectUseCase.execute(id, updateDto, ability);
     }
 
 

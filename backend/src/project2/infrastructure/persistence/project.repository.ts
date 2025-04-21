@@ -116,10 +116,17 @@ export class ProjectRepository implements ProjectRepositoryPort {
   }
 
 
+
   
+  async update(id: string, updatedData: Partial<Project>): Promise<Project> {
+    await this.ormRepo.update(id, updatedData);
+    const updatedEntity = await this.ormRepo.findOne({ where: { id } });
   
-  async update(id: string, updates: Partial<Project>): Promise<Project> {
-    throw new Error('Method not implemented.');
+    if (!updatedEntity) {
+      throw new Error('Proyecto actualizado no encontrado');
+    }
+  
+    return ProjectMapper.toDomainEntity(updatedEntity);
   }
   
 }
