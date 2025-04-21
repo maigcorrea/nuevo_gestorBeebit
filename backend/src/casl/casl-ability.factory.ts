@@ -12,7 +12,7 @@ import { mongoQueryMatcher } from '@casl/ability';
 
 
 import { Project } from 'src/project/entities/project.entity';
-import { Task } from 'src/task/entities/task.entity';
+import { Task } from 'src/task2/infrastructure/persistence/task.typeorm.entity';
 import { Staff } from 'src/staff2/domain/entities/staff.entity'; // tu entidad de usuario
 import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
 
