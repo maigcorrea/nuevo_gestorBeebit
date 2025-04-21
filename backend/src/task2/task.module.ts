@@ -8,6 +8,7 @@ import { TaskRepository } from './infrastructure/persistence/task.repository';
 import { TaskRepositoryPort } from './domain/ports/task.repository.port';
 
 import { CreateTaskUseCase } from './application/use-cases/create-task.use-case';
+import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TaskOrmEntity])],
@@ -22,6 +23,11 @@ import { CreateTaskUseCase } from './application/use-cases/create-task.use-case'
       useFactory: (repo: TaskRepositoryPort) => new CreateTaskUseCase(repo),
       inject: [TASK_REPOSITORY],
     },
+    {
+        provide: FindAllTasksUseCase,
+        useFactory: (repo: TaskRepositoryPort) => new FindAllTasksUseCase(repo),
+        inject: [TASK_REPOSITORY],
+      },
   ],
   exports: [CreateTaskUseCase], // Exportamos si se usará desde el controlador
 })

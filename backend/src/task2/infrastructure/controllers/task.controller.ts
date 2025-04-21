@@ -5,6 +5,8 @@ import {
     Req,
     UseGuards,
     ForbiddenException,
+    NotFoundException,
+    Get
   } from '@nestjs/common';
   import { Request } from 'express';
   import { CreateTaskUseCase } from '../../application/use-cases/create-task.use-case';
@@ -17,6 +19,7 @@ import {
   import { Task } from '../../domain/entities/task.entity';
   import { Task as TaskModel } from '../../domain/entities/task.entity';
   import { Staff } from 'src/staff2/domain/entities/staff.entity';
+  import { FindAllTasksUseCase } from 'src/task2/application/use-cases/find-all-tasks.use-case';
   import { TaskResponseDto } from '../dto/task-response.dto';
   
   @ApiTags('Tareas')
@@ -25,6 +28,7 @@ import {
     constructor(
         private readonly createTaskUseCase: CreateTaskUseCase,
         private readonly caslAbilityFactory: CaslAbilityFactory,
+        private readonly findAllTasksUseCase: FindAllTasksUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -42,6 +46,36 @@ import {
   
       const task = await this.createTaskUseCase.execute(createTaskDto, ability);
       return TaskResponseDto.fromEntity(task);
+    }
+
+
+
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: Task })
+    @Get()
+    @ApiOperation({ summary: 'Listar todas las tareas' })
+    @ApiResponse({
+      status: 200,
+      description: 'Listado de tareas',
+      type: [TaskResponseDto],
+    })
+    @ApiResponse({ status: 404, description: 'No se encontraron tareas' })
+    async findAll(@Req() req: Request): Promise<TaskResponseDto[]> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as any);
+  
+      const tasks = await this.findAllTasksUseCase.execute(ability);
+  
+      if (!tasks.length) {
+        throw new NotFoundException('No se encontraron tareas');
+      }
+  
+      return tasks.map(TaskResponseDto.fromEntity);
     }
   }
   

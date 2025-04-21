@@ -37,9 +37,13 @@ export class TaskRepository implements TaskRepositoryPort {
   }
 
   async findAll(): Promise<Task[]> {
-    const entities = await this.repo.find();
+    const entities = await this.repo.find({
+      relations: ['associated_project'],
+    });
+  
     return entities.map((entity) => this.mapToDomain(entity));
   }
+  
 
   async delete(id: string): Promise<void> {
     await this.repo.delete(id);
