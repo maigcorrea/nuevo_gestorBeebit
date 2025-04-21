@@ -5,7 +5,9 @@ import {
     Req,
     Get,
     UseGuards,
-    NotFoundException
+    NotFoundException,
+    Param,
+    ParseUUIDPipe,
   } from '@nestjs/common';
   import {
     ApiOperation,
@@ -25,6 +27,7 @@ import {
   import { Staff } from '../../../staff2/domain/entities/staff.entity';
   import { FindAllTasksUseCase } from 'src/task2/application/use-cases/find-all-tasks.use-case';
   import { TaskTypeOrmEntity } from '../persistence/task.typeorm.entity';
+  import { FindTasksByProjectUseCase } from 'src/task2/application/use-cases/find-tasks-by-project.use-case';
   
   @ApiTags('Tasks')
   @Controller('tasks')
@@ -33,6 +36,7 @@ import {
       private readonly createTaskUseCase: CreateTaskUseCase,
       private readonly caslAbilityFactory: CaslAbilityFactory,
       private readonly findAllTasksUseCase: FindAllTasksUseCase,
+      private readonly findTasksByProjectUseCase: FindTasksByProjectUseCase,
     ) {}
   
     @Post()
@@ -69,6 +73,26 @@ import {
         }
 
         return tasks.map(task => TaskMapper.toResponseDto(task));
+    }
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskTypeOrmEntity })
+    @Get('project/:id_proyecto')
+    @ApiOperation({ summary: 'Obtener tareas para un proyecto determinado' })
+    @ApiResponse({ status: 200, description: 'Lista de tareas', type: [TaskResponseDto] })
+    @ApiResponse({ status: 404, description: 'No se encontraron tareas' })
+    async findByProject(
+    @Param('id_proyecto', new ParseUUIDPipe()) id_proyecto: string,
+    @Req() req: Request,
+    ): Promise<TaskResponseDto[]> {
+    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+
+    const tasks = await this.findTasksByProjectUseCase.execute(id_proyecto, ability);
+
+    return tasks.map(TaskMapper.toResponseDto);
     }
 
   }

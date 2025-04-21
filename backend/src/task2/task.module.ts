@@ -6,6 +6,8 @@ import { TaskRepositoryPort } from './domain/ports/task.repository.port';
 import { TaskController } from './infrastructure/controllers/task.controller';
 import { CreateTaskUseCase } from './application/use-cases/create-task.use-case';
 import { CaslModule } from '../casl/casl.module';
+import { FindTasksByProjectUseCase } from './application/use-cases/find-tasks-by-project.use-case';
+import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-case';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { CaslModule } from '../casl/casl.module';
   controllers: [TaskController],
   providers: [
     CreateTaskUseCase,
+    FindAllTasksUseCase,
+    FindTasksByProjectUseCase,
     {
       provide: TaskRepositoryPort,
       useClass: TaskRepository,
