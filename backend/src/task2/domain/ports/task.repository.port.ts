@@ -3,6 +3,7 @@ import { TaskStatus, TaskPriority } from '../enums/task.enums';
 
 export abstract class TaskRepositoryPort {
   abstract create(task: Task): Promise<Task>;
+  abstract findAllWithProject(): Promise<Task[]>;
   abstract findAll(): Promise<Task[]>;
   abstract findById(id: string): Promise<Task | null>;
   abstract update(id: string, task: Partial<Task>): Promise<Task>;

@@ -25,6 +25,16 @@ export class TaskRepository implements TaskRepositoryPort {
     return tasks.map(TaskMapper.toDomainEntity);
   }
 
+
+  async findAllWithProject(): Promise<Task[]> {
+    const entities = await this.ormRepo.find({
+      relations: ['associated_project'],
+    });
+    return entities.map(TaskMapper.toDomainEntity);
+  }
+
+
+
   async findById(id: string): Promise<Task | null> {
     const task = await this.ormRepo.findOne({ where: { id } });
     return task ? TaskMapper.toDomainEntity(task) : null;
