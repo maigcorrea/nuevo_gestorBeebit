@@ -82,6 +82,20 @@ export class ProjectRepository implements ProjectRepositoryPort {
     return projects.map(ProjectMapper.toDomainEntity);
   }
 
+
+
+
+
+
+  async orderByDeadline(): Promise<Project[]> {
+    const projects = await this.ormRepo.find({
+      order: {
+        deadline: 'ASC',
+      },
+    });
+  
+    return projects.map(ProjectMapper.toDomainEntity);
+  }
   
 
 

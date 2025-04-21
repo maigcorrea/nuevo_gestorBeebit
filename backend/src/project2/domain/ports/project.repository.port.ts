@@ -10,4 +10,5 @@ export abstract class ProjectRepositoryPort {
   abstract findByStatus(status: ProjectStatus): Promise<Project[]>;
   abstract orderByStartDateDesc(): Promise<Project[]>;
   abstract orderByStartDateAsc(): Promise<Project[]>;
+  abstract orderByDeadline(): Promise<Project[]>;
 }
