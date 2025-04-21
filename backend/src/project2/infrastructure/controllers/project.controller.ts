@@ -43,6 +43,7 @@ import {
   import { DeleteProjectUseCase } from 'src/project2/application/use-cases/delete-project.use-case';
   import { UpdateProjectUseCase } from 'src/project2/application/use-cases/update-project.use-case';
   import { UpdateProjectDto } from '../dto/update-project.dto';
+  import { CheckProjectTitleExistsUseCase } from 'src/project2/application/use-cases/check-project-title-exists.use-case';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -58,6 +59,7 @@ import {
       private readonly orderProjectsByDeadlineUseCase: OrderProjectsByDeadlineUseCase,
       private readonly deleteProjectUseCase: DeleteProjectUseCase,
       private readonly updateProjectUseCase: UpdateProjectUseCase,
+      private readonly checkProjectTitleExistsUseCase: CheckProjectTitleExistsUseCase,
     ) {}
 
 
@@ -289,5 +291,20 @@ import {
     }
 
 
+
+
+
+    @Get('exists/title/:title')
+    @ApiOperation({ summary: 'Comprobar si existe un proyecto con ese título' })
+    @ApiResponse({
+      status: 200,
+      description: 'Devuelve true si el título ya existe',
+      schema: {
+        example: { exists: true },
+      },
+    })
+    async checkTitleExists(@Param('title') title: string) {
+      return this.checkProjectTitleExistsUseCase.execute(title);
+    }
   }
   

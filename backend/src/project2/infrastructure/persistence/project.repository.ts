@@ -128,5 +128,12 @@ export class ProjectRepository implements ProjectRepositoryPort {
   
     return ProjectMapper.toDomainEntity(updatedEntity);
   }
+
+
+  
+
+  async existsByTitle(title: string): Promise<boolean> {
+    return await this.ormRepo.exist({ where: { title } });
+  }
   
 }
