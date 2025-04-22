@@ -135,5 +135,12 @@ export class ProjectRepository implements ProjectRepositoryPort {
   async existsByTitle(title: string): Promise<boolean> {
     return await this.ormRepo.exist({ where: { title } });
   }
+
+
+  async save(project: Project): Promise<void> {
+    const entity = ProjectMapper.toOrmEntity(project);
+    await this.ormRepo.save(entity);
+  }
+  
   
 }

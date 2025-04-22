@@ -41,9 +41,13 @@ export class TaskRepository implements TaskRepositoryPort {
   }
 
   async update(id: string, updates: Partial<Task>): Promise<Task> {
-    await this.ormRepo.update(id, updates);
+    const ormUpdates = TaskMapper.toOrmPartialEntity(updates); // 👈 nuevo método
+  
+    await this.ormRepo.update(id, ormUpdates);
+  
     const updated = await this.ormRepo.findOne({ where: { id } });
     if (!updated) throw new Error('Tarea no encontrada');
+  
     return TaskMapper.toDomainEntity(updated);
   }
 
@@ -68,4 +72,26 @@ export class TaskRepository implements TaskRepositoryPort {
       end_date: new Date(),
     });
   }
+
+
+
+
+  async findByIdWithProject(id: string): Promise<Task | null> {
+    const entity = await this.ormRepo.findOne({
+      where: { id },
+      relations: ['associated_project'],
+    });
+  
+    return entity ? TaskMapper.toDomainEntity(entity) : null;
+  }
+
+
+
+
+  async save(task: Task): Promise<void> {
+    const entity = TaskMapper.toOrmEntity(task);
+    await this.ormRepo.save(entity);
+  }
+  
+  
 }

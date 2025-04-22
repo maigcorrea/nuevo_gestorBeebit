@@ -8,6 +8,7 @@ import {
     NotFoundException,
     Param,
     ParseUUIDPipe,
+    Patch
   } from '@nestjs/common';
   import {
     ApiOperation,
@@ -28,6 +29,8 @@ import {
   import { FindAllTasksUseCase } from 'src/task2/application/use-cases/find-all-tasks.use-case';
   import { TaskTypeOrmEntity } from '../persistence/task.typeorm.entity';
   import { FindTasksByProjectUseCase } from 'src/task2/application/use-cases/find-tasks-by-project.use-case';
+  import { UpdateTaskDto } from '../dto/update-task.dto';
+  import { UpdateTaskUseCase } from 'src/task2/application/use-cases/update-task.use-case';
   
   @ApiTags('Tasks')
   @Controller('tasks')
@@ -37,6 +40,7 @@ import {
       private readonly caslAbilityFactory: CaslAbilityFactory,
       private readonly findAllTasksUseCase: FindAllTasksUseCase,
       private readonly findTasksByProjectUseCase: FindTasksByProjectUseCase,
+      private readonly updateTaskUseCase: UpdateTaskUseCase,
     ) {}
   
     @Post()
@@ -95,5 +99,24 @@ import {
     return tasks.map(TaskMapper.toResponseDto);
     }
 
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: TaskTypeOrmEntity })
+    @Patch(':id')
+    @ApiOperation({ summary: 'Actualizar una tarea determinada' })
+    @ApiResponse({ status: 200, description: 'Tarea actualizada con éxito' })
+    @ApiResponse({ status: 404, description: 'Tarea o proyecto no encontrado' })
+    async updateTask(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Body() updateDto: UpdateTaskDto,
+      @Req() req: Request,
+    ): Promise<{ message: string }> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      return this.updateTaskUseCase.execute(id, updateDto, ability);
+    }
   }
   

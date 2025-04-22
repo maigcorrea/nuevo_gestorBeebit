@@ -51,4 +51,19 @@ export class TaskMapper {
       status: task.status,
     };
   }
+
+
+
+  static toOrmPartialEntity(domain: Partial<Task>): Partial<TaskTypeOrmEntity> {
+    const partial: Partial<TaskTypeOrmEntity> = {};
+  
+    if (domain.title !== undefined) partial.title = domain.title;
+    if (domain.description !== undefined) partial.description = domain.description;
+    if (domain.priority !== undefined) partial.priority = domain.priority;
+    if (domain.status !== undefined) partial.status = domain.status;
+    if (domain.completed !== undefined) partial.completed = domain.completed;
+    if (domain.end_date !== undefined) partial.end_date = domain.end_date;
+  
+    return partial;
+  }
 }

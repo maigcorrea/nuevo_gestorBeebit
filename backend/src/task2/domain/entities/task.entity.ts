@@ -11,5 +11,11 @@ export class Task {
     public completed: boolean,
     public priority: TaskPriority,
     public status: TaskStatus,
+    public associated_project?: {
+      id: string;
+      last_update: Date;
+      status: string;
+      deadline?: Date;
+    }
   ) {}
 }

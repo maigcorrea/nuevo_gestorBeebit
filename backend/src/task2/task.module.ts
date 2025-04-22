@@ -8,6 +8,9 @@ import { CreateTaskUseCase } from './application/use-cases/create-task.use-case'
 import { CaslModule } from '../casl/casl.module';
 import { FindTasksByProjectUseCase } from './application/use-cases/find-tasks-by-project.use-case';
 import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-case';
+import { UpdateTaskUseCase } from './application/use-cases/update-task.use-case';
+import { ProjectRepositoryPort } from 'src/project2/domain/ports/project.repository.port';
+import { ProjectRepository } from 'src/project2/infrastructure/persistence/project.repository';
 
 @Module({
   imports: [
@@ -19,10 +22,15 @@ import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-
     CreateTaskUseCase,
     FindAllTasksUseCase,
     FindTasksByProjectUseCase,
+    UpdateTaskUseCase,
     {
       provide: TaskRepositoryPort,
       useClass: TaskRepository,
     },
+    {
+      provide: ProjectRepositoryPort,
+      useClass: ProjectRepository,
+    }
   ],
 })
 export class TaskModule {}

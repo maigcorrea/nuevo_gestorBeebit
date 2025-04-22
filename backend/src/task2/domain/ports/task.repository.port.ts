@@ -12,4 +12,6 @@ export abstract class TaskRepositoryPort {
   // Métodos adicionales que podrías usar más adelante:
   abstract findByProject(projectId: string): Promise<Task[]>;
   abstract markAsCompleted(id: string): Promise<void>;
+  abstract findByIdWithProject(id: string): Promise<Task | null>;
+  abstract save(task: Task): Promise<void>;
 }
