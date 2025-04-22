@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProjectStatus } from 'src/project2/domain/entities/project.entity';
-// TO DO: Añadir relación con tareas cuando se migre Task
-//import { TaskTypeOrmEntity } from '../../../../task/infrastructure/persistence/typeorm/task.typeorm.entity';
+// Añadir relación con tareas cuando se migre Task
+import { TaskTypeOrmEntity } from 'src/task2/infrastructure/persistence/task.typeorm.entity';
 
 @Entity('project')
 export class ProjectTypeOrmEntity {
@@ -34,6 +34,6 @@ export class ProjectTypeOrmEntity {
   @Column({ nullable: true })
   document_url: string | null;
 
-  /*@OneToMany(() => TaskTypeOrmEntity, (task) => task.associated_project)
-  tasks: TaskTypeOrmEntity[];*/
+  @OneToMany(() => TaskTypeOrmEntity, (task) => task.associated_project)
+  tasks: TaskTypeOrmEntity[];
 }

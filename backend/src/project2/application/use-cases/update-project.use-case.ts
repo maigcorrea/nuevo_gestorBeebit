@@ -9,12 +9,14 @@ import {
   import { UpdateProjectInput } from '../../domain/interfaces/update-project.input';
   import { AppAbility } from '../../../casl/casl-ability.factory';
   import { Project as ProjectSubject } from 'src/project/entities/project.entity';  // solo para CASL
+  import { TaskRepositoryPort } from 'src/task2/domain/ports/task.repository.port';
+  import { TaskStatus } from 'src/task2/domain/enums/task.enums';
   
   @Injectable()
   export class UpdateProjectUseCase {
     constructor(
       private readonly projectRepo: ProjectRepositoryPort,
-      // private readonly taskRepo: TaskRepositoryPort, // ← lo añadiremos más adelante
+      private readonly taskRepo: TaskRepositoryPort, // ← lo añadiremos más adelante
     ) {}
   
     async execute(
@@ -63,6 +65,18 @@ import {
       if (start_date !== undefined) project.start_date = nuevaInicio;
       if (deadline !== undefined) project.deadline = nuevaDeadline;
       if (status !== undefined) project.status = status;
+
+
+      if (status === ProjectStatus.COMPLETED) {
+        const tasks = await this.taskRepo.findByProject(project.id);
+      
+        for (const task of tasks) {
+          task.status = TaskStatus.COMPLETED;
+          task.completed = true;
+          task.end_date = new Date();
+          await this.taskRepo.save(task); // o update si usas update(id, task)
+        }
+      }
   
       await this.projectRepo.update(id, project);
   

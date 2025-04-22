@@ -44,6 +44,7 @@ import {
   import { UpdateProjectUseCase } from 'src/project2/application/use-cases/update-project.use-case';
   import { UpdateProjectDto } from '../dto/update-project.dto';
   import { CheckProjectTitleExistsUseCase } from 'src/project2/application/use-cases/check-project-title-exists.use-case';
+  import { StaffOrmEntity } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
   
   @ApiTags('Projects')
   @Controller('projects')
@@ -87,7 +88,8 @@ import {
       @Body() createProjectDto: CreateProjectDto,
       @Req() req: Request,
     ): Promise<ProjectResponseDto> {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+
   
       const createdProject = await this.createProjectUseCase.execute(
         createProjectDto,
@@ -116,7 +118,7 @@ import {
     })
     @ApiResponse({ status: 404, description: 'No se encontraron proyectos' })
     async findAll(@Req() req: Request): Promise<ProjectResponseDto[]> {
-        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
         const projects = await this.findAllProjectsUseCase.execute(ability);
 
         if (!projects.length) {
@@ -265,7 +267,7 @@ import {
       @Param('id', new ParseUUIDPipe()) id: string,
       @Req() req: Request,
     ) {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.deleteProjectUseCase.execute(id, ability);
     }
 
@@ -286,7 +288,7 @@ import {
       @Body() updateDto: UpdateProjectDto,
       @Req() req: Request,
     ) {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.updateProjectUseCase.execute(id, updateDto, ability);
     }
 

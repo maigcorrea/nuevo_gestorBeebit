@@ -1,4 +1,4 @@
-import { Task } from "src/task/entities/task.entity";
+import { Task } from "src/task2/domain/entities/task.entity";
 
 export enum ProjectStatus {
   PENDING = 'pending',

@@ -11,9 +11,10 @@ import { mongoQueryMatcher } from '@casl/ability';
  //Aunque se llame createMongoQueryMatcher, funciona también sin MongoDB, porque solo compara condiciones (como { assigned_to: user.id }).
 
 
-import { Project } from 'src/project/entities/project.entity';
+ import { ProjectTypeOrmEntity as Project } from 'src/project2/infrastructure/persistence/project.typeorm.entity';
 import { Task } from 'src/task2/infrastructure/persistence/task.typeorm.entity';
-import { Staff } from 'src/staff2/domain/entities/staff.entity'; // tu entidad de usuario
+//import { Staff } from 'src/staff2/domain/entities/staff.entity'; // tu entidad de usuario (Cambiar ruta una vez se haya migrado a arq. hexagonal)
+import { StaffOrmEntity as Staff} from 'src/staff2/infrastructure/persistence/staff.orm-entity';
 import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';

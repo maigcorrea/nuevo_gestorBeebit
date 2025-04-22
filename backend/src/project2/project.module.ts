@@ -16,6 +16,8 @@ import { OrderProjectsByDeadlineUseCase } from './application/use-cases/order-pr
 import { DeleteProjectUseCase } from './application/use-cases/delete-project.use-case';
 import { UpdateProjectUseCase } from './application/use-cases/update-project.use-case';
 import { CheckProjectTitleExistsUseCase } from './application/use-cases/check-project-title-exists.use-case';
+import { TaskRepositoryPort } from 'src/task2/domain/ports/task.repository.port';
+import { TaskRepository } from 'src/task2/infrastructure/persistence/task.repository';
 
 @Module({
   imports: [
@@ -38,6 +40,10 @@ import { CheckProjectTitleExistsUseCase } from './application/use-cases/check-pr
     {
       provide: ProjectRepositoryPort,
       useClass: ProjectRepository,
+    },
+    {
+      provide: TaskRepositoryPort,
+      useClass: TaskRepository,
     },
   ],
 })
