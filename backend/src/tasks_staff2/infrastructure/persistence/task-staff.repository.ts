@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
-import { TaskStaff } from '../../domain/entities/task-staff.entity';
 import { TaskStaffOrmEntity } from './task-staff.orm-entity';
+import { TaskStaff } from '../../domain/entities/task-staff.entity';
+import { TaskStaffMapper } from '../mappers/task-staff.mapper';
 
 @Injectable()
 export class TaskStaffRepository implements TaskStaffRepositoryPort {
@@ -13,18 +14,16 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
   ) {}
 
   async create(taskStaff: TaskStaff): Promise<TaskStaff> {
-    const entity = this.repo.create({
-      task: { id: taskStaff.taskId } as any,
-      staff: { id: taskStaff.staffId } as any,
-    });
-
-    const saved = await this.repo.save(entity);
-    return this.mapToDomain(saved);
+    const ormEntity = TaskStaffMapper.toOrmEntity(taskStaff);
+    const saved = await this.repo.save(ormEntity);
+    return TaskStaffMapper.toDomainEntity(saved);
   }
 
   async findAll(): Promise<TaskStaff[]> {
-    const entities = await this.repo.find({ relations: ['task', 'staff'] });
-    return entities.map(this.mapToDomain);
+    const entities = await this.repo.find({
+      relations: ['task', 'staff'], // ← Necesario si accedes a `rel.task.status`, etc.
+    });
+    return entities.map(TaskStaffMapper.toDomainEntity);
   }
 
   async findById(id: string): Promise<TaskStaff | null> {
@@ -32,7 +31,7 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
       where: { id },
       relations: ['task', 'staff'],
     });
-    return entity ? this.mapToDomain(entity) : null;
+    return entity ? TaskStaffMapper.toDomainEntity(entity) : null;
   }
 
   async delete(id: string): Promise<void> {
@@ -44,32 +43,27 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
       where: { task: { id: taskId } },
       relations: ['task', 'staff'],
     });
-    return entities.map(this.mapToDomain);
+    return entities.map(TaskStaffMapper.toDomainEntity);
   }
 
   async findByStaffId(staffId: string): Promise<TaskStaff[]> {
-    const entities = await this.repo.find({
+    const relaciones = await this.repo.find({
       where: { staff: { id: staffId } },
-      relations: ['task', 'staff'],
+      relations: ['task'], // esto carga la tarea relacionada
     });
-    return entities.map(this.mapToDomain);
+  
+    return relaciones
+      .filter((rel) => rel.task.status === 'active')
+      .map((rel) => TaskStaffMapper.toDomainEntity(rel));
   }
 
   async exists(taskId: string, staffId: string): Promise<boolean> {
-    const result = await this.repo.findOne({
+    const existing = await this.repo.findOne({
       where: {
         task: { id: taskId },
         staff: { id: staffId },
       },
     });
-    return !!result;
-  }
-
-  private mapToDomain(entity: TaskStaffOrmEntity): TaskStaff {
-    return new TaskStaff(
-      entity.id,
-      entity.task.id,
-      entity.staff.id,
-    );
+    return !!existing;
   }
 }

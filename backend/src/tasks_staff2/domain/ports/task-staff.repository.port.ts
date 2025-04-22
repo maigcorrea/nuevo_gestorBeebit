@@ -5,6 +5,8 @@ export abstract class TaskStaffRepositoryPort {
   abstract findAll(): Promise<TaskStaff[]>;
   abstract findById(id: string): Promise<TaskStaff | null>;
   abstract delete(id: string): Promise<void>;
+  
+  // Extra: Métodos específicos para tu lógica de negocio
   abstract findByTaskId(taskId: string): Promise<TaskStaff[]>;
   abstract findByStaffId(staffId: string): Promise<TaskStaff[]>;
   abstract exists(taskId: string, staffId: string): Promise<boolean>;

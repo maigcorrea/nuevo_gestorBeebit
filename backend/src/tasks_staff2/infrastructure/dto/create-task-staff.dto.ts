@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUUID, IsArray, ArrayNotEmpty } from 'class-validator';
+import { CreateTaskStaffInput } from 'src/tasks_staff2/domain/interfaces/create-task-staff.input';
 
-export class CreateTaskStaffDto {
+export class CreateTaskStaffDto implements CreateTaskStaffInput {
   @ApiProperty({
     description: 'ID de la tarea a la que se asignan los empleados',
     example: '9f4a0a91-781c-4d58-8c18-3b9ea3f3b123',
