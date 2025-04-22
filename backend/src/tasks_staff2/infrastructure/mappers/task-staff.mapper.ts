@@ -1,10 +1,9 @@
-import { TaskStaff } from 'src/tasks_staff2/domain/entities/task-staff.entity';
-import { TaskStaffOrmEntity } from '../persistence/task-staff.typeorm.entity';
-import { CreateTaskStaffDto } from '../dto/create-task-staff-dto';
-import { CreateTaskStaffInput } from 'src/tasks_staff2/domain/interfaces/create-task-staff.input';
+import { TaskStaffOrmEntity } from '../persistence/task-staff.orm-entity';
+import { TaskStaff } from '../../domain/entities/task-staff.entity';
+import { TaskStaffResponseDto } from '../dto/task-staff-response.dto';
 
 export class TaskStaffMapper {
-  static toDomain(entity: TaskStaffOrmEntity): TaskStaff {
+  static toDomainEntity(entity: TaskStaffOrmEntity): TaskStaff {
     return new TaskStaff(
       entity.id,
       entity.task.id,
@@ -20,7 +19,11 @@ export class TaskStaffMapper {
     return orm;
   }
 
-  static toCreateInput(dto: CreateTaskStaffDto): CreateTaskStaffInput {
-    return new CreateTaskStaffInput(dto.id_task, dto.id_staff);
+  static toResponseDto(taskStaff: TaskStaff): TaskStaffResponseDto {
+    return {
+      id: taskStaff.id,
+      taskId: taskStaff.taskId,
+      staffId: taskStaff.staffId,
+    };
   }
 }

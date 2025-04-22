@@ -1,26 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  ArrayNotEmpty,
-  IsUUID,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsUUID, IsArray, ArrayNotEmpty } from 'class-validator';
 
 export class CreateTaskStaffDto {
   @ApiProperty({
     description: 'ID de la tarea a la que se asignan los empleados',
-    example: 'a1b2c3d4-e5f6-7890-abcd-1234567890ef',
+    example: '9f4a0a91-781c-4d58-8c18-3b9ea3f3b123',
   })
   @IsUUID()
   id_task: string;
 
   @ApiProperty({
-    description: 'Lista de IDs de los empleados que serán asignados a la tarea',
-    example: ['uuid-1', 'uuid-2'],
+    description: 'Lista de IDs de los empleados asignados a la tarea',
+    example: ['c4d86bc1-9c1f-4f85-b20f-b847e95fbb6e'],
+    type: [String],
   })
   @IsArray()
   @ArrayNotEmpty()
-  @Type(() => String)
   @IsUUID('all', { each: true })
   id_staff: string[];
 }
