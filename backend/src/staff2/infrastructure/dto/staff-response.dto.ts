@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { StaffType } from "../../domain/entities/staff.entity";
 
 export class StaffResponseDto{
@@ -41,6 +41,13 @@ export class StaffResponseDto{
 
 
     //La contraseña no la devolvemos en la respuesta
+
+
+    @ApiPropertyOptional({
+        description: 'URL de la imagen de perfil del usuario',
+        example: 'https://tuapp.com/uploads/avatars/imagen.jpg',
+      })
+    profileImage?: string;
 
 
     static fromEntity(staff: import('../../domain/entities/staff.entity').Staff): StaffResponseDto {

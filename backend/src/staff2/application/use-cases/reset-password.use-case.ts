@@ -2,13 +2,14 @@ import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
 import { ForbiddenException, BadRequestException } from '@nestjs/common';
 import { ResetPasswordInput } from '../../domain/interfaces/reset-password.input';
 import * as bcrypt from 'bcryptjs';
-import { Staff } from '../../domain/entities/staff.entity';
+import { StaffOrmEntity as StaffSubject } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
+
 
 export class ResetPasswordUseCase {
   constructor(private readonly staffRepo: StaffRepositoryPort) {}
 
   async execute(input: ResetPasswordInput, ability: any): Promise<{ message: string }> {
-    if (!ability.can('update', Staff)) {
+    if (!ability.can('update', StaffSubject)) {
       throw new ForbiddenException('No tienes permiso para modificar la contraseña');
     }
 

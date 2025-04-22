@@ -6,8 +6,8 @@ import {
   import * as bcryptjs from 'bcryptjs';
   import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
   import { AppAbility } from 'src/casl/casl-ability.factory';
-  import { Staff } from '../../domain/entities/staff.entity';
   import { UpdateStaffInput } from '../../domain/interfaces/update-staff.input';
+  import { StaffOrmEntity as StaffSubject } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
   
   export class UpdateStaffUseCase {
     constructor(private readonly staffRepo: StaffRepositoryPort) {}
@@ -23,7 +23,7 @@ import {
         throw new NotFoundException(`No se encontró el empleado con id ${id}`);
       }
   
-      if (!ability.can('update', staff)) {
+      if (!ability.can('update', StaffSubject)) {
         throw new ForbiddenException('No tienes permiso para actualizar la información de un empleado');
       }
   

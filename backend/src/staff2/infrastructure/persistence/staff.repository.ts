@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
 import { Staff } from '../../domain/entities/staff.entity';
 import { StaffOrmEntity } from './staff.orm-entity';
+import { StaffMapper } from '../mappers/staff.mapper';
 
 @Injectable()
 export class StaffRepository implements StaffRepositoryPort {
@@ -28,34 +29,34 @@ export class StaffRepository implements StaffRepositoryPort {
     });
 
     const saved = await this.repo.save(entity);
-    return this.mapToDomain(saved);
+    return StaffMapper.toDomainEntity(saved);
   }
 
   async findByEmail(email: string): Promise<Staff | null> {
     const entity = await this.repo.findOneBy({ email });
-    return entity ? this.mapToDomain(entity) : null;
+    return entity ? StaffMapper.toDomainEntity(entity) : null;
   }
 
   async findAll(): Promise<Staff[]> {
     const entities = await this.repo.find();
-    return entities.map(this.mapToDomain);
+    return entities.map(StaffMapper.toDomainEntity);
   }
   
 
   async findById(id: string): Promise<Staff | null> {
     const entity = await this.repo.findOneBy({ id });
-    return entity ? this.mapToDomain(entity) : null;
+    return entity ? StaffMapper.toDomainEntity(entity) : null;
   }
 
   async findByName(name: string): Promise<Staff | null> {
     const entity = await this.repo.findOne({ where: { name } });
-    return entity ? this.mapToDomain(entity) : null;
+    return entity ? StaffMapper.toDomainEntity(entity) : null;
   }
   
   
   async findByPhone(phone: string): Promise<Staff | null> {
     const entity = await this.repo.findOne({ where: { phone } });
-    return entity ? this.mapToDomain(entity) : null;
+    return entity ? StaffMapper.toDomainEntity(entity) : null;
   }
   
 
@@ -73,7 +74,7 @@ export class StaffRepository implements StaffRepositoryPort {
 
     const updated = await this.repo.findOneBy({ id: staff.id });
     if (!updated) throw new Error('Empleado no encontrado después de actualizar');
-    return this.mapToDomain(updated);
+    return StaffMapper.toDomainEntity(updated);
   }
 
 
@@ -91,13 +92,15 @@ export class StaffRepository implements StaffRepositoryPort {
       .where('staff.id = :id', { id })
       .getOne();
   
-    return entity ? this.mapToDomain(entity) : null;
+    
+      return entity ? StaffMapper.toDomainEntity(entity) : null;
   }
   
 
   async findByToken(token: string): Promise<Staff | null> {
     const entity = await this.repo.findOneBy({ resetToken: token });
-    return entity ? this.mapToDomain(entity) : null;
+    
+    return entity ? StaffMapper.toDomainEntity(entity) : null;
   }
 
   

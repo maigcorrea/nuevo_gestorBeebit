@@ -4,7 +4,8 @@ import {
   } from '@nestjs/common';
   import { AppAbility } from 'src/casl/casl-ability.factory';
   import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
-  import { Staff } from '../../domain/entities/staff.entity';
+  import { StaffOrmEntity as StaffSubject } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
+
   
   export class DeleteStaffUseCase {
     constructor(private readonly staffRepo: StaffRepositoryPort) {}
@@ -16,7 +17,7 @@ import {
         throw new NotFoundException(`No se encontró el empleado con id ${id}`);
       }
   
-      if (!ability.can('delete', staff)) {
+      if (!ability.can('delete', StaffSubject)) {
         throw new ForbiddenException('No tienes permiso para eliminar este empleado');
       }
   

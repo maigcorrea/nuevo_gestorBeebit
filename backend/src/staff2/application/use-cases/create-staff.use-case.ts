@@ -5,6 +5,9 @@ import { CreateStaffInput } from '../../domain/interfaces/create-staff.input';
 import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
 import { StaffType } from '../../domain/entities/staff.entity';
 import { AppAbility } from 'src/casl/casl-ability.factory'; // Asegúrate de ajustar la ruta según tu proyecto
+import { StaffMapper } from 'src/staff2/infrastructure/mappers/staff.mapper';
+import { StaffResponseDto } from 'src/staff2/infrastructure/dto/staff-response.dto';
+import { StaffOrmEntity as StaffSubject } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
 
 
 export class CreateStaffUseCase {
@@ -12,8 +15,8 @@ export class CreateStaffUseCase {
       private readonly staffRepo: StaffRepositoryPort,
     ) {}
   
-    async execute(input: CreateStaffInput, ability: AppAbility): Promise<Staff> {
-      if (!ability.can('create', Staff)) {
+    async execute(input: CreateStaffInput, ability: AppAbility): Promise<StaffResponseDto> {
+      if (!ability.can('create', StaffSubject)) {
         throw new ForbiddenException('No tienes permiso para crear nuevos empleados');
       }
   
@@ -33,7 +36,8 @@ export class CreateStaffUseCase {
           null
         );
   
-        return await this.staffRepo.save(staff);
+        const created = await this.staffRepo.save(staff);
+        return StaffMapper.toResponseDto(created);
   
       } catch (error) {
         if (error.code === '23505') {

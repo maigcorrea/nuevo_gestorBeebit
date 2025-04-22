@@ -3,13 +3,13 @@ import * as bcrypt from 'bcryptjs';
 import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
 import { AppAbility } from 'src/casl/casl-ability.factory';
 import { ChangePasswordInput } from '../../domain/interfaces/change-password.input';
-import { Staff } from '../../domain/entities/staff.entity';
+import { StaffOrmEntity as StaffSubject } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
 
 export class ChangePasswordUseCase {
   constructor(private readonly staffRepo: StaffRepositoryPort) {}
 
   async execute(input: ChangePasswordInput, ability: AppAbility): Promise<boolean> {
-    if (!ability.can('update', Staff)) {
+    if (!ability.can('update', StaffSubject)) {
       throw new ForbiddenException('No tienes permiso para cambiar la contraseña');
     }
 

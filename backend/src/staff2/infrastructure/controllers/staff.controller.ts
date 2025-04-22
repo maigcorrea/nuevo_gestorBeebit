@@ -59,6 +59,7 @@ import { SaveProfileImageDto } from '../dto/save-profile-image.dto';
 import { SaveProfileImageUseCase } from 'src/staff2/application/use-cases/save-profile-image.use-case';
 import { MinioService } from 'src/minio/minio.service';
 import { Express } from 'express';
+import { StaffOrmEntity } from '../persistence/staff.orm-entity';
 
 
 @ApiTags('Staff')
@@ -89,7 +90,7 @@ export class StaffController{
     @ApiResponse({ status: 201, description: 'Empleado creado correctamente', type: StaffResponseDto })
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
     async create(@Body() createStaffDto: CreateStaffDto, @Req() req: Request) {
-        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
         return await this.createStaffUseCase.execute(createStaffDto, ability);
     }
 
@@ -103,20 +104,19 @@ export class StaffController{
     @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
     async findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<StaffResponseDto> {
       const staff = await this.findStaffByIdUseCase.execute(id);
-      return StaffResponseDto.fromEntity(staff);
+      return await this.findStaffByIdUseCase.execute(id);
     }
 
 
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: Staff })
+    @CheckAbilities({ action: 'read', subject: StaffOrmEntity })
     @Get('/all')
     @ApiOperation({ summary: 'Mostrar todos los empleados' })
     @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })
     @ApiResponse({ status: 403, description: 'No tienes permiso para ver los empleados' })
     async findAll(@Req() req: Request): Promise<StaffResponseDto[]> {
-        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
-        const empleados = await this.findAllStaffUseCase.execute(ability);
-        return empleados.map(StaffResponseDto.fromEntity);
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+        return await this.findAllStaffUseCase.execute(ability);
     }
 
 
@@ -124,7 +124,7 @@ export class StaffController{
 
     @ApiBearerAuth('jwt')
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: Staff })
+    @CheckAbilities({ action: 'read', subject: StaffOrmEntity })
     @Get('emails')
     @ApiOperation({ summary: 'Obtener todos los correos electrónicos de los empleados' })
     @ApiResponse({
@@ -135,7 +135,7 @@ export class StaffController{
         }
     })
     async getAllEmails(@Req() req: Request): Promise<string[]> {
-        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
         const users = await this.findAllStaffUseCase.execute(ability);
         return users.map(user => user.email);
     }
@@ -144,7 +144,7 @@ export class StaffController{
 
 
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'update', subject: Staff })
+    @CheckAbilities({ action: 'update', subject: StaffOrmEntity })
     @Put('/update/:id')
     @ApiOperation({ summary: 'Actualizar un empleado determinado' })
     @ApiResponse({
@@ -160,7 +160,7 @@ export class StaffController{
       @Body() updateDto: UpdateStaffDto,
       @Req() req: Request,
     ): Promise<{ message: string }> {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.updateStaffUseCase.execute(id, updateDto, ability);
     }
 
@@ -168,7 +168,7 @@ export class StaffController{
 
 
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'delete', subject: Staff })
+    @CheckAbilities({ action: 'delete', subject: StaffOrmEntity })
     @Delete('/delete/:id')
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Borrar un empleado determinado' })
@@ -184,7 +184,7 @@ export class StaffController{
     @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req: Request,
     ): Promise<{ message: string }> {
-    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
     return this.deleteStaffUseCase.execute(id, ability);
     }
 
@@ -227,7 +227,7 @@ export class StaffController{
     @Put('changePassword/:id')
     @ApiBearerAuth('jwt')
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'update', subject: Staff })
+    @CheckAbilities({ action: 'update', subject: StaffOrmEntity })
     @ApiParam({ name: 'id', required: true, type: String })
     @ApiBody({ type: ChangePasswordDto })
     @ApiOperation({ summary: 'Cambiar la contraseña de un usuario' })
@@ -238,7 +238,7 @@ export class StaffController{
     @Body() body: ChangePasswordDto,
     @Req() req: Request,
     ): Promise<{ message: string }> {
-    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
 
     const success = await this.changePasswordUseCase.execute(
         { userId: id, newPassword: body.newPassword },
@@ -275,7 +275,7 @@ export class StaffController{
 
     @ApiBearerAuth('jwt')
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'update', subject: Staff })
+    @CheckAbilities({ action: 'update', subject: StaffOrmEntity })
     @Post('reset-password')
     @ApiOperation({ summary: 'Restablecer contraseña con token de recuperación' })
     @ApiResponse({
@@ -286,7 +286,7 @@ export class StaffController{
     })
     @ApiResponse({ status: 400, description: 'Token inválido o expirado' })
     async resetPassword(@Body() body: ResetPasswordDto, @Req() req: Request) {
-    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
         return this.resetPasswordUseCase.execute(body, ability);
     }
 
@@ -298,20 +298,22 @@ export class StaffController{
     @Post('upload-profile-picture')
     @UseInterceptors(FileInterceptor('file'))
     async uploadProfilePicture(
-      @UploadedFile() file: Express.Multer.File,
-      @Req() req: any,
+        @UploadedFile() file: Express.Multer.File,
+        @Req() req: Request,
     ): Promise<{ url: string }> {
-      if (!file) {
-        throw new BadRequestException('No se recibió ningún archivo');
-      }
-  
-      const fileName = `profile-pictures/${Date.now()}-${file.originalname}`;
-      const { url } = await this.minioService.upload(file, fileName);
-  
-      const userId = req.user.userId;
-      await this.saveProfileImageUseCase.execute({ userId, imageUrl: url });
-  
-      return { url };
+        if (!file) {
+            throw new BadRequestException('No se recibió ningún archivo');
+        }
+
+        const fileName = `profile-pictures/${Date.now()}-${file.originalname}`;
+        const { url } = await this.minioService.upload(file, fileName);
+
+        const userId = (req.user as StaffOrmEntity).id;
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+
+        await this.saveProfileImageUseCase.execute({ userId, imageUrl: url }, ability);
+
+        return { url };
     }
     /*
     //Endpoint para mostrar todos los usuarios de la base de datos.

@@ -42,7 +42,7 @@ import {
     resetTokenExpiry: Date | null;
   
     @Column({ nullable: true })
-    profileImage: string;
+    profileImage: string | null;
   
     @OneToMany(() => Messages, (message) => message.sender)
     sentMessages: Messages[];
