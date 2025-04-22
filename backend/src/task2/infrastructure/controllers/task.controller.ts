@@ -31,6 +31,8 @@ import {
   import { FindTasksByProjectUseCase } from 'src/task2/application/use-cases/find-tasks-by-project.use-case';
   import { UpdateTaskDto } from '../dto/update-task.dto';
   import { UpdateTaskUseCase } from 'src/task2/application/use-cases/update-task.use-case';
+  import { UpdateTaskStatusDto } from '../dto/update-task-status.dto';
+  import { UpdateTaskStatusUseCase } from 'src/task2/application/use-cases/update-task-status.use-case';
   
   @ApiTags('Tasks')
   @Controller('tasks')
@@ -41,6 +43,7 @@ import {
       private readonly findAllTasksUseCase: FindAllTasksUseCase,
       private readonly findTasksByProjectUseCase: FindTasksByProjectUseCase,
       private readonly updateTaskUseCase: UpdateTaskUseCase,
+      private readonly updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     ) {}
   
     @Post()
@@ -117,6 +120,26 @@ import {
     ): Promise<{ message: string }> {
       const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
       return this.updateTaskUseCase.execute(id, updateDto, ability);
+    }
+
+
+
+
+
+    @Patch(':id/status')
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: TaskTypeOrmEntity })
+    @ApiOperation({ summary: 'Actualizar el estado de una tarea determinada' })
+    @ApiResponse({ status: 200, description: 'Estado de la tarea actualizado correctamente' })
+    @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
+    async updateTaskStatus(
+      @Param('id') id: string,
+      @Body() dto: UpdateTaskStatusDto,
+      @Req() req: Request,
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      return this.updateTaskStatusUseCase.execute(id, dto, ability);
     }
   }
   
