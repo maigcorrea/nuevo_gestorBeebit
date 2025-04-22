@@ -20,6 +20,11 @@ export class TaskRepository implements TaskRepositoryPort {
     return TaskMapper.toDomainEntity(saved);
   }
 
+  async find(criteria: any): Promise<Task[]> {
+    const found = await this.ormRepo.find(criteria);
+    return found.map(TaskMapper.toDomainEntity);
+  }
+
   async findAll(): Promise<Task[]> {
     const tasks = await this.ormRepo.find();
     return tasks.map(TaskMapper.toDomainEntity);

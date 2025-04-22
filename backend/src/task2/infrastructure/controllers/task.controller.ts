@@ -8,7 +8,8 @@ import {
     NotFoundException,
     Param,
     ParseUUIDPipe,
-    Patch
+    Patch,
+    Delete
   } from '@nestjs/common';
   import {
     ApiOperation,
@@ -33,7 +34,10 @@ import {
   import { UpdateTaskUseCase } from 'src/task2/application/use-cases/update-task.use-case';
   import { UpdateTaskStatusDto } from '../dto/update-task-status.dto';
   import { UpdateTaskStatusUseCase } from 'src/task2/application/use-cases/update-task-status.use-case';
-  
+  import { DeleteTaskUseCase } from 'src/task2/application/use-cases/delete-task.use-case';
+  import { Task as TaskSubject } from '../persistence/task.typeorm.entity';
+  import { Task } from 'src/task2/domain/entities/task.entity';
+
   @ApiTags('Tasks')
   @Controller('tasks')
   export class TaskController {
@@ -44,6 +48,7 @@ import {
       private readonly findTasksByProjectUseCase: FindTasksByProjectUseCase,
       private readonly updateTaskUseCase: UpdateTaskUseCase,
       private readonly updateTaskStatusUseCase: UpdateTaskStatusUseCase,
+      private readonly deleteTaskUseCase: DeleteTaskUseCase,
     ) {}
   
     @Post()
@@ -140,6 +145,26 @@ import {
     ) {
       const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
       return this.updateTaskStatusUseCase.execute(id, dto, ability);
+    }
+
+
+
+
+
+
+    @Delete(':id')
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'delete', subject: Task })
+    @ApiOperation({ summary: 'Borrar una tarea determinada' })
+    @ApiResponse({ status: 200, description: 'Tarea eliminada con éxito' })
+    @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
+    async deleteTask(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Req() req: Request
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      return this.deleteTaskUseCase.execute(id, ability);
     }
   }
   
