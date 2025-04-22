@@ -13,6 +13,7 @@ import { ProjectRepositoryPort } from 'src/project2/domain/ports/project.reposit
 import { ProjectRepository } from 'src/project2/infrastructure/persistence/project.repository';
 import { UpdateTaskStatusUseCase } from './application/use-cases/update-task-status.use-case';
 import { DeleteTaskUseCase } from './application/use-cases/delete-task.use-case';
+import { UpdateStatusAndPriorityUseCase } from './application/use-cases/update-status-and-priority.use-case';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DeleteTaskUseCase } from './application/use-cases/delete-task.use-case'
     UpdateTaskUseCase,
     UpdateTaskStatusUseCase,
     DeleteTaskUseCase,
+    UpdateStatusAndPriorityUseCase,
     {
       provide: TaskRepositoryPort,
       useClass: TaskRepository,

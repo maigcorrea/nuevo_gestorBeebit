@@ -37,6 +37,8 @@ import {
   import { DeleteTaskUseCase } from 'src/task2/application/use-cases/delete-task.use-case';
   import { Task as TaskSubject } from '../persistence/task.typeorm.entity';
   import { Task } from 'src/task2/domain/entities/task.entity';
+  import { UpdateTaskStatusPriorityDto } from 'src/task/dto/update-task-status-priority.dto';
+  import { UpdateStatusAndPriorityUseCase } from 'src/task2/application/use-cases/update-status-and-priority.use-case';
 
   @ApiTags('Tasks')
   @Controller('tasks')
@@ -49,6 +51,7 @@ import {
       private readonly updateTaskUseCase: UpdateTaskUseCase,
       private readonly updateTaskStatusUseCase: UpdateTaskStatusUseCase,
       private readonly deleteTaskUseCase: DeleteTaskUseCase,
+      private readonly updateStatusAndPriorityUseCase: UpdateStatusAndPriorityUseCase,
     ) {}
   
     @Post()
@@ -166,5 +169,31 @@ import {
       const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
       return this.deleteTaskUseCase.execute(id, ability);
     }
+
+
+
+    @Patch(':id/update-status-priority')
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Task })
+    @ApiOperation({ summary: 'Actualizar el estado y prioridad para una tarea' })
+    @ApiResponse({ status: 201, description: 'Tarea modificada con éxito' })
+    @ApiResponse({ status: 404, description: 'Tarea no encontrada' })
+    async updateStatusAndPriority(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Body() dto: UpdateTaskStatusPriorityDto,
+      @Req() req: Request,
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const updatedTask = await this.updateStatusAndPriorityUseCase.execute(
+        id,
+        dto.status,
+        dto.priority,
+        ability,
+      );
+      return TaskMapper.toResponseDto(updatedTask); // si quieres devolver TaskResponseDto limpio
+    }
+
+
   }
   
