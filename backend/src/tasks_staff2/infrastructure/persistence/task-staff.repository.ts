@@ -107,4 +107,20 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
     const entity = this.repo.create({ id: taskStaff.id });
     await this.repo.remove(entity);
   }
+
+
+  async findTasksDueTomorrow(fecha: string): Promise<{ title: string; deadline: string; email: string }[]> {
+    return this.repo
+      .createQueryBuilder('ts')
+      .leftJoin('ts.task', 'task')
+      .leftJoin('ts.staff', 'staff')
+      .select([
+        'task.title AS title',
+        'task.deadline AS deadline',
+        'staff.email AS email',
+      ])
+      .where('task.deadline = :fecha', { fecha })
+      .getRawMany();
+  }
+  
 }

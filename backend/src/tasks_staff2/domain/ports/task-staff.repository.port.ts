@@ -17,5 +17,7 @@ export abstract class TaskStaffRepositoryPort {
   abstract findOneByTaskAndStaff(taskId: string, staffId: string): Promise<TaskStaffOrmEntity | null>;
   abstract update(taskStaff: TaskStaff): Promise<TaskStaff>;
   abstract remove(taskStaff: TaskStaff): Promise<void>;
+  abstract findTasksDueTomorrow(fecha: string): Promise<{ title: string; deadline: string; email: string }[]>;
+
 
 }

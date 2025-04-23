@@ -24,6 +24,7 @@ import { GetTasksByUserUseCase } from './application/use-cases/get-tasks-by-user
 import { GetProjectsByUserUseCase } from './application/use-cases/get-projects-by-user.use-case';
 import { UpdateTaskStaffUseCase } from './application/use-cases/update-task-staff.use-case';
 import { DeleteTaskStaffUseCase } from './application/use-cases/delete-task-staff.use-case';
+import { FindTasksDueTomorrowUseCase } from './application/use-cases/find-tasks-due-tomorrow.use-case';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { DeleteTaskStaffUseCase } from './application/use-cases/delete-task-staf
       GetProjectsByUserUseCase,
       UpdateTaskStaffUseCase,
       DeleteTaskStaffUseCase,
+      FindTasksDueTomorrowUseCase,
     ]),
     CaslModule,
     MailQueueModule,

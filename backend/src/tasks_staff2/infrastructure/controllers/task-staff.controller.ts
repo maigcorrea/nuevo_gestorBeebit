@@ -47,6 +47,9 @@ import {
 
   import { DeleteTaskStaffDto } from '../dto/delete-task-staff.dto';
   import { DeleteTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/delete-task-staff.use-case';
+
+
+  import { FindTasksDueTomorrowUseCase } from 'src/tasks_staff2/application/use-cases/find-tasks-due-tomorrow.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -60,6 +63,7 @@ import {
       private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
       private readonly updateTaskStaffUseCase: UpdateTaskStaffUseCase,
       private readonly deleteTaskStaffUseCase: DeleteTaskStaffUseCase,
+      private readonly findTasksDueTomorrowUseCase: FindTasksDueTomorrowUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -202,6 +206,30 @@ import {
       const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       const result = await this.deleteTaskStaffUseCase.execute(dto, ability);
       return { message: result };
+    }
+
+
+
+
+
+
+    @Get('vencen-manana')
+    @ApiOperation({ summary: 'Obtener tareas que vencen mañana' })
+    @ApiResponse({
+      status: 200,
+      description: 'Lista de tareas que vencen mañana',
+      schema: {
+        example: [
+          {
+            title: 'Completar informe',
+            deadline: '2025-04-23',
+            email: 'empleado@empresa.com',
+          },
+        ],
+      },
+    })
+    async findTasksDueTomorrow(): Promise<{ title: string; deadline: string; email: string }[]> {
+      return this.findTasksDueTomorrowUseCase.execute();
     }
 
   }
