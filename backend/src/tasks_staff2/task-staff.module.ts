@@ -22,6 +22,8 @@ import { FindAllTaskStaffUseCase } from './application/use-cases/find-all-task-s
 import { FindTaskStaffGroupedByTaskUseCase } from './application/use-cases/find-grouped-by-task.use-case';
 import { GetTasksByUserUseCase } from './application/use-cases/get-tasks-by-user.use-case';
 import { GetProjectsByUserUseCase } from './application/use-cases/get-projects-by-user.use-case';
+import { UpdateTaskStaffUseCase } from './application/use-cases/update-task-staff.use-case';
+import { DeleteTaskStaffUseCase } from './application/use-cases/delete-task-staff.use-case';
 
 @Module({
   imports: [
@@ -31,7 +33,9 @@ import { GetProjectsByUserUseCase } from './application/use-cases/get-projects-b
       StaffOrmEntity,
       FindTaskStaffGroupedByTaskUseCase,
       GetTasksByUserUseCase,
-      GetProjectsByUserUseCase
+      GetProjectsByUserUseCase,
+      UpdateTaskStaffUseCase,
+      DeleteTaskStaffUseCase,
     ]),
     CaslModule,
     MailQueueModule,

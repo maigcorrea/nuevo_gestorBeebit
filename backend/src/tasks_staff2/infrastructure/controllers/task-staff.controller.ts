@@ -8,6 +8,7 @@ import {
     Param,
     ParseUUIDPipe,
     Patch,
+    Delete
   } from '@nestjs/common';
   import {
     ApiBearerAuth,
@@ -43,6 +44,9 @@ import {
 
   import { UpdateTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/update-task-staff.use-case';
   import { UpdateTaskStaffDto } from '../dto/update-task-staff.dto';
+
+  import { DeleteTaskStaffDto } from '../dto/delete-task-staff.dto';
+  import { DeleteTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/delete-task-staff.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -55,6 +59,7 @@ import {
       private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
       private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
       private readonly updateTaskStaffUseCase: UpdateTaskStaffUseCase,
+      private readonly deleteTaskStaffUseCase: DeleteTaskStaffUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -174,5 +179,30 @@ import {
       const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.updateTaskStaffUseCase.execute(dto, ability);
     }
+
+
+
+
+
+
+
+
+
+    @Delete('/delete')
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'delete', subject: TaskStaff })
+    @ApiOperation({ summary: 'Borrar una relación tarea-empleado' })
+    @ApiResponse({ status: 200, description: 'Relación eliminada correctamente' })
+    @ApiResponse({ status: 404, description: 'Relación no encontrada' })
+    async deleteByTaskAndStaff(
+      @Body() dto: DeleteTaskStaffDto,
+      @Req() req: Request,
+    ): Promise<{ message: string }> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      const result = await this.deleteTaskStaffUseCase.execute(dto, ability);
+      return { message: result };
+    }
+
   }
   

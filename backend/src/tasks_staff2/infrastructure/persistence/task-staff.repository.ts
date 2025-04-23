@@ -100,4 +100,11 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
     return TaskStaffMapper.toDomainEntity(updated);
   }
   
+
+
+
+  async remove(taskStaff: TaskStaff): Promise<void> {
+    const entity = this.repo.create({ id: taskStaff.id });
+    await this.repo.remove(entity);
+  }
 }

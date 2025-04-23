@@ -16,6 +16,6 @@ export abstract class TaskStaffRepositoryPort {
   abstract find(options: FindManyOptions<TaskStaffOrmEntity>): Promise<TaskStaffOrmEntity[]>;
   abstract findOneByTaskAndStaff(taskId: string, staffId: string): Promise<TaskStaffOrmEntity | null>;
   abstract update(taskStaff: TaskStaff): Promise<TaskStaff>;
-
+  abstract remove(taskStaff: TaskStaff): Promise<void>;
 
 }
