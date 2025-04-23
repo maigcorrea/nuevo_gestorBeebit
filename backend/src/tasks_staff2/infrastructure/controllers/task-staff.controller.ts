@@ -27,6 +27,9 @@ import {
   import { StaffOrmEntity } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
 
   import { FindAllTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/find-all-task-staff.use-case';
+
+  import { TaskWithStaffResponseDto } from '../dto/task-with-staff-response.dto';
+  import { FindTaskStaffGroupedByTaskUseCase } from 'src/tasks_staff2/application/use-cases/find-grouped-by-task.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -35,6 +38,7 @@ import {
       private readonly createTaskStaffUseCase: CreateTaskStaffUseCase,
       private readonly caslAbilityFactory: CaslAbilityFactory,
       private readonly findAllTaskStaffUseCase: FindAllTaskStaffUseCase,
+      private readonly findTaskStaffGroupedByTaskUseCase: FindTaskStaffGroupedByTaskUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -75,6 +79,20 @@ import {
     }
 
 
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @ApiOperation({ summary: 'Obtener todas las relaciones por tarea (tarea → empleados)' })
+    @ApiResponse({ status: 200, type: [TaskWithStaffResponseDto] })
+    @ApiResponse({ status: 403, description: 'No tienes permiso' })
+    @Get('por-tarea')
+    async findGroupedByTask(@Req() req: Request): Promise<TaskWithStaffResponseDto[]> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      return this.findTaskStaffGroupedByTaskUseCase.execute(ability);
+    }
 
 
   }
