@@ -6,6 +6,7 @@ import { MessageOrmEntity } from './infrastructure/persistence/message.orm-entit
 import { MessageRepository } from './infrastructure/persistence/message.repository';
 import { MessageController } from './infrastructure/controllers/message.controller';
 import { SendMessageUseCase } from './application/use-cases/send-message.use-case';
+import { FindSentMessagesByUserUseCase } from './application/use-cases/find-sent-messages-by-user.use-case';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SendMessageUseCase } from './application/use-cases/send-message.use-cas
   providers: [
     MessageRepository,
     SendMessageUseCase,
+    FindSentMessagesByUserUseCase,
   ],
 })
 export class MessagesModule {}

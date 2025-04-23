@@ -4,16 +4,21 @@ import {
     Body,
     Req,
     UseGuards,
+    Get
   } from '@nestjs/common';
   import { AuthGuard } from '@nestjs/passport';
   import { SendMessageDto } from '../dto/send-message.dto';
   import { SendMessageUseCase } from 'src/messages2/application/use-cases/send-message.use-case';
   import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+  import { FindSentMessagesByUserUseCase } from 'src/messages2/application/use-cases/find-sent-messages-by-user.use-case';
   
   @ApiTags('Messages')
   @Controller('messages')
   export class MessageController {
-    constructor(private readonly sendMessageUseCase: SendMessageUseCase) {}
+    constructor(
+        private readonly sendMessageUseCase: SendMessageUseCase,
+        private readonly findSentMessagesByUserUseCase: FindSentMessagesByUserUseCase,
+    ) {}
   
     @Post('send')
     @UseGuards(AuthGuard('jwt'))
@@ -32,6 +37,18 @@ import {
       };
   
       return this.sendMessageUseCase.execute(input);
+    }
+
+
+
+
+    @Get('enviados')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiOperation({ summary: 'Obtener mensajes enviados por un usuario' })
+    @ApiResponse({ status: 200, description: 'Mensajes obtenidos correctamente' })
+    async getSentMessages(@Req() req) {
+        const senderId = req.user.userId;
+        return this.findSentMessagesByUserUseCase.execute({ senderId });
     }
   }
   
