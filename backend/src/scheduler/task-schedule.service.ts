@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
-import { TaskStaffService } from 'src/tasks_staff/task-staff.service';
-import { Project } from 'src/project/entities/project.entity';
-import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
+import { Project } from 'src/project/domain/entities/project.entity';
+import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
+import { FindTasksDueTomorrowUseCase } from 'src/tasks_staff/application/use-cases/find-tasks-due-tomorrow.use-case';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -12,16 +12,16 @@ export class TaskSchedulerService {
   private readonly logger = new Logger(TaskSchedulerService.name);
 
   constructor(
-    private readonly taskStaffService: TaskStaffService,
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
-    @InjectRepository(TaskStaff) 
-    private readonly taskStaffRepo: Repository<TaskStaff>,
+    @InjectRepository(TaskStaffOrmEntity) 
+    private readonly taskStaffRepo: Repository<TaskStaffOrmEntity>,
     private readonly mailQueueService: MailQueueService,
+    private readonly findTasksDueTomorrow: FindTasksDueTomorrowUseCase,
   ) {}
 
 
-  /*@Cron(CronExpression.EVERY_10_SECONDS) // ⏰ Todos los días a las 00:00 EVERY_DAY_AT_MIDNIGHT
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT) // ⏰ Todos los días a las 00:00 EVERY_DAY_AT_MIDNIGHT
   async handleTaskReminder() {
       this.logger.log('🕛 Ejecutando revisión de deadlines...');
 
@@ -30,7 +30,7 @@ export class TaskSchedulerService {
 
 
       // 1. Buscar tareas con deadline igual a esa fecha
-      const tareas = await this.taskStaffService.findTasksDueTomorrow();
+      const tareas = await this.findTasksDueTomorrow.execute();
 
       // 2. Enviar correos a los empleados asignados
       for (const tarea of tareas) {
@@ -46,7 +46,7 @@ export class TaskSchedulerService {
     }
 
     this.logger.log(`✅ Recordatorios enviados: ${tareas.length}`);
-  }*/
+  }
 
     //Se envía un correo al administrador para recordarle que el día posterior al actual vence el plazo de entrega de un proyecto
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

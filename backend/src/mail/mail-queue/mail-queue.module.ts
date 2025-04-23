@@ -5,8 +5,8 @@ import { MailProcessor } from './mail.processor';
 import { MailService } from '../mail.service';
 import { MailModule } from '../mail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Messages } from 'src/messages/entities/messages.entity';
-import { Staff } from 'src/staff2/domain/entities/staff.entity';
+import { Message } from 'src/messages/domain/entities/messages.entity';
+import { Staff } from 'src/staff/domain/entities/staff.entity';
 
 
 @Module({
@@ -14,7 +14,7 @@ import { Staff } from 'src/staff2/domain/entities/staff.entity';
     BullModule.registerQueue({
       name: 'mail-queue',
     }),
-    TypeOrmModule.forFeature([Messages, Staff]),
+    TypeOrmModule.forFeature([Message, Staff]),
     MailModule,
   ],
   providers: [MailQueueService, MailProcessor, MailService],

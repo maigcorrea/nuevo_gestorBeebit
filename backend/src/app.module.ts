@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 // MÓDULOS
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
-import { StaffModule } from './staff2/staff.module';
+import { StaffModule } from './staff/staff.module';
 import { TaskStaffModule } from './tasks_staff/task-staff.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
@@ -16,11 +16,11 @@ import { SchedulerModule } from './scheduler/sheduler.module';
 import { MessagesModule } from './messages/messages.module';
 import { CaslModule } from './casl/casl.module';
 // ENTIDADES
-import { Project } from './project/entities/project.entity';
-import { Task } from './task/entities/task.entity';
-import { Staff } from './staff2/domain/entities/staff.entity';
-import { TaskStaff } from './tasks_staff/entities/taskStaff.entity';
-import { Messages } from './messages/entities/messages.entity';
+import { Project } from './project/domain/entities/project.entity';
+import { Task } from './task/domain/entities/task.entity';
+import { Staff } from './staff/domain/entities/staff.entity';
+import { TaskStaff } from './tasks_staff/domain/entities/task-staff.entity';
+import { Message } from './messages/domain/entities/messages.entity';
 import { TareaOrmEntity } from './EjemploArquitectura/infrastructure/persistence/tarea.orm-entity';
 import { TareaRepository } from './EjemploArquitectura/infrastructure/persistence/tarea.repository';
 
@@ -40,7 +40,7 @@ import { TaskController } from './EjemploArquitectura/infrastructure/controllers
       username: 'postgres', // Usuario de la base de datos
       password: 'password', // Contraseña de la base de datos
       database: 'test', // Nombre de la base de datos
-      entities: [ Project, Task, Staff, TaskStaff, Messages], // Entidades que se utilizarán
+      entities: [ Project, Task, Staff, TaskStaff, Message], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),

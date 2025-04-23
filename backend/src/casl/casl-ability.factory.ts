@@ -11,13 +11,15 @@ import { mongoQueryMatcher } from '@casl/ability';
  //Aunque se llame createMongoQueryMatcher, funciona también sin MongoDB, porque solo compara condiciones (como { assigned_to: user.id }).
 
 
- import { ProjectTypeOrmEntity as Project } from 'src/project2/infrastructure/persistence/project.typeorm.entity';
-import { Task } from 'src/task2/infrastructure/persistence/task.typeorm.entity';
-import { StaffOrmEntity as Staff} from 'src/staff2/infrastructure/persistence/staff.orm-entity';
-import { TaskStaffOrmEntity as TaskStaff } from 'src/tasks_staff2/infrastructure/persistence/task-staff.typeorm.entity';
+import { ProjectTypeOrmEntity as Project } from 'src/project/infrastructure/persistence/project.typeorm.entity';
+import { Task } from 'src/task/infrastructure/persistence/task.typeorm.entity';
+import { StaffOrmEntity as Staff} from 'src/staff/infrastructure/persistence/staff.orm-entity';
+import { TaskStaffOrmEntity as TaskStaff} from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
-type Subjects = InferSubjects<typeof Project | typeof Task | typeof Staff | typeof TaskStaff> | 'all';
+type Subjects = InferSubjects<
+  typeof Project | typeof Task | typeof Staff | typeof TaskStaff
+> | 'Project' | 'Task' | 'Staff' | 'TaskStaff' | 'all';
 
 export type AppAbility = PureAbility<[Actions, Subjects]>;
 

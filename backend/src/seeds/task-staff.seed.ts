@@ -1,9 +1,9 @@
 import { Seeder } from 'nestjs-seeder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Task } from 'src/task/entities/task.entity';
-import { Staff } from 'src/staff2/domain/entities/staff.entity';
-import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
+import { Task } from 'src/task/domain/entities/task.entity';
+import { Staff } from 'src/staff/domain/entities/staff.entity';
+import { TaskStaff } from 'src/tasks_staff/domain/entities/task-staff.entity';
 import { faker } from '@faker-js/faker';
 
 

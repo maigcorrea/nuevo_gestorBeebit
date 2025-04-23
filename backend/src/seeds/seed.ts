@@ -1,15 +1,14 @@
 import { seeder } from 'nestjs-seeder';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { Staff } from 'src/staff2/domain/entities/staff.entity';
-import { Project } from 'src/project/entities/project.entity';
-import { Task } from 'src/task/entities/task.entity';
+import { Staff } from 'src/staff/domain/entities/staff.entity';
+import { Project } from 'src/project/domain/entities/project.entity';
+import { Task } from 'src/task/domain/entities/task.entity';
 import { StaffSeeder } from './staff.seed';
 import { ProjectSeeder } from './project.seed';
-import { SeedModule } from './seed.module';
 import { TaskSeeder } from './task.seeder';
 import { TaskStaffSeeder } from './task-staff.seed';
-import { TaskStaff } from 'src/tasks_staff/entities/taskStaff.entity';
+import { TaskStaff } from 'src/tasks_staff/domain/entities/task-staff.entity';
 
 seeder({
   imports: [

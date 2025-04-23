@@ -3,18 +3,19 @@ import { Job } from 'bull';
 import { MailService } from '../mail.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Messages } from 'src/messages/entities/messages.entity';
-import { Staff } from 'src/staff2/domain/entities/staff.entity';
+import { MessageOrmEntity } from 'src/messages/infrastructure/persistence/message.orm-entity'; // ✅ entidad de persistencia
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
+
 
 //Escucha los eventos de la cola. El código que se ejecuta cuando la cola lo dispare.
 
 @Processor('mail-queue') // Este decorador lo convierte en un worker para esa cola
 export class MailProcessor {
   constructor(private readonly mailService: MailService,
-    @InjectRepository(Messages)
-    private readonly messageRepository: Repository<Messages>,
-    @InjectRepository(Staff)
-    private readonly staffRepository: Repository<Staff>,
+    @InjectRepository(MessageOrmEntity)
+    private readonly messageRepository: Repository<MessageOrmEntity>,
+    @InjectRepository(StaffOrmEntity)
+    private readonly staffRepository: Repository<StaffOrmEntity>,
   ) {}
 
   @Process('send-password-reset')

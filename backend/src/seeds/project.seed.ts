@@ -1,8 +1,8 @@
 import { Seeder } from 'nestjs-seeder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Project } from 'src/project/entities/project.entity';
-import { ProjectStatus } from 'src/project/entities/project.entity';
+import { Project } from 'src/project/domain/entities/project.entity';
+import { ProjectStatus } from 'src/project/domain/entities/project.entity';
 import { faker } from '@faker-js/faker';
 
 export class ProjectSeeder implements Seeder {

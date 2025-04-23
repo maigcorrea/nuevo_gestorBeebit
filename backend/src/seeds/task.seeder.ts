@@ -1,8 +1,10 @@
 import { Seeder } from 'nestjs-seeder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Task, TaskPriority, TaskStatus } from 'src/task/entities/task.entity';
-import { Project } from 'src/project/entities/project.entity';
+import { Task } from 'src/task/domain/entities/task.entity';
+import { TaskPriority } from 'src/task/domain/enums/task.enums';
+import { TaskStatus } from 'src/task/domain/enums/task.enums';
+import { Project } from 'src/project/domain/entities/project.entity';
 import { faker } from '@faker-js/faker';
 
 export class TaskSeeder implements Seeder {
