@@ -18,6 +18,7 @@ import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { TaskTypeOrmEntity } from 'src/task2/infrastructure/persistence/task.typeorm.entity';
 import { StaffOrmEntity } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
 import { STAFF_REPOSITORY } from 'src/staff2/domain/token/staff.token';
+import { FindAllTaskStaffUseCase } from './application/use-cases/find-all-task-staff.use-case';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { STAFF_REPOSITORY } from 'src/staff2/domain/token/staff.token';
   providers: [
     // Use case
     CreateTaskStaffUseCase,
+    FindAllTaskStaffUseCase,
 
     // Repositorio principal de TaskStaff
     {

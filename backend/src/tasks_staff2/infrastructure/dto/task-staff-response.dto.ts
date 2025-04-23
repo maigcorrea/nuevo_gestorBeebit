@@ -18,4 +18,10 @@ export class TaskStaffResponseDto {
     example: '28e7f284-21c0-4705-85c0-1b10f9c3b1a4',
   })
   staffId: string;
+
+
+  // Extras
+  taskTitle?: string;
+  staffName?: string;
+  taskCompleted?: boolean;
 }

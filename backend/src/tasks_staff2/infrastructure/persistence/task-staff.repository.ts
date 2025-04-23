@@ -66,4 +66,11 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
     });
     return !!existing;
   }
+
+
+  async findWithRelations(): Promise<TaskStaffOrmEntity[]> {
+    return this.repo.find({
+      relations: ['task', 'staff'],
+    });
+  }
 }

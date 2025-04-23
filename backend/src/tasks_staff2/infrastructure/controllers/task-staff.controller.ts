@@ -4,6 +4,7 @@ import {
     Post,
     Req,
     UseGuards,
+    Get
   } from '@nestjs/common';
   import {
     ApiBearerAuth,
@@ -24,6 +25,8 @@ import {
   import { CheckAbilities } from 'src/casl/check-abilities.decorator';
   import { TaskStaff } from 'src/tasks_staff2/domain/entities/task-staff.entity';
   import { StaffOrmEntity } from 'src/staff2/infrastructure/persistence/staff.orm-entity';
+
+  import { FindAllTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/find-all-task-staff.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -31,6 +34,7 @@ import {
     constructor(
       private readonly createTaskStaffUseCase: CreateTaskStaffUseCase,
       private readonly caslAbilityFactory: CaslAbilityFactory,
+      private readonly findAllTaskStaffUseCase: FindAllTaskStaffUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -53,5 +57,25 @@ import {
       const created = await this.createTaskStaffUseCase.execute(dto, ability);
       return created.map(TaskStaffMapper.toResponseDto);
     }
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @ApiOperation({ summary: 'Obtener todas las relaciones tarea-empleado' })
+    @ApiResponse({ status: 200, type: [TaskStaffResponseDto] })
+    @ApiResponse({ status: 403, description: 'No tienes permiso' })
+    @Get('todo')
+    async findAll(@Req() req: Request): Promise<TaskStaffResponseDto[]> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      return this.findAllTaskStaffUseCase.execute(ability);
+    }
+
+
+
+
   }
   
