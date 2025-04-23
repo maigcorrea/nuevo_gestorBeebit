@@ -1,5 +1,6 @@
 import { TaskStaff } from '../entities/task-staff.entity';
 import { TaskStaffOrmEntity } from 'src/tasks_staff2/infrastructure/persistence/task-staff.orm-entity';
+import { FindManyOptions } from 'typeorm';
 
 export abstract class TaskStaffRepositoryPort {
   abstract create(taskStaff: TaskStaff): Promise<TaskStaff>;
@@ -12,4 +13,5 @@ export abstract class TaskStaffRepositoryPort {
   abstract findByStaffId(staffId: string): Promise<TaskStaff[]>;
   abstract exists(taskId: string, staffId: string): Promise<boolean>;
   abstract findWithRelations(): Promise<TaskStaffOrmEntity[]>;
+  abstract find(options: FindManyOptions<TaskStaffOrmEntity>): Promise<TaskStaffOrmEntity[]>;
 }

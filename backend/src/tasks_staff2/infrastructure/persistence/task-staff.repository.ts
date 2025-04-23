@@ -5,6 +5,7 @@ import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repositor
 import { TaskStaffOrmEntity } from './task-staff.orm-entity';
 import { TaskStaff } from '../../domain/entities/task-staff.entity';
 import { TaskStaffMapper } from '../mappers/task-staff.mapper';
+import { FindManyOptions } from 'typeorm';
 
 @Injectable()
 export class TaskStaffRepository implements TaskStaffRepositoryPort {
@@ -72,5 +73,10 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
     return this.repo.find({
       relations: ['task', 'staff'],
     });
+  }
+
+
+  async find(options: FindManyOptions<TaskStaffOrmEntity>): Promise<TaskStaffOrmEntity[]> {
+    return this.repo.find(options);
   }
 }

@@ -20,6 +20,7 @@ import { StaffOrmEntity } from 'src/staff2/infrastructure/persistence/staff.orm-
 import { STAFF_REPOSITORY } from 'src/staff2/domain/token/staff.token';
 import { FindAllTaskStaffUseCase } from './application/use-cases/find-all-task-staff.use-case';
 import { FindTaskStaffGroupedByTaskUseCase } from './application/use-cases/find-grouped-by-task.use-case';
+import { GetTasksByUserUseCase } from './application/use-cases/get-tasks-by-user.use-case';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FindTaskStaffGroupedByTaskUseCase } from './application/use-cases/find-
       TaskTypeOrmEntity,
       StaffOrmEntity,
       FindTaskStaffGroupedByTaskUseCase,
+      GetTasksByUserUseCase,
     ]),
     CaslModule,
     MailQueueModule,

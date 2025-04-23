@@ -4,13 +4,16 @@ import {
     Post,
     Req,
     UseGuards,
-    Get
+    Get,
+    Param,
+    ParseUUIDPipe,
   } from '@nestjs/common';
   import {
     ApiBearerAuth,
     ApiOperation,
     ApiResponse,
     ApiTags,
+    ApiParam
   } from '@nestjs/swagger';
   import { Request } from 'express';
   import { AuthGuard } from '@nestjs/passport';
@@ -30,6 +33,9 @@ import {
 
   import { TaskWithStaffResponseDto } from '../dto/task-with-staff-response.dto';
   import { FindTaskStaffGroupedByTaskUseCase } from 'src/tasks_staff2/application/use-cases/find-grouped-by-task.use-case';
+
+  import { TaskByUserResponseDto } from '../dto/task-by-user-response.dto';
+  import { GetTasksByUserUseCase } from 'src/tasks_staff2/application/use-cases/get-tasks-by-user.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -39,6 +45,7 @@ import {
       private readonly caslAbilityFactory: CaslAbilityFactory,
       private readonly findAllTaskStaffUseCase: FindAllTaskStaffUseCase,
       private readonly findTaskStaffGroupedByTaskUseCase: FindTaskStaffGroupedByTaskUseCase,
+      private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -95,5 +102,23 @@ import {
     }
 
 
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @ApiOperation({ summary: 'Obtener las tareas asignadas a un empleado concreto' })
+    @ApiResponse({ status: 200, description: 'Listado de tareas asignadas al usuario', type: [TaskByUserResponseDto] })
+    @ApiResponse({ status: 404, description: 'No se encontraron tareas o no tienes permisos' })
+    @ApiParam({ name: 'id', type: 'string', description: 'UUID del usuario' })
+    @Get('por-usuario/:id')
+    async getTasksByUser(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Req() req: Request,
+    ): Promise<TaskByUserResponseDto[]> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      return this.getTasksByUserUseCase.execute(id, ability);
+    }
   }
   
