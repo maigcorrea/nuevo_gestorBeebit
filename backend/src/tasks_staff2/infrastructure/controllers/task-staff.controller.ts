@@ -36,6 +36,9 @@ import {
 
   import { TaskByUserResponseDto } from '../dto/task-by-user-response.dto';
   import { GetTasksByUserUseCase } from 'src/tasks_staff2/application/use-cases/get-tasks-by-user.use-case';
+
+  import { ProjectByUserResponseDto } from '../dto/project-by-user-response.dto';
+  import { GetProjectsByUserUseCase } from 'src/tasks_staff2/application/use-cases/get-projects-by-user.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -46,6 +49,7 @@ import {
       private readonly findAllTaskStaffUseCase: FindAllTaskStaffUseCase,
       private readonly findTaskStaffGroupedByTaskUseCase: FindTaskStaffGroupedByTaskUseCase,
       private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
+      private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -120,5 +124,32 @@ import {
       const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.getTasksByUserUseCase.execute(id, ability);
     }
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+  @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+  @CheckAbilities({ action: 'read', subject: TaskStaff })
+  @Get('proyectos/:id')
+  @ApiOperation({ summary: 'Obtener proyectos asignados al usuario' })
+  @ApiResponse({
+    status: 200,
+    description: 'Listado de proyectos',
+    type: ProjectByUserResponseDto,
+    isArray: true,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No se encontraron tareas para este usuario',
+  })
+  async getProjectsByUser(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Req() req: Request,
+  ): Promise<ProjectByUserResponseDto[]> {
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+    return this.getProjectsByUserUseCase.execute(id, ability);
+  }
   }
   
