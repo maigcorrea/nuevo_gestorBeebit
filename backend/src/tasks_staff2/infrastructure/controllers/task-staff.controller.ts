@@ -54,6 +54,7 @@ import {
   import { FindTasksDueTomorrowUseCase } from 'src/tasks_staff2/application/use-cases/find-tasks-due-tomorrow.use-case';
 
   import { ExportProjectsToExcelUseCase } from 'src/tasks_staff2/application/use-cases/export-projects-to-excel.use-case';
+  import { ExportProjectsToPDFUseCase } from 'src/tasks_staff2/application/use-cases/export-project-to-pdf.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -69,6 +70,7 @@ import {
       private readonly deleteTaskStaffUseCase: DeleteTaskStaffUseCase,
       private readonly findTasksDueTomorrowUseCase: FindTasksDueTomorrowUseCase,
       private readonly exportProjectsToExcelUseCase: ExportProjectsToExcelUseCase,
+      private readonly exportProjectsToPDFUseCase: ExportProjectsToPDFUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -258,6 +260,30 @@ import {
         'Content-Disposition': 'attachment; filename=proyectos.xlsx',
       });
   
+      res.end(buffer);
+    }
+
+
+
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @Post('export-pdf')
+    @ApiBearerAuth('jwt')
+    @ApiOperation({ summary: 'Exportar proyectos seleccionados a PDF' })
+    @ApiResponse({ status: 200, description: 'PDF generado correctamente' })
+    async exportToPDF(
+      @Body('ids') ids: string[],
+      @Res() res: Response,
+      @Req() req: Request,
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      const buffer = await this.exportProjectsToPDFUseCase.execute(ids, ability);
+
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename=proyectos.pdf',
+      });
+
       res.end(buffer);
     }
   }

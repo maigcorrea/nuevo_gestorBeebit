@@ -26,6 +26,7 @@ import { UpdateTaskStaffUseCase } from './application/use-cases/update-task-staf
 import { DeleteTaskStaffUseCase } from './application/use-cases/delete-task-staff.use-case';
 import { FindTasksDueTomorrowUseCase } from './application/use-cases/find-tasks-due-tomorrow.use-case';
 import { ExportProjectsToExcelUseCase } from './application/use-cases/export-projects-to-excel.use-case';
+import { ExportProjectsToPDFUseCase } from './application/use-cases/export-project-to-pdf.use-case';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ExportProjectsToExcelUseCase } from './application/use-cases/export-pro
       DeleteTaskStaffUseCase,
       FindTasksDueTomorrowUseCase,
       ExportProjectsToExcelUseCase,
+      ExportProjectsToPDFUseCase,
     ]),
     CaslModule,
     MailQueueModule,
