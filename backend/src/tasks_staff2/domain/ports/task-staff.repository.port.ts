@@ -18,6 +18,6 @@ export abstract class TaskStaffRepositoryPort {
   abstract update(taskStaff: TaskStaff): Promise<TaskStaff>;
   abstract remove(taskStaff: TaskStaff): Promise<void>;
   abstract findTasksDueTomorrow(fecha: string): Promise<{ title: string; deadline: string; email: string }[]>;
-
+  abstract findTaskStaffWithProjectByProjectIds(ids: string[]): Promise<TaskStaffOrmEntity[]>;
 
 }

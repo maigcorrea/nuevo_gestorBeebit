@@ -122,5 +122,17 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
       .where('task.deadline = :fecha', { fecha })
       .getRawMany();
   }
+
+
+
+  async findTaskStaffWithProjectByProjectIds(ids: string[]): Promise<TaskStaffOrmEntity[]> {
+    return this.repo
+      .createQueryBuilder('ts')
+      .leftJoinAndSelect('ts.task', 'task')
+      .leftJoinAndSelect('ts.staff', 'staff')
+      .leftJoinAndSelect('task.associated_project', 'project')
+      .where('project.id IN (:...ids)', { ids })
+      .getMany();
+  }  
   
 }

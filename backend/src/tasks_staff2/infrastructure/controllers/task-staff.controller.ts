@@ -8,7 +8,8 @@ import {
     Param,
     ParseUUIDPipe,
     Patch,
-    Delete
+    Delete,
+    Res
   } from '@nestjs/common';
   import {
     ApiBearerAuth,
@@ -19,6 +20,7 @@ import {
   } from '@nestjs/swagger';
   import { Request } from 'express';
   import { AuthGuard } from '@nestjs/passport';
+  import { Response } from 'express';
   
   import { CreateTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/create-task-staff.use-case';
   import { CreateTaskStaffDto } from '../dto/create-task-staff.dto';
@@ -50,6 +52,8 @@ import {
 
 
   import { FindTasksDueTomorrowUseCase } from 'src/tasks_staff2/application/use-cases/find-tasks-due-tomorrow.use-case';
+
+  import { ExportProjectsToExcelUseCase } from 'src/tasks_staff2/application/use-cases/export-projects-to-excel.use-case';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -64,6 +68,7 @@ import {
       private readonly updateTaskStaffUseCase: UpdateTaskStaffUseCase,
       private readonly deleteTaskStaffUseCase: DeleteTaskStaffUseCase,
       private readonly findTasksDueTomorrowUseCase: FindTasksDueTomorrowUseCase,
+      private readonly exportProjectsToExcelUseCase: ExportProjectsToExcelUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -232,5 +237,28 @@ import {
       return this.findTasksDueTomorrowUseCase.execute();
     }
 
+
+
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @Post('export-excel')
+    @ApiBearerAuth('jwt')
+    @ApiOperation({ summary: 'Exportar proyectos seleccionados a Excel' })
+    @ApiResponse({ status: 200, description: 'Archivo Excel generado correctamente' })
+    async exportToExcel(
+      @Body('ids') ids: string[],
+      @Res() res: Response,
+      @Req() req: Request,
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      const buffer = await this.exportProjectsToExcelUseCase.execute(ids, ability);
+  
+      res.set({
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': 'attachment; filename=proyectos.xlsx',
+      });
+  
+      res.end(buffer);
+    }
   }
   
