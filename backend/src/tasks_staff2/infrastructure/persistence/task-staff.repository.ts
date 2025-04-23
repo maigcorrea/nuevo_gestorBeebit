@@ -79,4 +79,25 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
   async find(options: FindManyOptions<TaskStaffOrmEntity>): Promise<TaskStaffOrmEntity[]> {
     return this.repo.find(options);
   }
+
+
+  async findOneByTaskAndStaff(taskId: string, staffId: string): Promise<TaskStaffOrmEntity | null> {
+    return this.repo.findOne({
+      where: {
+        task: { id: taskId },
+        staff: { id: staffId },
+      },
+      relations: ['task', 'staff'],
+    });
+  }
+
+
+
+
+  async update(taskStaff: TaskStaff): Promise<TaskStaff> {
+    const ormEntity = TaskStaffMapper.toOrmEntity(taskStaff);
+    const updated = await this.repo.save(ormEntity);
+    return TaskStaffMapper.toDomainEntity(updated);
+  }
+  
 }

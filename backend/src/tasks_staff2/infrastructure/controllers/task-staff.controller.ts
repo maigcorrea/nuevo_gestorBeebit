@@ -7,6 +7,7 @@ import {
     Get,
     Param,
     ParseUUIDPipe,
+    Patch,
   } from '@nestjs/common';
   import {
     ApiBearerAuth,
@@ -39,6 +40,9 @@ import {
 
   import { ProjectByUserResponseDto } from '../dto/project-by-user-response.dto';
   import { GetProjectsByUserUseCase } from 'src/tasks_staff2/application/use-cases/get-projects-by-user.use-case';
+
+  import { UpdateTaskStaffUseCase } from 'src/tasks_staff2/application/use-cases/update-task-staff.use-case';
+  import { UpdateTaskStaffDto } from '../dto/update-task-staff.dto';
   
   @ApiTags('Task-Staff')
   @Controller('task-staff')
@@ -50,6 +54,7 @@ import {
       private readonly findTaskStaffGroupedByTaskUseCase: FindTaskStaffGroupedByTaskUseCase,
       private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
       private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
+      private readonly updateTaskStaffUseCase: UpdateTaskStaffUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -130,26 +135,44 @@ import {
 
 
     @ApiBearerAuth('jwt')
-  @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-  @CheckAbilities({ action: 'read', subject: TaskStaff })
-  @Get('proyectos/:id')
-  @ApiOperation({ summary: 'Obtener proyectos asignados al usuario' })
-  @ApiResponse({
-    status: 200,
-    description: 'Listado de proyectos',
-    type: ProjectByUserResponseDto,
-    isArray: true,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'No se encontraron tareas para este usuario',
-  })
-  async getProjectsByUser(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Req() req: Request,
-  ): Promise<ProjectByUserResponseDto[]> {
-    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
-    return this.getProjectsByUserUseCase.execute(id, ability);
-  }
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @Get('proyectos/:id')
+    @ApiOperation({ summary: 'Obtener proyectos asignados al usuario' })
+    @ApiResponse({
+      status: 200,
+      description: 'Listado de proyectos',
+      type: ProjectByUserResponseDto,
+      isArray: true,
+    })
+    @ApiResponse({
+      status: 404,
+      description: 'No se encontraron tareas para este usuario',
+    })
+    async getProjectsByUser(
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Req() req: Request,
+    ): Promise<ProjectByUserResponseDto[]> {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      return this.getProjectsByUserUseCase.execute(id, ability);
+    }
+
+
+
+
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: TaskStaff })
+    @Patch() // No necesitas :id, ya que actualizas usando task + staff como claves
+    @ApiOperation({ summary: 'Actualizar relación tarea-empleado (por combinación de IDs)' })
+    @ApiResponse({ status: 200, description: 'Relación actualizada con éxito' })
+    @ApiResponse({ status: 404, description: 'Relación no encontrada' })
+    updateByPair(
+      @Body() dto: UpdateTaskStaffDto,
+      @Req() req: Request
+    ) {
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+      return this.updateTaskStaffUseCase.execute(dto, ability);
+    }
   }
   

@@ -14,4 +14,8 @@ export abstract class TaskStaffRepositoryPort {
   abstract exists(taskId: string, staffId: string): Promise<boolean>;
   abstract findWithRelations(): Promise<TaskStaffOrmEntity[]>;
   abstract find(options: FindManyOptions<TaskStaffOrmEntity>): Promise<TaskStaffOrmEntity[]>;
+  abstract findOneByTaskAndStaff(taskId: string, staffId: string): Promise<TaskStaffOrmEntity | null>;
+  abstract update(taskStaff: TaskStaff): Promise<TaskStaff>;
+
+
 }
