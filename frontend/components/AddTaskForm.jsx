@@ -157,7 +157,7 @@ const AddTaskForm = () => {
         const body = {
             title,
             description,
-            associated_project,
+            associated_project_id: associated_project,
             priority: priority.code,
             ...(start_date !== '' && { start_date })
           };
@@ -173,11 +173,11 @@ const AddTaskForm = () => {
         });
     
         const taskData = await res.json();
-        console.log(taskData);
+        console.log('Respuesta backend:', taskData);
 
         // Asignar el empleado si se ha seleccionado uno
         if (staff.length > 0 && taskData.id) {
-            const assignRes = await fetch('http://localhost:3000/tasks_staff', {
+            const assignRes = await fetch('http://localhost:3000/task-staff', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({

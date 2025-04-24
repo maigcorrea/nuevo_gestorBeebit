@@ -56,6 +56,8 @@ import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-e
     ) {}
   
     @Post()
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'create', subject: Task })
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Crear tarea' })
     @ApiResponse({ status: 201, description: 'Tarea creada correctamente', type: TaskResponseDto })
