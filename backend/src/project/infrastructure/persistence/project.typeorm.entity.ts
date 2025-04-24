@@ -31,7 +31,7 @@ export class ProjectTypeOrmEntity {
   })
   status: ProjectStatus;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   document_url: string | null;
 
   @OneToMany(() => TaskTypeOrmEntity, (task) => task.associated_project)
