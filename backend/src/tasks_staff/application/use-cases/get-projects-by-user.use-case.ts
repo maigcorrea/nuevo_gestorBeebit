@@ -7,10 +7,13 @@ import {
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
   import { ProjectByUserResponseDto } from '../../infrastructure/dto/project-by-user-response.dto';
   import { ProjectStatus } from 'src/project/domain/entities/project.entity';
+  import { Inject } from '@nestjs/common';
+  import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
   
   @Injectable()
   export class GetProjectsByUserUseCase {
     constructor(
+      @Inject(TASK_STAFF_REPOSITORY)
       private readonly taskStaffRepo: TaskStaffRepositoryPort,
     ) {}
   

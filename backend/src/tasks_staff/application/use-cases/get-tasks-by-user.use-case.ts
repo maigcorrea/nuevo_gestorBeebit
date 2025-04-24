@@ -7,10 +7,14 @@ import {
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
   import { AppAbility } from 'src/casl/casl-ability.factory';
   import { TaskByUserResponseDto } from 'src/tasks_staff/infrastructure/dto/task-by-user-response.dto';
+  import { Inject } from '@nestjs/common';
+  import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
   
   @Injectable()
   export class GetTasksByUserUseCase {
-    constructor(private readonly taskStaffRepo: TaskStaffRepositoryPort) {}
+    constructor(
+      @Inject(TASK_STAFF_REPOSITORY)
+      private readonly taskStaffRepo: TaskStaffRepositoryPort) {}
   
     async execute(id: string, ability: AppAbility): Promise<TaskByUserResponseDto[]> {
       console.log('Buscando tareas para ID:', id);

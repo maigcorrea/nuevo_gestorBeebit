@@ -2,9 +2,15 @@ import { Processor, Process } from '@nestjs/bull';
 import { Job } from 'bull';
 import { MailService } from '../mail.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { MessageOrmEntity } from 'src/messages/infrastructure/persistence/message.orm-entity'; // ✅ entidad de persistencia
 import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
+import { MESSAGE_REPOSITORY } from 'src/messages/domain/token/message-repository.token';
+import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
+import { MessageRepositoryPort } from 'src/messages/domain/ports/message.repository.port';
+import { StaffRepositoryPort } from 'src/staff/domain/ports/staff.repository.port';
+import { Message } from 'src/messages/domain/entities/messages.entity';
 
 
 //Escucha los eventos de la cola. El código que se ejecuta cuando la cola lo dispare.
@@ -12,10 +18,10 @@ import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-e
 @Processor('mail-queue') // Este decorador lo convierte en un worker para esa cola
 export class MailProcessor {
   constructor(private readonly mailService: MailService,
-    @InjectRepository(MessageOrmEntity)
-    private readonly messageRepository: Repository<MessageOrmEntity>,
-    @InjectRepository(StaffOrmEntity)
-    private readonly staffRepository: Repository<StaffOrmEntity>,
+    @Inject(MESSAGE_REPOSITORY)
+    private readonly messageRepository: MessageRepositoryPort,
+    @Inject(STAFF_REPOSITORY)
+    private readonly staffRepository: StaffRepositoryPort,
   ) {}
 
   @Process('send-password-reset')
@@ -48,8 +54,8 @@ async handleSendMail(job: Job<{ to: string; subject: string; text: string; sende
     await this.mailService.sendMail({ to, subject, text });
   
     //Obtener entidades sender y receiver
-    const sender = await this.staffRepository.findOneBy({ id: senderId });
-    const receiver = await this.staffRepository.findOneBy({ email: to });
+    const sender = await this.staffRepository.findById(senderId);
+    const receiver = await this.staffRepository.findByEmail(to);
   
     if (!sender || !receiver) {
       console.warn('No se pudo guardar el mensaje: usuario no encontrado');
@@ -58,12 +64,14 @@ async handleSendMail(job: Job<{ to: string; subject: string; text: string; sende
     }
   
     //guardar el mensaje en la bd
-    const message = this.messageRepository.create({
-      sender,
-      receiver,
+    const message = new Message(
+      crypto.randomUUID(),
+      sender.id,
+      receiver.id,
       subject,
       text,
-    });
+      new Date()
+    );
   
     await this.messageRepository.save(message);
   

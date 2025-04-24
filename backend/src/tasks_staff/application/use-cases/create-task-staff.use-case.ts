@@ -2,6 +2,7 @@ import {
     ConflictException,
     ForbiddenException,
     Injectable,
+    Inject,
     NotFoundException,
   } from '@nestjs/common';
   import { AppAbility } from 'src/casl/casl-ability.factory';
@@ -12,12 +13,18 @@ import {
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
   import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
+import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
+import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
+import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
   
   @Injectable()
   export class CreateTaskStaffUseCase {
     constructor(
+      @Inject(TASK_REPOSITORY)
       private readonly taskRepo: TaskRepositoryPort,
+      @Inject(STAFF_REPOSITORY)
       private readonly staffRepo: StaffRepositoryPort,
+      @Inject(TASK_STAFF_REPOSITORY)
       private readonly taskStaffRepo: TaskStaffRepositoryPort,
       private readonly mailQueueService: MailQueueService,
     ) {}

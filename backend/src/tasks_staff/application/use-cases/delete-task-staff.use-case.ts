@@ -7,10 +7,13 @@ import {
   import { DeleteTaskStaffInput } from 'src/tasks_staff/domain/interfaces/delete-task-staff.input';
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
   import { TaskStaffMapper } from 'src/tasks_staff/infrastructure/mappers/task-staff.mapper';
+  import { Inject } from '@nestjs/common';
+  import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
 
   @Injectable()
   export class DeleteTaskStaffUseCase {
     constructor(
+      @Inject(TASK_STAFF_REPOSITORY)
       private readonly taskStaffRepo: TaskStaffRepositoryPort,
     ) {}
   

@@ -3,10 +3,14 @@ import { AppAbility } from 'src/casl/casl-ability.factory';
 import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
 import PDFDocument from 'pdfkit';
 import { PassThrough } from 'stream';
+import { Inject } from '@nestjs/common';
+import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
 
 @Injectable()
 export class ExportProjectsToPDFUseCase {
-  constructor(private readonly taskStaffRepo: TaskStaffRepositoryPort) {}
+  constructor(
+    @Inject(TASK_STAFF_REPOSITORY)
+    private readonly taskStaffRepo: TaskStaffRepositoryPort) {}
 
   async execute(ids: string[], ability: AppAbility): Promise<Buffer> {
     const relaciones = await this.taskStaffRepo.findTaskStaffWithProjectByProjectIds(ids);

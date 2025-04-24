@@ -12,10 +12,14 @@ import { SendMessageUseCase } from './application/use-cases/send-message.use-cas
 import { FindSentMessagesByUserUseCase } from './application/use-cases/find-sent-messages-by-user.use-case';
 import { FindReceivedMessagesByUserUseCase } from './application/use-cases/find-received-messages-by-user.use-case';
 
+import { forwardRef } from '@nestjs/common';
+import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([MessageOrmEntity]),
-    BullModule.registerQueue({ name: 'mailQueue' }),
+    BullModule.registerQueue({ name: 'mail-queue' }),
+    forwardRef(() => MailQueueModule),
   ],
   controllers: [MessageController],
   providers: [
@@ -28,5 +32,6 @@ import { FindReceivedMessagesByUserUseCase } from './application/use-cases/find-
     FindSentMessagesByUserUseCase,
     FindReceivedMessagesByUserUseCase,
   ],
+  exports: [MESSAGE_REPOSITORY],
 })
 export class MessagesModule {}

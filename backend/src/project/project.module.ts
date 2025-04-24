@@ -18,10 +18,12 @@ import { CheckProjectTitleExistsUseCase } from './application/use-cases/check-pr
 import { TaskRepository } from 'src/task/infrastructure/persistence/task.repository';
 import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 import { PROJECT_REPOSITORY } from './domain/token/project-repository.token';
+import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProjectTypeOrmEntity]),
+    TypeOrmModule.forFeature([TaskTypeOrmEntity]),
     MinioModule,
     CaslModule,
   ],

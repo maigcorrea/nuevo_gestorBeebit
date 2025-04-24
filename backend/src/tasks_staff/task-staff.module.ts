@@ -16,7 +16,6 @@ import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
 import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
-import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
 import { FindAllTaskStaffUseCase } from './application/use-cases/find-all-task-staff.use-case';
 import { FindTaskStaffGroupedByTaskUseCase } from './application/use-cases/find-grouped-by-task.use-case';
 import { GetTasksByUserUseCase } from './application/use-cases/get-tasks-by-user.use-case';
@@ -26,6 +25,9 @@ import { DeleteTaskStaffUseCase } from './application/use-cases/delete-task-staf
 import { FindTasksDueTomorrowUseCase } from './application/use-cases/find-tasks-due-tomorrow.use-case';
 import { ExportProjectsToExcelUseCase } from './application/use-cases/export-projects-to-excel.use-case';
 import { ExportProjectsToPDFUseCase } from './application/use-cases/export-project-to-pdf.use-case';
+import { TASK_STAFF_REPOSITORY } from './domain/token/tasks-staff-repository.token';
+import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
+import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
 
 @Module({
   imports: [
@@ -53,12 +55,12 @@ import { ExportProjectsToPDFUseCase } from './application/use-cases/export-proje
 
     // Repositorio principal de TaskStaff
     {
-      provide: TaskStaffRepositoryPort,
+      provide: TASK_STAFF_REPOSITORY,
       useClass: TaskStaffRepository,
     },
     // Inyectamos también los de Task y Staff
     {
-      provide: TaskRepositoryPort,
+      provide: TASK_REPOSITORY,
       useClass: TaskRepository,
     },
     {
@@ -67,6 +69,6 @@ import { ExportProjectsToPDFUseCase } from './application/use-cases/export-proje
     },
     MailQueueService,
   ],
-  exports: [FindTasksDueTomorrowUseCase]
+  exports: [FindTasksDueTomorrowUseCase, TASK_STAFF_REPOSITORY]
 })
 export class TaskStaffModule {}

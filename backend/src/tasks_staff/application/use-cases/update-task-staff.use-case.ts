@@ -12,12 +12,19 @@ import {
   import { TaskMapper } from 'src/task/infrastructure/mappers/task.mapper';
   import { StaffMapper } from 'src/staff/infrastructure/mappers/staff.mapper';
   import { TaskStaffMapper } from 'src/tasks_staff/infrastructure/mappers/task-staff.mapper';
+  import { Inject } from '@nestjs/common';
+  import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
+  import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
+  import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
   
   @Injectable()
   export class UpdateTaskStaffUseCase {
     constructor(
+      @Inject(TASK_STAFF_REPOSITORY)
       private readonly taskStaffRepo: TaskStaffRepositoryPort,
+      @Inject(TASK_REPOSITORY)
       private readonly taskRepo: TaskRepositoryPort,
+      @Inject(STAFF_REPOSITORY)
       private readonly staffRepo: StaffRepositoryPort,
     ) {}
   

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { Project } from 'src/project/domain/entities/project.entity';
@@ -6,16 +6,20 @@ import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/t
 import { FindTasksDueTomorrowUseCase } from 'src/tasks_staff/application/use-cases/find-tasks-due-tomorrow.use-case';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
+import { ProjectRepositoryPort } from 'src/project/domain/ports/project.repository.port';
+import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
+import { TaskStaffRepositoryPort } from 'src/tasks_staff/domain/ports/task-staff.repository.port';
 
 @Injectable()
 export class TaskSchedulerService {
   private readonly logger = new Logger(TaskSchedulerService.name);
 
   constructor(
-    @InjectRepository(Project)
-    private readonly projectRepo: Repository<Project>,
-    @InjectRepository(TaskStaffOrmEntity) 
-    private readonly taskStaffRepo: Repository<TaskStaffOrmEntity>,
+    @Inject(PROJECT_REPOSITORY)
+    private readonly projectRepo: ProjectRepositoryPort,
+    @Inject(TASK_STAFF_REPOSITORY)
+    private readonly taskStaffRepo: TaskStaffRepositoryPort,
     private readonly mailQueueService: MailQueueService,
     private readonly findTasksDueTomorrow: FindTasksDueTomorrowUseCase,
   ) {}
@@ -58,11 +62,7 @@ export class TaskSchedulerService {
       tomorrow.setDate(tomorrow.getDate() + 1);
       const yyyyMMdd = tomorrow.toISOString().split('T')[0]; // "2025-04-05"
   
-      const projects = await this.projectRepo.find({
-        where: {
-          deadline: yyyyMMdd as any,
-        },
-      });
+      const projects = await this.projectRepo.findProjectsDueOn(yyyyMMdd);
   
       for (const project of projects) {
         this.logger.warn(`⚠️ Proyecto "${project.title}" tiene deadline mañana.`);

@@ -9,7 +9,7 @@ import { MessageRepositoryPort } from 'src/messages/domain/ports/message.reposit
 @Injectable()
 export class SendMessageUseCase {
   constructor(
-    @InjectQueue('mailQueue')
+    @InjectQueue('mail-queue')
     private readonly mailQueue: Queue,
     @Inject(MESSAGE_REPOSITORY)
      private readonly repository: MessageRepositoryPort

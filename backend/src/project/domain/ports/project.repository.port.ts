@@ -13,4 +13,5 @@ export abstract class ProjectRepositoryPort {
   abstract orderByDeadline(): Promise<Project[]>;
   abstract existsByTitle(title: string): Promise<boolean>;
   abstract save(project: Project): Promise<void>;
+  abstract findProjectsDueOn(date: string): Promise<Project[]>;
 }

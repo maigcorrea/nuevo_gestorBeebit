@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
+import { Inject } from '@nestjs/common';
+import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
 
 @Injectable()
 export class FindTasksDueTomorrowUseCase {
-  constructor(private readonly taskStaffRepo: TaskStaffRepositoryPort) {}
+  constructor(
+    @Inject(TASK_STAFF_REPOSITORY)
+    private readonly taskStaffRepo: TaskStaffRepositoryPort) {}
 
   async execute(): Promise<{ title: string; deadline: string; email: string }[]> {
     const tomorrow = new Date();

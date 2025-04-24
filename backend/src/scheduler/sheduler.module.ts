@@ -6,9 +6,10 @@ import { TaskModule } from 'src/task/task.module';
 import { MailQueueModule } from '../mail/mail-queue/mail-queue.module'; // si vas a usar la cola de mails
 import { ProjectTypeOrmEntity } from 'src/project/infrastructure/persistence/project.typeorm.entity';
 import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
+import { ProjectModule } from 'src/project/project.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProjectTypeOrmEntity, TaskStaffOrmEntity]),TaskStaffModule, MailQueueModule, TaskModule], // si necesitas acceder a tareas y enviar correos
+  imports: [TypeOrmModule.forFeature([ProjectTypeOrmEntity, TaskStaffOrmEntity]),TaskStaffModule, MailQueueModule, TaskModule, ProjectModule], // si necesitas acceder a tareas y enviar correos
   providers: [TaskSchedulerService],
 })
 export class SchedulerModule {}

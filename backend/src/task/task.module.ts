@@ -15,11 +15,13 @@ import { UpdateStatusAndPriorityUseCase } from './application/use-cases/update-s
 import { TASK_REPOSITORY } from './domain/token/task-repository.token';
 import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
 import { ProjectRepository } from 'src/project/infrastructure/persistence/project.repository';
+import { ProjectModule } from 'src/project/project.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskTypeOrmEntity]),
     CaslModule,
+    ProjectModule,
   ],
   controllers: [TaskController],
   providers: [
@@ -33,10 +35,6 @@ import { ProjectRepository } from 'src/project/infrastructure/persistence/projec
     {
       provide: TASK_REPOSITORY,
       useClass: TaskRepository,
-    },
-    {
-      provide: PROJECT_REPOSITORY,
-      useClass: ProjectRepository,
     },
     
   ],

@@ -143,6 +143,17 @@ export class ProjectRepository implements ProjectRepositoryPort {
     const entity = ProjectMapper.toOrmEntity(project);
     await this.ormRepo.save(entity);
   }
+
+
+
+  async findProjectsDueOn(dateStr: string): Promise<Project[]> {
+    const date = new Date(dateStr);
+
+    const projects = await this.ormRepo.find({
+      where: { deadline: date },
+    });
+    return projects.map(ProjectMapper.toDomainEntity);
+  }
   
   
 }
