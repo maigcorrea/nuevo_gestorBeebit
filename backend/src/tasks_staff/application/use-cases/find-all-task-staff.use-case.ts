@@ -14,7 +14,7 @@ export class FindAllTaskStaffUseCase {
   async execute(ability: AppAbility): Promise<TaskStaffResponseDto[]> {
     const relaciones: TaskStaffOrmEntity[] = await this.taskStaffRepo.findWithRelations();
 
-    if (!ability.can('read', TaskStaff)) {
+    if (!ability.can('read', TaskStaffOrmEntity)) {
       throw new ForbiddenException('No tienes permiso para acceder a las relaciones tarea-empleado');
     }
 

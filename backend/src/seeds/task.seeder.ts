@@ -37,7 +37,12 @@ export class TaskSeeder implements Seeder {
       tasks.push({
         title: faker.lorem.words(3),
         description: faker.lorem.sentence(),
-        associated_project: project,
+        associated_project: {
+          id: project.id,
+          last_update: project.last_update ?? new Date,
+          status: project.status,
+          deadline: project.deadline ?? undefined,
+        },
         start_date: startDate,
         end_date: status === TaskStatus.COMPLETED ? faker.date.soon({ days: 5, refDate: startDate }) : null,
         completed: status === TaskStatus.COMPLETED,

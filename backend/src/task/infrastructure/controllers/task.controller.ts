@@ -39,6 +39,7 @@ import {
   import { Task } from 'src/task/domain/entities/task.entity';
   import { UpdateTaskStatusPriorityDto } from '../dto/update-task-status-priority.dto';
   import { UpdateStatusAndPriorityUseCase } from 'src/task/application/use-cases/update-status-and-priority.use-case';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 
   @ApiTags('Tasks')
   @Controller('tasks')
@@ -60,7 +61,7 @@ import {
     @ApiResponse({ status: 201, description: 'Tarea creada correctamente', type: TaskResponseDto })
     @ApiResponse({ status: 400, description: 'Datos inválidos' })
     async create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request): Promise<TaskResponseDto> {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
   
       const task = await this.createTaskUseCase.execute(createTaskDto, ability);
   
@@ -79,7 +80,7 @@ import {
     @ApiResponse({ status: 200, description: 'Listado de tareas', type: [TaskResponseDto] })
     @ApiResponse({ status: 404, description: 'No se encontraron tareas' })
     async findAll(@Req() req: Request): Promise<TaskResponseDto[]> {
-        const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
 
         const tasks = await this.findAllTasksUseCase.execute(ability);
 
@@ -103,7 +104,7 @@ import {
     @Param('id_proyecto', new ParseUUIDPipe()) id_proyecto: string,
     @Req() req: Request,
     ): Promise<TaskResponseDto[]> {
-    const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
 
     const tasks = await this.findTasksByProjectUseCase.execute(id_proyecto, ability);
 
@@ -126,7 +127,7 @@ import {
       @Body() updateDto: UpdateTaskDto,
       @Req() req: Request,
     ): Promise<{ message: string }> {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.updateTaskUseCase.execute(id, updateDto, ability);
     }
 
@@ -146,7 +147,7 @@ import {
       @Body() dto: UpdateTaskStatusDto,
       @Req() req: Request,
     ) {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.updateTaskStatusUseCase.execute(id, dto, ability);
     }
 
@@ -166,7 +167,7 @@ import {
       @Param('id', new ParseUUIDPipe()) id: string,
       @Req() req: Request
     ) {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.deleteTaskUseCase.execute(id, ability);
     }
 
@@ -184,7 +185,7 @@ import {
       @Body() dto: UpdateTaskStatusPriorityDto,
       @Req() req: Request,
     ) {
-      const ability = this.caslAbilityFactory.createForUser(req.user as Staff);
+      const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       const updatedTask = await this.updateStatusAndPriorityUseCase.execute(
         id,
         dto.status,

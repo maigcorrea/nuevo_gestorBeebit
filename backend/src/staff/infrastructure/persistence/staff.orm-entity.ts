@@ -6,7 +6,7 @@ import {
     OneToMany,
   } from 'typeorm';
   import { StaffType } from '../../domain/entities/staff.entity';
-  import { Message } from 'src/messages/domain/entities/messages.entity'; // o ajusta la ruta según tu estructura
+  import { MessageOrmEntity } from 'src/messages/infrastructure/persistence/message.orm-entity'; // o ajusta la ruta según tu estructura
   
   @Entity('staff')
   export class StaffOrmEntity {
@@ -44,7 +44,7 @@ import {
     @Column({ nullable: true })
     profileImage: string | null;
   
-    @OneToMany(() => Message, (message) => message.sender)
-    sentMessages: Message[];
+    @OneToMany(() => MessageOrmEntity, (message) => message.sender)
+    sentMessages: MessageOrmEntity[];
   }
   

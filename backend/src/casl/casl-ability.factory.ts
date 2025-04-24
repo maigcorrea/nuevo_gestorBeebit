@@ -13,7 +13,7 @@ import { mongoQueryMatcher } from '@casl/ability';
 
 import { ProjectTypeOrmEntity as Project } from 'src/project/infrastructure/persistence/project.typeorm.entity';
 import { Task } from 'src/task/infrastructure/persistence/task.typeorm.entity';
-import { StaffOrmEntity as Staff} from 'src/staff/infrastructure/persistence/staff.orm-entity';
+import { StaffOrmEntity as Staff, StaffOrmEntity} from 'src/staff/infrastructure/persistence/staff.orm-entity';
 import { TaskStaffOrmEntity as TaskStaff} from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
@@ -25,7 +25,7 @@ export type AppAbility = PureAbility<[Actions, Subjects]>;
 
 @Injectable()
 export class CaslAbilityFactory {
-  createForUser(user: Staff) {
+  createForUser(user: StaffOrmEntity) {
     console.log('hola');
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(PureAbility as AbilityClass<AppAbility>);
     console.log('[CASL] Usuario recibido:', user);

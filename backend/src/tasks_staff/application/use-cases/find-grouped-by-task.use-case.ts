@@ -3,6 +3,7 @@ import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repositor
 import { AppAbility } from 'src/casl/casl-ability.factory';
 import { TaskStaff } from '../../domain/entities/task-staff.entity';
 import { TaskWithStaffResponseDto } from 'src/tasks_staff/infrastructure/dto/task-with-staff-response.dto';
+import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
 @Injectable()
 export class FindTaskStaffGroupedByTaskUseCase {
   constructor(
@@ -12,7 +13,7 @@ export class FindTaskStaffGroupedByTaskUseCase {
   async execute(ability: AppAbility): Promise<TaskWithStaffResponseDto[]> {
     const relaciones = await this.taskStaffRepo.findWithRelations();
 
-    if (!ability.can('read', TaskStaff)) {
+    if (!ability.can('read', TaskStaffOrmEntity)) {
       throw new ForbiddenException('No tienes permiso para acceder a las relaciones tarea-empleado');
     }
 

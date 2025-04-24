@@ -1,5 +1,6 @@
 import { Message } from 'src/messages/domain/entities/messages.entity';
 import { MessageOrmEntity } from '../persistence/message.orm-entity';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 
 export class MessageMapper {
   static toDomainEntity(ormEntity: MessageOrmEntity): Message {
@@ -21,8 +22,8 @@ export class MessageMapper {
     orm.sentAt = domainEntity.sentAt;
 
     // Creamos los objetos de StaffOrmEntity con solo el ID, suficiente para relaciones
-    orm.sender = { id: domainEntity.senderId } as any;
-    orm.receiver = { id: domainEntity.receiverId } as any;
+    orm.sender = { id: domainEntity.senderId } as StaffOrmEntity;
+    orm.receiver = { id: domainEntity.receiverId } as StaffOrmEntity;
 
     return orm;
   }

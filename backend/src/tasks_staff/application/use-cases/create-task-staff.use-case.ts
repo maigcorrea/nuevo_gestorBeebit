@@ -11,6 +11,7 @@ import {
   import { StaffRepositoryPort } from 'src/staff/domain/ports/staff.repository.port';
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
   import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
   
   @Injectable()
   export class CreateTaskStaffUseCase {
@@ -25,7 +26,7 @@ import {
       const task = await this.taskRepo.findById(dto.id_task);
       if (!task) throw new NotFoundException('Tarea no encontrada');
   
-      if (!ability.can('create', task)) {
+      if (!ability.can('create', TaskTypeOrmEntity)) {
         throw new ForbiddenException('No tienes permiso para crear nuevas relaciones tarea-empleados');
       }
   

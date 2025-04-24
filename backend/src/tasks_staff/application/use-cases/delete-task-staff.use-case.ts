@@ -7,7 +7,7 @@ import {
   import { DeleteTaskStaffInput } from 'src/tasks_staff/domain/interfaces/delete-task-staff.input';
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
   import { TaskStaffMapper } from 'src/tasks_staff/infrastructure/mappers/task-staff.mapper';
-  
+
   @Injectable()
   export class DeleteTaskStaffUseCase {
     constructor(
@@ -21,14 +21,16 @@ import {
         throw new NotFoundException('Relación no encontrada');
       }
 
-      // 🟩 Mapear a entidad de dominio
-        const relacionDominio = TaskStaffMapper.toDomainEntity(relacion);
-  
-      if (!ability.can('delete', relacionDominio)) {
+      
+       // CASL necesita la entidad ORM
+      if (!ability.can('delete', relacion)) {
         throw new ForbiddenException('No tienes permiso para eliminar esta relación');
       }
   
-      await this.taskStaffRepo.remove(relacionDominio);
+        //  El repositorio espera la entidad de dominio
+        const relacionDominio = TaskStaffMapper.toDomainEntity(relacion);
+
+        await this.taskStaffRepo.remove(relacionDominio);
       return 'Relación eliminada correctamente';
     }
   }

@@ -1,25 +1,25 @@
 import { Seeder } from 'nestjs-seeder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Task } from 'src/task/domain/entities/task.entity';
-import { Staff } from 'src/staff/domain/entities/staff.entity';
-import { TaskStaff } from 'src/tasks_staff/domain/entities/task-staff.entity';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
+import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
 import { faker } from '@faker-js/faker';
+import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
 
 
 
 export class TaskStaffSeeder implements Seeder {
     constructor(
-      @InjectRepository(TaskStaff)
-      private readonly taskStaffRepository: Repository<TaskStaff>,
-      @InjectRepository(Staff)
-      private readonly staffRepository: Repository<Staff>,
-      @InjectRepository(Task)
-      private readonly taskRepository: Repository<Task>,
+      @InjectRepository(TaskStaffOrmEntity)
+      private readonly taskStaffRepository: Repository<TaskStaffOrmEntity>,
+      @InjectRepository(StaffOrmEntity)
+      private readonly staffRepository: Repository<StaffOrmEntity>,
+      @InjectRepository(TaskTypeOrmEntity)
+      private readonly taskRepository: Repository<TaskTypeOrmEntity>,
     ) {}
   
     async seed(): Promise<any> {
-      const taskStaffData: Partial<TaskStaff>[] = [];
+      const taskStaffData: Partial<TaskStaffOrmEntity>[] = [];
   
       // Obtener algunas tareas y empleados aleatorios
       const tasks = await this.taskRepository.find();

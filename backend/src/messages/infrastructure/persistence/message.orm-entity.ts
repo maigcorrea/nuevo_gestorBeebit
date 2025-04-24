@@ -4,6 +4,7 @@
     Column,
     CreateDateColumn,
     ManyToOne,
+    JoinColumn,
   } from 'typeorm';
 
   import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
@@ -14,6 +15,7 @@
     id: string;
   
     @ManyToOne(() => StaffOrmEntity, staff => staff.sentMessages, { eager: true })
+    @JoinColumn({ name: 'senderId' }) // <-- esto indica la columna FK
     sender: StaffOrmEntity;
   
     @ManyToOne(() => StaffOrmEntity, { eager: true })
@@ -27,5 +29,6 @@
   
     @CreateDateColumn()
     sentAt: Date;
+
   }
   

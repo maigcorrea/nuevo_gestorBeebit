@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Staff } from '../staff/domain/entities/staff.entity';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
@@ -8,8 +9,8 @@ import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Staff)
-    private staffRepo: Repository<Staff>,
+    @InjectRepository(StaffOrmEntity)
+    private staffRepo: Repository<StaffOrmEntity>,
     private jwtService: JwtService,
   ) {}
 
@@ -27,7 +28,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
+  async login(user: StaffOrmEntity) {
     //Crea el payload que se incluirá en el JWT. sub (subject) suele ser el ID del usuario
     const payload = { sub: user.id, email: user.email, type: user.type, profileImage:user.profileImage};
     return {
