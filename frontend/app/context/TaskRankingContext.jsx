@@ -13,7 +13,7 @@ export const TaskRankingProvider = ({ children }) => {
     if (isLoading || !token) return;
     const fetchRanking = async () => {
       try {
-        const res = await fetch('http://localhost:3000/tasks_staff/todo',{
+        const res = await fetch('http://localhost:3000/task-staff/todo',{
           headers:{
               Authorization: `Bearer ${token}`,
           }

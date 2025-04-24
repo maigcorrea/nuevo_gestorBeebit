@@ -15,7 +15,8 @@ const ProjectCalendar = () => {
       const fetchProjects = async () => {
         try {
             const userId = localStorage.getItem('id') // o desde contexto
-            const res = await fetch(`http://localhost:3000/tasks_staff/proyectos/${userId}`, {
+            //console.log(userId);
+            const res = await fetch(`http://localhost:3000/task-staff/proyectos/${userId}`, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
               },

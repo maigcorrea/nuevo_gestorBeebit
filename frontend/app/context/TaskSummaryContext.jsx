@@ -13,10 +13,12 @@ export const TaskSummaryProvider = ({children}) => {
     
         if (!id || !token) return;
         try {
-          const res = await fetch(`http://localhost:3000/tasks_staff/por-usuario/${id}`, {
+          
+          const res = await fetch(`http://localhost:3000/task-staff/por-usuario/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           })
     
+          
           const tasks = await res.json()
           const now = new Date()
           const startOfWeek = new Date(now)
@@ -27,7 +29,9 @@ export const TaskSummaryProvider = ({children}) => {
             return taskDate >= startOfWeek && taskDate <= now
           })
     
-          const completedCount = tasksThisWeek.filter(t => t.status === 'completed').length
+          const completedCount = tasksThisWeek.filter(t => t.status === 'completed').length;
+          console.log("SE VE EL RESUMEN DE TAREAS");
+          console.log('COMPLETED COUNT',completedCount);
     
           setTasksSummary({
             total: tasksThisWeek.length,

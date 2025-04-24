@@ -59,7 +59,7 @@ const TasksTab = () => {
       }
 
       try {
-        const res = await fetch(`http://localhost:3000/tasks_staff/por-usuario/${userId}`, {
+        const res = await fetch(`http://localhost:3000/task-staff/por-usuario/${userId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
