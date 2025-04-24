@@ -176,13 +176,14 @@ const AddTaskForm = () => {
         console.log('Respuesta backend:', taskData);
 
         // Asignar el empleado si se ha seleccionado uno
+        console.log("STAFF SELECCIONADO:", staff)
         if (staff.length > 0 && taskData.id) {
             const assignRes = await fetch('http://localhost:3000/task-staff', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({
                 id_task: taskData.id,
-                id_staff: staff
+                id_staff: staff //Esto es un uuid? o un array de objetos?
             })
         });
   
