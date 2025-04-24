@@ -41,7 +41,7 @@ import {
     @Column({ type: 'timestamp', nullable: true })
     resetTokenExpiry: Date | null;
   
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     profileImage: string | null;
   
     @OneToMany(() => MessageOrmEntity, (message) => message.sender)

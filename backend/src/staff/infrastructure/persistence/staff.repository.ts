@@ -119,4 +119,11 @@ export class StaffRepository implements StaffRepositoryPort {
       entity.profileImage,
     );
   }
+
+  async findByEmailWithPassword(email: string): Promise<StaffOrmEntity | null> {
+    return this.repo.findOne({
+      where: { email },
+      select: ['id', 'name', 'email', 'password', 'type', 'profileImage'],
+    });
+  }
 }

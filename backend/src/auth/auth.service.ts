@@ -1,22 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Staff } from '../staff/domain/entities/staff.entity';
 import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
+import { StaffRepositoryPort } from 'src/staff/domain/ports/staff.repository.port';
+import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(StaffOrmEntity)
-    private staffRepo: Repository<StaffOrmEntity>,
+    @Inject(STAFF_REPOSITORY)
+    private staffRepo: StaffRepositoryPort,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
     //Busca el usuario por email. Solo selecciona los campos necesarios, incluyendo password para compararla.
-    const user = await this.staffRepo.findOne({ where: { email }, select: ['id', 'name', 'email', 'password', 'type', 'profileImage'] });
+    const user = await this.staffRepo.findByEmailWithPassword(email);
+
 
     // Si el usuario existe y la contraseña es válida, elimina la password del objeto con destructuring ({ password, ...result }).
     if (user && await bcrypt.compare(password, user.password)) {

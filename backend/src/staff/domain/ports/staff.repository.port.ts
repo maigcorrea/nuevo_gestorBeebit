@@ -1,4 +1,5 @@
 import { Staff } from '../entities/staff.entity';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 
 export interface StaffRepositoryPort {
   save(staff: Staff): Promise<Staff>;
@@ -11,4 +12,6 @@ export interface StaffRepositoryPort {
   findByToken(token: string): Promise<Staff | null>;
   update(staff: Staff): Promise<Staff>;              // útil para edición o recuperación
   delete(id: string): Promise<void>;                 // si luego añades soft/hard delete
+  findByEmailWithPassword(email: string): Promise<StaffOrmEntity | null>;
+  
 }

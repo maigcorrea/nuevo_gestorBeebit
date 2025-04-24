@@ -27,12 +27,20 @@ import { TareaRepository } from './EjemploArquitectura/infrastructure/persistenc
 
 //Ejemplo arquitectura hexagonal
 import { TaskController } from './EjemploArquitectura/infrastructure/controllers/task.controller';
+import { StaffOrmEntity } from './staff/infrastructure/persistence/staff.orm-entity';
 
+
+
+
+import { MessageOrmEntity } from './messages/infrastructure/persistence/message.orm-entity';
+
+console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 👈 Así estará disponible en toda la app
     }),
+    
     TypeOrmModule.forRoot({
       type: 'postgres', // Tipo de base de datos
       host: 'postgres', // Host de la base de datos (puede ser un contenedor de Docker o una IP)
@@ -40,7 +48,7 @@ import { TaskController } from './EjemploArquitectura/infrastructure/controllers
       username: 'postgres', // Usuario de la base de datos
       password: 'password', // Contraseña de la base de datos
       database: 'test', // Nombre de la base de datos
-      entities: [ Project, Task, Staff, TaskStaff, Message], // Entidades que se utilizarán
+      entities: [ Project, Task, Staff, TaskStaff, Message,  StaffOrmEntity, MessageOrmEntity], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),
