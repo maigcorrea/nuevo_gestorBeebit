@@ -6,10 +6,13 @@ import { Task as TaskSubject } from 'src/task/infrastructure/persistence/task.ty
 import { AppAbility } from '../../../casl/casl-ability.factory';
 import { TaskStatus, TaskPriority } from '../../domain/enums/task.enums';
 import * as crypto from 'crypto';
+import { Inject } from '@nestjs/common';
+import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 
 @Injectable()
 export class CreateTaskUseCase {
   constructor(
+    @Inject(TASK_REPOSITORY)
     private readonly taskRepo: TaskRepositoryPort,
   ) {}
 

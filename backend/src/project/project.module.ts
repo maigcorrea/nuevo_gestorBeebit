@@ -6,7 +6,6 @@ import { ProjectController } from './infrastructure/controllers/project.controll
 import { CreateProjectUseCase } from './application/use-cases/create-project.use-case';
 import { MinioModule } from '../minio/minio.module';
 import { CaslModule } from '../casl/casl.module';
-import { ProjectRepositoryPort } from './domain/ports/project.repository.port';
 import { FindAllProjectsUseCase } from './application/use-cases/find-all-projects.use-case';
 import { FindProjectsByTitleUseCase } from './application/use-cases/find-projects-by-title.use-case';
 import { FindProjectsByStatusUseCase } from './application/use-cases/find-projects-by-status.use-case';
@@ -16,8 +15,9 @@ import { OrderProjectsByDeadlineUseCase } from './application/use-cases/order-pr
 import { DeleteProjectUseCase } from './application/use-cases/delete-project.use-case';
 import { UpdateProjectUseCase } from './application/use-cases/update-project.use-case';
 import { CheckProjectTitleExistsUseCase } from './application/use-cases/check-project-title-exists.use-case';
-import { TaskRepositoryPort } from 'src/task/domain/ports/task.repository.port';
 import { TaskRepository } from 'src/task/infrastructure/persistence/task.repository';
+import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
+import { PROJECT_REPOSITORY } from './domain/token/project-repository.token';
 
 @Module({
   imports: [
@@ -38,13 +38,14 @@ import { TaskRepository } from 'src/task/infrastructure/persistence/task.reposit
     UpdateProjectUseCase,
     CheckProjectTitleExistsUseCase,
     {
-      provide: ProjectRepositoryPort,
+      provide: PROJECT_REPOSITORY,
       useClass: ProjectRepository,
     },
     {
-      provide: TaskRepositoryPort,
+      provide: TASK_REPOSITORY,
       useClass: TaskRepository,
     },
   ],
+  exports: [PROJECT_REPOSITORY],
 })
 export class ProjectModule {}

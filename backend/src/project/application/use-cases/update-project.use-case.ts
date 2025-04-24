@@ -11,11 +11,16 @@ import {
   import { Project as ProjectSubject } from '../../domain/entities/project.entity';  // solo para CASL
   import { TaskRepositoryPort } from 'src/task/domain/ports/task.repository.port';
   import { TaskStatus } from 'src/task/domain/enums/task.enums';
+  import { Inject } from '@nestjs/common';
+import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
+import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
   
   @Injectable()
   export class UpdateProjectUseCase {
     constructor(
+      @Inject(PROJECT_REPOSITORY)
       private readonly projectRepo: ProjectRepositoryPort,
+      @Inject(TASK_REPOSITORY)
       private readonly taskRepo: TaskRepositoryPort, // ← lo añadiremos más adelante
     ) {}
   

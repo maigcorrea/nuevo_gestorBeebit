@@ -4,10 +4,13 @@ import { CreateProjectInput } from 'src/project/domain/interfaces/create-project
 import { Project } from '../../domain/entities/project.entity'; //La de dominio
 import { AppAbility } from '../../../casl/casl-ability.factory';
 import { MinioService } from '../../../minio/minio.service';
+import { Inject } from '@nestjs/common';
+import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
 
 @Injectable()
 export class CreateProjectUseCase {
   constructor(
+    @Inject(PROJECT_REPOSITORY)
     private readonly projectRepo: ProjectRepositoryPort,
     private readonly minioService: MinioService,
   ) {}

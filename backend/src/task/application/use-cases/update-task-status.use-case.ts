@@ -11,11 +11,16 @@ import {
   import { ProjectStatus } from 'src/project/domain/entities/project.entity';
   import { Project } from 'src/project/domain/entities/project.entity';
   import { TaskTypeOrmEntity as TaskSubject } from '../../infrastructure/persistence/task.typeorm.entity';
+  import { Inject } from '@nestjs/common';
+  import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
+  import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
   
   @Injectable()
   export class UpdateTaskStatusUseCase {
     constructor(
+      @Inject(TASK_REPOSITORY)
       private readonly taskRepo: TaskRepositoryPort,
+      @Inject(PROJECT_REPOSITORY)
       private readonly projectRepo: ProjectRepositoryPort,
     ) {}
   

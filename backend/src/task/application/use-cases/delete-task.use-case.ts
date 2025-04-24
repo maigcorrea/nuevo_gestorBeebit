@@ -2,10 +2,14 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { TaskRepositoryPort } from '../../domain/ports/task.repository.port';
 import { AppAbility } from '../../../casl/casl-ability.factory';
 import { TaskTypeOrmEntity as TaskSubject } from '../../infrastructure/persistence/task.typeorm.entity';
+import { Inject } from '@nestjs/common';
+import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 
 @Injectable()
 export class DeleteTaskUseCase {
-  constructor(private readonly taskRepo: TaskRepositoryPort) {}
+  constructor(
+    @Inject(TASK_REPOSITORY)
+    private readonly taskRepo: TaskRepositoryPort) {}
 
   async execute(id: string, ability: AppAbility): Promise<{ message: string }> {
     const task = await this.taskRepo.findByIdWithProject(id);

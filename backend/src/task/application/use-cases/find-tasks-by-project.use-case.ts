@@ -7,10 +7,14 @@ import {
   import { Task } from '../../domain/entities/task.entity';
   import { TaskTypeOrmEntity as TaskSubject } from 'src/task/infrastructure/persistence/task.typeorm.entity';
   import { AppAbility } from '../../../casl/casl-ability.factory';
+  import { Inject } from '@nestjs/common';
+  import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
   
   @Injectable()
   export class FindTasksByProjectUseCase {
-    constructor(private readonly taskRepo: TaskRepositoryPort) {}
+    constructor(
+      @Inject(TASK_REPOSITORY)
+      private readonly taskRepo: TaskRepositoryPort) {}
   
     async execute(projectId: string, ability: AppAbility): Promise<Task[]> {
       const tasks = await this.taskRepo.findByProject(projectId);

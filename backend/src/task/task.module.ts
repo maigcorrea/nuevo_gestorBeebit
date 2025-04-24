@@ -9,11 +9,12 @@ import { CaslModule } from '../casl/casl.module';
 import { FindTasksByProjectUseCase } from './application/use-cases/find-tasks-by-project.use-case';
 import { FindAllTasksUseCase } from './application/use-cases/find-all-tasks.use-case';
 import { UpdateTaskUseCase } from './application/use-cases/update-task.use-case';
-import { ProjectRepositoryPort } from 'src/project/domain/ports/project.repository.port';
-import { ProjectRepository } from 'src/project/infrastructure/persistence/project.repository';
 import { UpdateTaskStatusUseCase } from './application/use-cases/update-task-status.use-case';
 import { DeleteTaskUseCase } from './application/use-cases/delete-task.use-case';
 import { UpdateStatusAndPriorityUseCase } from './application/use-cases/update-status-and-priority.use-case';
+import { TASK_REPOSITORY } from './domain/token/task-repository.token';
+import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
+import { ProjectRepository } from 'src/project/infrastructure/persistence/project.repository';
 
 @Module({
   imports: [
@@ -30,13 +31,15 @@ import { UpdateStatusAndPriorityUseCase } from './application/use-cases/update-s
     DeleteTaskUseCase,
     UpdateStatusAndPriorityUseCase,
     {
-      provide: TaskRepositoryPort,
+      provide: TASK_REPOSITORY,
       useClass: TaskRepository,
     },
     {
-      provide: ProjectRepositoryPort,
+      provide: PROJECT_REPOSITORY,
       useClass: ProjectRepository,
-    }
+    },
+    
   ],
+  exports: [TASK_REPOSITORY],
 })
 export class TaskModule {}
