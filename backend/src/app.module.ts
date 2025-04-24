@@ -35,6 +35,7 @@ import { StaffOrmEntity } from './staff/infrastructure/persistence/staff.orm-ent
 import { MessageOrmEntity } from './messages/infrastructure/persistence/message.orm-entity';
 import { ProjectTypeOrmEntity } from './project/infrastructure/persistence/project.typeorm.entity';
 import { TaskTypeOrmEntity } from './task/infrastructure/persistence/task.typeorm.entity';
+import { TaskStaffOrmEntity } from './tasks_staff/infrastructure/persistence/task-staff.orm-entity';
 
 
 console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
@@ -51,7 +52,7 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
       username: 'postgres', // Usuario de la base de datos
       password: 'password', // Contraseña de la base de datos
       database: 'test', // Nombre de la base de datos
-      entities: [ Project, Task, Staff, TaskStaff, Message,  StaffOrmEntity, MessageOrmEntity, ProjectTypeOrmEntity, TaskTypeOrmEntity], // Entidades que se utilizarán
+      entities: [ Project, Task, Staff, TaskStaff, Message,  StaffOrmEntity, MessageOrmEntity, ProjectTypeOrmEntity, TaskTypeOrmEntity, TaskStaffOrmEntity], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
     }),
