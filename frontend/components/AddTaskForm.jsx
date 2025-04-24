@@ -84,8 +84,16 @@ const AddTaskForm = () => {
                 }
             });
             const dataStaff = await staff.json();
-            console.log("Proyectos recibidos:",dataStaff);
-            setStaffList(dataStaff);
+            console.log("Empleados recibidos:",dataStaff);
+            //setStaffList(dataStaff);
+
+            if (Array.isArray(dataStaff)) {
+                setStaffList(dataStaff);
+              } else if (Array.isArray(dataStaff.staff)) {
+                setStaffList(dataStaff.staff);
+              } else {
+                console.error("⚠️ La respuesta no es un array:", dataStaff);
+              }
         } catch (error) {
             console.error("Error al obtener empleados:", error);
         }

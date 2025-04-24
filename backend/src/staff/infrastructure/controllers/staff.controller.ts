@@ -96,6 +96,19 @@ export class StaffController{
 
 
 
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: StaffOrmEntity })
+    @Get('/all')
+    @ApiOperation({ summary: 'Mostrar todos los empleados' })
+    @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })
+    @ApiResponse({ status: 403, description: 'No tienes permiso para ver los empleados' })
+    async findAll(@Req() req: Request): Promise<StaffResponseDto[]> {
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+        return await this.findAllStaffUseCase.execute(ability);
+    }
+    
+
+
     @UseGuards(AuthGuard('jwt')) // Solo autenticación, sin roles
     @Get(':id')
     @ApiParam({ name: 'id', type: 'string', description: 'ID del empleado (UUID)' })
@@ -108,16 +121,7 @@ export class StaffController{
     }
 
 
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: StaffOrmEntity })
-    @Get('/all')
-    @ApiOperation({ summary: 'Mostrar todos los empleados' })
-    @ApiResponse({ status: 200, description: 'Listado de empleados', type: [StaffResponseDto] })
-    @ApiResponse({ status: 403, description: 'No tienes permiso para ver los empleados' })
-    async findAll(@Req() req: Request): Promise<StaffResponseDto[]> {
-        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
-        return await this.findAllStaffUseCase.execute(ability);
-    }
+    
 
 
 
