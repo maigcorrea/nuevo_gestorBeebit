@@ -9,7 +9,7 @@ export class TaskMapper {
       entity.id,
       entity.title,
       entity.description,
-      entity.associated_project.id, // solo extraemos el ID
+      entity.associated_project.id ?? null, // solo extraemos el ID
       entity.start_date,
       entity.end_date,
       entity.completed,
