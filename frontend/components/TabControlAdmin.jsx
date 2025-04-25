@@ -212,7 +212,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
   
     const endpoint = deleteType === 'project'
       ? `http://localhost:3000/projects/${selectedRow.id}`
-      : `http://localhost:3000/tasks/delete/${selectedRow.id}`;
+      : `http://localhost:3000/tasks/${selectedRow.id}`;
   
     try {
       await fetch(endpoint, {
