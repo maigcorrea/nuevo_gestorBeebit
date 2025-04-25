@@ -23,7 +23,7 @@ const ProjectTab = () => {
   const handleExportarExcel = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:3000/tasks_staff/export-excel', {
+      const res = await fetch('http://localhost:3000/task-staff/export-excel', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -52,7 +52,7 @@ const ProjectTab = () => {
   const handleExportarPDF = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:3000/tasks_staff/export-pdf', {
+      const res = await fetch('http://localhost:3000/task-staff/export-pdf', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
