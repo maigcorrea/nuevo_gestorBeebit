@@ -60,6 +60,7 @@ import { SaveProfileImageUseCase } from 'src/staff/application/use-cases/save-pr
 import { MinioService } from 'src/minio/minio.service';
 import { Express } from 'express';
 import { StaffOrmEntity } from '../persistence/staff.orm-entity';
+import { StaffRepository } from '../persistence/staff.repository';
 
 
 @ApiTags('Staff')
@@ -108,6 +109,26 @@ export class StaffController{
     }
     
 
+    @ApiBearerAuth('jwt')
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'read', subject: 'Staff' })
+    @Get('emails')
+    @ApiOperation({ summary: 'Obtener todos los correos electrónicos de los empleados' })
+    @ApiResponse({
+        status: 200,
+        description: 'Lista de correos electrónicos',
+        schema: {
+            example: ['correo1@example.com', 'correo2@example.com']
+        }
+    })
+    async getAllEmails(@Req() req: Request): Promise<string[]> {
+        console.log('Req.user: ',req.user);
+        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+        const users = await this.findAllStaffUseCase.execute(ability);
+        return users.map(user => user.email);
+    }
+
+
 
     @UseGuards(AuthGuard('jwt')) // Solo autenticación, sin roles
     @Get(':id')
@@ -119,30 +140,10 @@ export class StaffController{
       const staff = await this.findStaffByIdUseCase.execute(id);
       return await this.findStaffByIdUseCase.execute(id);
     }
-
-
     
 
 
 
-
-    @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: StaffOrmEntity })
-    @Get('emails')
-    @ApiOperation({ summary: 'Obtener todos los correos electrónicos de los empleados' })
-    @ApiResponse({
-        status: 200,
-        description: 'Lista de correos electrónicos',
-        schema: {
-            example: ['correo1@example.com', 'correo2@example.com']
-        }
-    })
-    async getAllEmails(@Req() req: Request): Promise<string[]> {
-        const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
-        const users = await this.findAllStaffUseCase.execute(ability);
-        return users.map(user => user.email);
-    }
 
 
 
