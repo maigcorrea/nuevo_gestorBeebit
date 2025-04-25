@@ -86,7 +86,7 @@ const ShowMessages = () => {
             >
               <div className="flex flex-col">
                 <h3 className="text-lg font-semibold text-gray-900">{msg.subject}</h3>
-                <span className="text-sm text-gray-500 mb-2">Para: {msg.receiver.email}</span>
+                <span className="text-sm text-gray-500 mb-2">Para: {msg.receiver?.email || 'Desconocido'}</span>
                 <p className="text-gray-700 line-clamp-3">{msg.text}</p>
               </div>
               <div className="text-sm text-gray-400 whitespace-nowrap pl-4">

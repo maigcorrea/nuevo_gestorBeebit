@@ -20,12 +20,16 @@ export class MessageRepository implements MessageRepositoryPort {
   }
 
   async findAllBySender(senderId: string): Promise<Message[]> {
-    const messages = await this.ormRepo.find({ where: { sender: { id: senderId } } });
+    const messages = await this.ormRepo.find({ 
+      where: { sender: { id: senderId } },
+      relations: ['receiver'],
+    });
     return messages.map(MessageMapper.toDomainEntity);
   }
 
   async findAllByReceiver(receiverId: string): Promise<Message[]> {
-    const messages = await this.ormRepo.find({ where: { receiver: { id: receiverId } } });
+    const messages = await this.ormRepo.find({ 
+      where: { receiver: { id: receiverId } } });
     return messages.map(MessageMapper.toDomainEntity);
   }
 
