@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppAbility } from 'src/casl/casl-ability.factory';
 import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
-import PDFDocument from 'pdfkit';
+import * as PDFDocument from 'pdfkit';
 import { PassThrough } from 'stream';
 import { Inject } from '@nestjs/common';
 import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
