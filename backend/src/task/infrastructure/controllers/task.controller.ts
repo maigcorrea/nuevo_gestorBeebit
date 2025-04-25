@@ -178,7 +178,7 @@ import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-e
     @Patch(':id/update-status-priority')
     @ApiBearerAuth('jwt')
     @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'update', subject: Task })
+    @CheckAbilities({ action: 'update', subject: TaskTypeOrmEntity })
     @ApiOperation({ summary: 'Actualizar el estado y prioridad para una tarea' })
     @ApiResponse({ status: 201, description: 'Tarea modificada con éxito' })
     @ApiResponse({ status: 404, description: 'Tarea no encontrada' })

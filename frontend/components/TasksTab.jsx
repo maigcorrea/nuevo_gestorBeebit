@@ -132,8 +132,12 @@ const TasksTab = () => {
 
 
   //Editar una tarea (Estado y prioridad)
+  console.log("editData.id: ", editData.id);
+  
   const handleUpdateTask = async () => {
     const token = localStorage.getItem('token');
+    console.log(`editData.id (raw): '${editData.id}'`);
+    console.log("Token", token);
     try {
       const res = await fetch(`http://localhost:3000/tasks/${editData.id}/update-status-priority`, {
         method: 'PATCH',
@@ -147,12 +151,21 @@ const TasksTab = () => {
         })
       });
 
-      console.log(editData.status.code);
-      console.log(editData.priority.code);
+      console.log("editData.status.code",editData.status.code);
+      console.log("editData.priority.code", editData.priority.code);
   
-      if (!res.ok) throw new Error('Error al actualizar');
+      if (!res.ok) {
+        const errorText = await res.text(); // 👈 captura el texto de error si existe
+        throw new Error(errorText || 'Error al actualizar');
+      }
   
-      const updated = await res.json();
+      let updated = {};
+
+      try {
+        updated = await res.json(); // Si no hay contenido, no explota
+      } catch (e) {
+        console.warn('No hay contenido en la respuesta');
+      }
   
       // Actualizamos localmente la tarea
       setTareas(prev =>
