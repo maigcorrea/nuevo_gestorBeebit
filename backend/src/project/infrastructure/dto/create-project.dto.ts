@@ -25,6 +25,7 @@ export class CreateProjectDto implements CreateProjectInput {
   deadline?: string;
 
   @ApiProperty({ enum: ProjectStatus, default: ProjectStatus.ACTIVE })
+  @IsOptional()
   @IsEnum(ProjectStatus)
-  status: ProjectStatus;
+  status?: ProjectStatus;
 }

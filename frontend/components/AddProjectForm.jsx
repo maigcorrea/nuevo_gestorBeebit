@@ -31,7 +31,7 @@ const AddProjectForm = () => {
 
     //Validación de título (Si ya existe en la bd)
     const checkTitleExists = async (title) => {
-        const res = await fetch(`http://localhost:3000/projects/titleExists/${title}`);
+        const res = await fetch(`http://localhost:3000/projects/exists/title/${title}`);
         const data = await res.json();
         return data.exists;
     };

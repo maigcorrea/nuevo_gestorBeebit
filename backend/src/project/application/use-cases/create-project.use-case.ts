@@ -1,7 +1,7 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { ProjectRepositoryPort } from '../../domain/ports/project.repository.port';
 import { CreateProjectInput } from 'src/project/domain/interfaces/create-project.input';
-import { Project } from '../../domain/entities/project.entity'; //La de dominio
+import { Project, ProjectStatus } from '../../domain/entities/project.entity'; //La de dominio
 import { AppAbility } from '../../../casl/casl-ability.factory';
 import { MinioService } from '../../../minio/minio.service';
 import { Inject } from '@nestjs/common';
@@ -35,6 +35,8 @@ export class CreateProjectUseCase {
       console.log('Documento subido:', fileName);
     }
 
+    const status = data.status ?? ProjectStatus.ACTIVE; 
+
     const project = new Project(
       crypto.randomUUID(), // o lo que uses para generar ID
       data.title,
@@ -42,7 +44,7 @@ export class CreateProjectUseCase {
       start_date ? new Date(start_date) : new Date(),
       deadline ? new Date(deadline) : null,
       new Date(), // last_update
-      data.status,
+      status,
       document_url ?? null,
       [],
     );
