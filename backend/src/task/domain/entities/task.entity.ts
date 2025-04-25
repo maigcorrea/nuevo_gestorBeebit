@@ -13,7 +13,7 @@ export class Task {
     public status: TaskStatus,
     public associated_project?: {
       id: string;
-      last_update: Date;
+      last_update: Date | null;
       status: string;
       deadline?: Date;
     }

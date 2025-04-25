@@ -9,12 +9,18 @@ export class TaskMapper {
       entity.id,
       entity.title,
       entity.description,
-      entity.associated_project.id ?? null, // solo extraemos el ID
+      entity.associated_project.id, // solo extraemos el ID
       entity.start_date,
       entity.end_date,
       entity.completed,
       entity.priority,
       entity.status,
+      {
+        id: entity.associated_project.id,
+        last_update: entity.associated_project.last_update,
+        status: entity.associated_project.status,
+        deadline: entity.associated_project.deadline ?? undefined
+      }
     );
   }
 
