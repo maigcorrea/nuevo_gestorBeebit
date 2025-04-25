@@ -114,7 +114,7 @@ const priorityTaskTypes = [
   const endpoint =
     deleteType === 'project'
       ? `http://localhost:3000/projects/${editData.id}`
-      : `http://localhost:3000/tasks/update/${editData.id}`;
+      : `http://localhost:3000/tasks/${editData.id}`;
 
     //id y last update no están permitidos a la hora de editar un proyecto, status hay que desestructurarlo para que no se envíe el objeto completo
   const { id, last_update, status, start_date, end_date, completed, priority, associated_project, document_url, ...rest } = editData;
@@ -158,7 +158,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
 
   try {
     const res = await fetch(endpoint, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(sanitizedData), //Se usan sólo los campos válidos
     });
