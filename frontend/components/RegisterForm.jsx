@@ -39,7 +39,11 @@ const RegisterForm = () => {
 
     //Validación de nombre (Si ya existe en la bd)
     const checkNameExists = async (name) => {
-        const res = await fetch(`http://localhost:3000/staff/nameExists/${name}`);
+        const res = await fetch(`http://localhost:3000/staff/nameExists/${name}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
         const data = await res.json();
         return data.exists;
     };
@@ -47,7 +51,11 @@ const RegisterForm = () => {
 
     //Validación de email (si ya existe en la bd)
     const checkEmailExists = async (email) => {
-        const res = await fetch(`http://localhost:3000/staff/emailExists/${email}`);
+        const res = await fetch(`http://localhost:3000/staff/emailExists/${email}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
         const data = await res.json();
         return data.exists;
     };
@@ -55,7 +63,11 @@ const RegisterForm = () => {
 
     //Validación de teléfono(Si ya existe en la bd)
     const checkPhoneExists = async (phone) => {
-        const res = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`);
+        const res = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
         const data = await res.json();
         return data.exists;
     };
