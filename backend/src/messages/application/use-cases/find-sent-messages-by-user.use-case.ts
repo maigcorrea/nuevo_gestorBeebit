@@ -11,7 +11,15 @@ export class FindSentMessagesByUserUseCase {
     @Inject(MESSAGE_REPOSITORY)
     private readonly repository: MessageRepositoryPort) {}
 
-  async execute(input: FindSentMessagesInput): Promise<Message[]> {
-    return this.repository.findAllBySender(input.senderId);
+  async execute(input: FindSentMessagesInput): Promise<any[]> {
+    const messages= await this.repository.findAllBySender(input.senderId);
+    return messages.map((message) => ({
+      id: message.id,
+      subject: message.subject,
+      text: message.text,
+      sentAt: message.sentAt,
+      receiverEmail: message.receiverEmail,
+      receiverName: message.receiverName,
+    }));
   }
 }

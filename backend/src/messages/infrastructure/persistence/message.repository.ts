@@ -29,7 +29,9 @@ export class MessageRepository implements MessageRepositoryPort {
 
   async findAllByReceiver(receiverId: string): Promise<Message[]> {
     const messages = await this.ormRepo.find({ 
-      where: { receiver: { id: receiverId } } });
+      where: { receiver: { id: receiverId } },
+      relations:['sender']
+    });
     return messages.map(MessageMapper.toDomainEntity);
   }
 

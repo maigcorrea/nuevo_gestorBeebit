@@ -6,5 +6,7 @@ export class Message {
       public subject: string,
       public text: string,
       public sentAt: Date,
+      public readonly receiverEmail?: string,
+      public readonly receiverName?: string, 
     ) {}
   }

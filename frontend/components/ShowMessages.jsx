@@ -86,7 +86,7 @@ const ShowMessages = () => {
             >
               <div className="flex flex-col">
                 <h3 className="text-lg font-semibold text-gray-900">{msg.subject}</h3>
-                <span className="text-sm text-gray-500 mb-2">Para: {msg.receiver?.email || 'Desconocido'}</span>
+                <span className="text-sm text-gray-500 mb-2">Para: {msg.receiverEmail || 'Desconocido'}</span>
                 <p className="text-gray-700 line-clamp-3">{msg.text}</p>
               </div>
               <div className="text-sm text-gray-400 whitespace-nowrap pl-4">
@@ -105,7 +105,7 @@ const ShowMessages = () => {
               <h3 className="text-2xl font-bold text-gray-900">Mensaje: {selectedMessage.subject}</h3>
               <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">&times;</button>
             </div>
-            <p className="text-sm text-gray-500 mb-2">Para: {selectedMessage.receiver.email}</p>
+            <p className="text-sm text-gray-500 mb-2">Para: {selectedMessage.receiverEmail || 'Desconocido'}</p>
             <p className="text-gray-700 mb-4">{selectedMessage.text}</p>
             <p className="text-sm text-gray-400">{new Date(selectedMessage.sentAt).toLocaleString()}</p>
           </div>
