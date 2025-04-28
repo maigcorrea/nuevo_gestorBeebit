@@ -23,6 +23,7 @@ import { ResetPasswordUseCase } from './application/use-cases/reset-password.use
 import { SaveProfileImageUseCase } from './application/use-cases/save-profile-image.use-case';
 import { StaffRepositoryPort } from './domain/ports/staff.repository.port';
 import { PublicStaffController } from './infrastructure/controllers/public-staff.controller';
+import { ValidateTokenUseCase } from './application/use-cases/validate-token.use-case';
 
 
 @Module({
@@ -100,6 +101,11 @@ import { PublicStaffController } from './infrastructure/controllers/public-staff
     {
       provide: SaveProfileImageUseCase,
       useFactory: (repo: StaffRepositoryPort) => new SaveProfileImageUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: ValidateTokenUseCase,
+      useFactory: (repo: StaffRepositoryPort) => new ValidateTokenUseCase(repo),
       inject: [StaffRepository],
     },
     

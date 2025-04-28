@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { useSearchParams } from 'next/navigation';
@@ -21,6 +21,52 @@ const ResetPasswordForm = () => {
 
     const searchParams = useSearchParams();
     const token = searchParams.get('token'); // Para capturar el token de la url, el token viene desde el enlace del email
+
+    const [tokenValid, setTokenValid] = useState(null); // null = aún comprobando
+
+
+    //Comprobar si el token es válido para cargar el formulario o mostrar error
+    useEffect(() => {
+        if (!token) {
+          setTokenValid(false);
+          return;
+        }
+    
+        const validateToken = async () => {
+          try {
+            const res = await fetch(`http://localhost:3000/public-staff/validate-token/${token}`);
+            if (res.ok) {
+              setTokenValid(true);
+            } else {
+              setTokenValid(false);
+            }
+          } catch (error) {
+            setTokenValid(false);
+          }
+        };
+    
+        validateToken();
+      }, [token]);
+
+      if (tokenValid === null) {
+        return <div className="text-center mt-10">Verificando token...</div>;
+      }    
+
+
+      if (tokenValid === false) {
+        return (
+            <div className="min-h-screen flex items-center justify-center mx-auto">
+          <div className="text-center mt-10">
+            <h2 className="text-red-600 text-2xl font-bold">Enlace inválido o expirado</h2>
+            <p className="text-gray-600 mt-4">Solicita un nuevo correo de recuperación.</p>
+            <button onClick={() => router.push('/login')} className="mt-6 px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">
+              Volver a recuperar contraseña
+            </button>
+          </div>
+          </div>
+        );
+      }
+
 
 
     //Validar contraseña
@@ -98,6 +144,8 @@ const ResetPasswordForm = () => {
         }
 
     }
+
+    //Si el token es válido se muestra: 
   return (
     <>
         {successMessage && (
