@@ -23,8 +23,8 @@ export class StaffRepository implements StaffRepositoryPort {
       password: staff.password,
       register_date: staff.register_date,
       type: staff.type,
-      ...(staff.resetToken && { resetToken: staff.resetToken }),
-      ...(staff.resetTokenExpiry && { resetTokenExpiry: staff.resetTokenExpiry }),
+      resetToken: staff.resetToken,
+      resetTokenExpiry: staff.resetTokenExpiry,
       ...(staff.profileImage && { profileImage: staff.profileImage }),
     });
 
