@@ -7,8 +7,10 @@ import { VerifyPasswordDto } from '../dto/verify-password.dto';
 import { VerifyPasswordUseCase } from 'src/staff/application/use-cases/verify-password.use-case';
 import { ForgotPasswordDto } from '../dto/forgot-password.dto';
 import { HandleForgotPasswordUseCase } from 'src/staff/application/use-cases/handle-forgot-password.use-case';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { ResetPasswordUseCase } from 'src/staff/application/use-cases/reset-password.use-case';
 
-@ApiTags('Public Staff') // Controlador para rutas públicas(SIn token jwt)
+@ApiTags('Public Staff') // Controlador para rutas públicas(SIn token JWT)
 @Controller('public-staff')
 export class PublicStaffController {
   constructor(
@@ -17,6 +19,7 @@ export class PublicStaffController {
     private readonly checkPhoneExistsUseCase: CheckPhoneExistsUseCase,
     private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
     private readonly handleForgotPasswordUseCase: HandleForgotPasswordUseCase,
+    private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {}
 
 
@@ -79,6 +82,18 @@ export class PublicStaffController {
         }
 
 
+            @Post('reset-password')
+            @ApiOperation({ summary: 'Restablecer contraseña con token de recuperación' })
+            @ApiResponse({
+                status: 200,
+                schema: {
+                example: { message: 'Contraseña actualizada correctamente' },
+            },
+            })
+            @ApiResponse({ status: 400, description: 'Token inválido o expirado' })
+            async resetPassword(@Body() body: ResetPasswordDto) {          
+                return this.resetPasswordUseCase.execute(body);
+            }
 
 
     

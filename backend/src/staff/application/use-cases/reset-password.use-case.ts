@@ -8,10 +8,7 @@ import { StaffOrmEntity as StaffSubject } from 'src/staff/infrastructure/persist
 export class ResetPasswordUseCase {
   constructor(private readonly staffRepo: StaffRepositoryPort) {}
 
-  async execute(input: ResetPasswordInput, ability: any): Promise<{ message: string }> {
-    if (!ability.can('update', StaffSubject)) {
-      throw new ForbiddenException('No tienes permiso para modificar la contraseña');
-    }
+  async execute(input: ResetPasswordInput): Promise<{ message: string }> {
 
     const user = await this.staffRepo.findByToken(input.token);
 

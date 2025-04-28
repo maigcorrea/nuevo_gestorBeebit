@@ -52,7 +52,6 @@ import { VerifyPasswordDto } from '../dto/verify-password.dto';
 import { ChangePasswordUseCase } from 'src/staff/application/use-cases/change-password.use-case';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { HandleForgotPasswordUseCase } from 'src/staff/application/use-cases/handle-forgot-password.use-case';
-import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { ResetPasswordUseCase } from 'src/staff/application/use-cases/reset-password.use-case';
 import { SaveProfileImageUseCase } from 'src/staff/application/use-cases/save-profile-image.use-case';
 import { MinioService } from 'src/minio/minio.service';
@@ -76,8 +75,6 @@ export class StaffController{
         private readonly checkPhoneExistsUseCase: CheckPhoneExistsUseCase,
         private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
         private readonly changePasswordUseCase: ChangePasswordUseCase,
-        private readonly handleForgotPasswordUseCase: HandleForgotPasswordUseCase,
-        private readonly resetPasswordUseCase: ResetPasswordUseCase,
         private readonly saveProfileImageUseCase: SaveProfileImageUseCase,
         private readonly minioService: MinioService,
     ) {}
@@ -252,27 +249,6 @@ export class StaffController{
     }
 
     return { message: 'Contraseña actualizada correctamente' };
-    }
-
-
-
-
-
-    @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'update', subject: StaffOrmEntity })
-    @Post('reset-password')
-    @ApiOperation({ summary: 'Restablecer contraseña con token de recuperación' })
-    @ApiResponse({
-        status: 200,
-        schema: {
-        example: { message: 'Contraseña actualizada correctamente' },
-    },
-    })
-    @ApiResponse({ status: 400, description: 'Token inválido o expirado' })
-    async resetPassword(@Body() body: ResetPasswordDto, @Req() req: Request) {
-    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
-        return this.resetPasswordUseCase.execute(body, ability);
     }
 
 
