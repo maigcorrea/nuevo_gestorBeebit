@@ -22,6 +22,7 @@ import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
 import { ResetPasswordUseCase } from './application/use-cases/reset-password.use-case';
 import { SaveProfileImageUseCase } from './application/use-cases/save-profile-image.use-case';
 import { StaffRepositoryPort } from './domain/ports/staff.repository.port';
+import { PublicStaffController } from './infrastructure/controllers/public-staff.controller';
 
 
 @Module({
@@ -30,7 +31,7 @@ import { StaffRepositoryPort } from './domain/ports/staff.repository.port';
     MailQueueModule,
     CaslModule,
   ],
-  controllers: [StaffController],
+  controllers: [StaffController, PublicStaffController],
   providers: [
     MailService,
     MinioService,

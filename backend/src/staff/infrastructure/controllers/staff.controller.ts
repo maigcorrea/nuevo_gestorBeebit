@@ -51,19 +51,16 @@ import { VerifyPasswordUseCase } from 'src/staff/application/use-cases/verify-pa
 import { VerifyPasswordDto } from '../dto/verify-password.dto';
 import { ChangePasswordUseCase } from 'src/staff/application/use-cases/change-password.use-case';
 import { ChangePasswordDto } from '../dto/change-password.dto';
-import { ForgotPasswordDto } from '../dto/forgot-password.dto';
 import { HandleForgotPasswordUseCase } from 'src/staff/application/use-cases/handle-forgot-password.use-case';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { ResetPasswordUseCase } from 'src/staff/application/use-cases/reset-password.use-case';
-import { SaveProfileImageDto } from '../dto/save-profile-image.dto';
 import { SaveProfileImageUseCase } from 'src/staff/application/use-cases/save-profile-image.use-case';
 import { MinioService } from 'src/minio/minio.service';
 import { Express } from 'express';
 import { StaffOrmEntity } from '../persistence/staff.orm-entity';
-import { StaffRepository } from '../persistence/staff.repository';
 
 
-@ApiTags('Staff')
+@ApiTags('Staff') //COntrolador para rutas protegidas(con JWT)
 @ApiBearerAuth('jwt')
 @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
 @Controller("staff")
@@ -255,23 +252,6 @@ export class StaffController{
     }
 
     return { message: 'Contraseña actualizada correctamente' };
-    }
-
-
-
-
-    @Post('forgot-password')
-    @ApiOperation({ summary: 'Enviar correo para recuperar la contraseña' })
-    @ApiResponse({
-    status: 200,
-    schema: {
-        example: {
-        message: 'Si el email está registrado, recibirás un correo',
-        },
-    },
-    })
-    async forgotPassword(@Body() body: ForgotPasswordDto) {
-        return this.handleForgotPasswordUseCase.execute(body);
     }
 
 

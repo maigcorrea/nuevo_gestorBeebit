@@ -11,6 +11,8 @@ const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    
+
 
     //Spinner de carga
     const [loading, setLoading] = useState(false);
@@ -26,7 +28,8 @@ const ForgotPasswordForm = () => {
         }
 
         try {
-            const res = await fetch(`http://localhost:3000/staff/emailExists/${email}`);
+            const res = await fetch(`http://localhost:3000/public-staff/emailExists/${email}`, {
+            });
             const data = await res.json();
 
             if (!data.exists) {
@@ -35,7 +38,7 @@ const ForgotPasswordForm = () => {
             }
 
             // Aquí va la lógica para enviar el correo con Mailpit, el método del servicio a su vez encola la petición
-            await fetch('http://localhost:3000/staff/forgot-password', {
+            await fetch('http://localhost:3000/public-staff/forgot-password', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
