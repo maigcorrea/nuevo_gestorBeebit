@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 
@@ -16,14 +15,13 @@ const UpdatePassword = () => {
     const [successMessage, setSuccessMessage] = useState('');
 
     const handleVerify = async () => {
-        const id = parseInt(localStorage.getItem('id') || '0');
+        const id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
 
-        const res = await fetch(`http://localhost:3000/staff/passwordVerify/`, {
+        const res = await fetch(`http://localhost:3000/public-staff/passwordVerify/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({ userId: id, password: currentPassword })
         });
@@ -45,7 +43,7 @@ const UpdatePassword = () => {
             return;
         }
 
-        const id = parseInt(localStorage.getItem('id') || '0');
+        const id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
 
         const res = await fetch(`http://localhost:3000/staff/changePassword/${id}`, {
@@ -54,7 +52,7 @@ const UpdatePassword = () => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({ password: newPassword })
+            body: JSON.stringify({ userId: id, newPassword })
         });
 
         if (res.ok) {
