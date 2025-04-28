@@ -50,7 +50,7 @@ export class TaskStaffRepository implements TaskStaffRepositoryPort {
   async findByStaffId(staffId: string): Promise<TaskStaff[]> {
     const relaciones = await this.repo.find({
       where: { staff: { id: staffId } },
-      relations: ['task'], // esto carga la tarea relacionada
+      relations: ['task', 'staff'], // esto carga la tarea relacionada
     });
   
     return relaciones

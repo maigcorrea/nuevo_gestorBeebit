@@ -189,6 +189,17 @@ const AddTaskForm = () => {
   
         const assignData = await assignRes.json();
         console.log("Empleado asignado:", assignData);
+        if (!assignRes.ok) {
+            if (assignRes.status === 409) {
+                toast.current.show({ 
+                    severity: 'warn', 
+                    summary: 'Asignación no realizada', 
+                    detail: assignData.message, 
+                    life: 4000 
+                });
+            }
+        }
+        
       }
     
         //   if (!res.ok) {

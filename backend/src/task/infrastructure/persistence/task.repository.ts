@@ -41,7 +41,10 @@ export class TaskRepository implements TaskRepositoryPort {
 
 
   async findById(id: string): Promise<Task | null> {
-    const task = await this.ormRepo.findOne({ where: { id } });
+    const task = await this.ormRepo.findOne({ 
+      where: { id },
+      relations: ['associated_project'], 
+    });
     return task ? TaskMapper.toDomainEntity(task) : null;
   }
 
