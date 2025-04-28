@@ -13,6 +13,8 @@ export class MessageMapper {
       ormEntity.sentAt,
       ormEntity.receiver?.email,
       ormEntity.receiver?.name,
+      ormEntity.sender?.email,
+      ormEntity.sender?.name,
     );
   }
 
