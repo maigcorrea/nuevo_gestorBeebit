@@ -71,7 +71,9 @@ const UpdateProfileForm = () => {
 
         // Validación del email
         if (email !== originalEmail) {
-            const emailRes = await fetch(`http://localhost:3000/staff/emailExists/${email}`);
+            const emailRes = await fetch(`http://localhost:3000/staff/emailExists/${email}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             const emailData = await emailRes.json();
             if (emailData.exists) {
                 setEmailError("Ya existe un usuario con ese email.");
@@ -81,7 +83,9 @@ const UpdateProfileForm = () => {
 
         // Validación del teléfono
         if (phone !== originalPhone) {
-            const phoneRes = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`);
+            const phoneRes = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             const phoneData = await phoneRes.json();
             if (phoneData.exists) {
                 setPhoneError("Ya existe un usuario con ese teléfono.");
