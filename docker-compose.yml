@@ -7,21 +7,19 @@ services:
     build:
       context: ./backend
     ports:
-      - "3000:3000"
+      - "${APP_PORT}:${APP_PORT}"
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run start:dev
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=password
-      - DB_NAME=test
-    depends_on: #El contenedor backend no se levantará hasta que el contenedor de postgres esté list
-      - postgres
     env_file:
       - .env
+    depends_on: #El contenedor backend no se levantará hasta que el contenedor de postgres esté list
+      - postgres
+      - redis
+      - mailpit
+      - minio
+    
 
   frontend:
     container_name: frontend
@@ -33,35 +31,40 @@ services:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run dev
+    env_file:
+      - .env
 
   postgres:
     container_name: postgres
     image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: test
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
   
   mailpit:
+    container_name: mailpit
     image: axllent/mailpit
     ports:
       - "8025:8025"  # Web UI para ver correos
       - "1025:1025"  # Puerto SMTP
+    env_file:
+      - .env
 
   minio:
-      image: minio/minio
       container_name: minio
+      image: minio/minio
       ports:
         - "9000:9000"   # API de MinIO
         - "9001:9001"   # Consola web
-      environment:
-        MINIO_ROOT_USER: admin
-        MINIO_ROOT_PASSWORD: admin123
       command: server /data --console-address ":9001"
+      environment: 
+        MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+        MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}      
       volumes:
         - minio_data:/data
   
@@ -70,6 +73,8 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    env_file:
+      - .env
 volumes:
   postgres_data:
   minio_data:

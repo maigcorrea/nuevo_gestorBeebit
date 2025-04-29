@@ -43,15 +43,16 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 👈 Así estará disponible en toda la app
+      envFilePath:'.env',
     }),
     
     TypeOrmModule.forRoot({
       type: 'postgres', // Tipo de base de datos
-      host: 'postgres', // Host de la base de datos (puede ser un contenedor de Docker o una IP)
-      port: 5432, // Puerto
-      username: 'postgres', // Usuario de la base de datos
-      password: 'password', // Contraseña de la base de datos
-      database: 'test', // Nombre de la base de datos
+      host: process.env.DB_HOST, // Host de la base de datos (puede ser un contenedor de Docker o una IP)
+      port: parseInt(process.env.DB_PORT!, 10), // Puerto
+      username: process.env.DB_USER, // Usuario de la base de datos
+      password: process.env.DB_PASSWORD, // Contraseña de la base de datos
+      database: process.env.DB_NAME, // Nombre de la base de datos
       entities: [ Project, Task, Staff, TaskStaff, Message,  StaffOrmEntity, MessageOrmEntity, ProjectTypeOrmEntity, TaskTypeOrmEntity, TaskStaffOrmEntity], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
       //synchronize: false
@@ -59,8 +60,8 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     TypeOrmModule.forFeature([TareaOrmEntity]),
     BullModule.forRoot({
       redis: {
-        host: 'redis',
-        port: 6379,
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT!, 10),
       },
     }),
     ScheduleModule.forRoot(),
