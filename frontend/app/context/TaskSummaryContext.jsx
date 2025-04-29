@@ -32,7 +32,8 @@ export const TaskSummaryProvider = ({children}) => {
     
           const tasksThisWeek = tasks.filter(task => {
             const taskDate = new Date(task.start_date)
-            return taskDate >= startOfWeek && taskDate <= endOfWeek;
+            //Que incluya las tareas que se creen en la semana y las anteriores no completadas (tareas de otras semanas que se van acumulando)
+            return task.status !== 'completed' || (taskDate >= startOfWeek && taskDate <= endOfWeek);
           })
     
           const completedCount = tasksThisWeek.filter(t => t.status === 'completed').length;
