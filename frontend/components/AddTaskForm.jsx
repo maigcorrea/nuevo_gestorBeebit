@@ -11,6 +11,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
 import { UserContext } from '@/app/context/UserContext';
 import { useContext } from 'react';
+import { useTaskSummary } from '@/app/context/TaskSummaryContext';
 
 const AddTaskForm = () => {
 
@@ -37,6 +38,9 @@ const AddTaskForm = () => {
     //ERRORES
     const [titleError, setTitleError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
+
+    //ACTUALIZAR EL MENSAJE DE BIENVENIDA CON LOS DATOS
+    const {actualizarResumenTareas} = useTaskSummary();
 
 
     //Validación de título (Si ya existe en la bd)
@@ -183,7 +187,7 @@ const AddTaskForm = () => {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({
                 id_task: taskData.id,
-                id_staff: staff //Esto es un uuid? o un array de objetos?
+                id_staff: staff 
             })
         });
   
@@ -227,6 +231,10 @@ const AddTaskForm = () => {
             setError('');
             setStaff([]);
             // router.push('/dashboard'); o mostrar un mensaje
+
+
+            //Actualizar el resumen de tareas completadas/totales sin recargar la página
+            actualizarResumenTareas();
         } catch (err) {
           setError('Error de conexión');
         }

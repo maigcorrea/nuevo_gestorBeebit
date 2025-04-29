@@ -22,11 +22,17 @@ export const TaskSummaryProvider = ({children}) => {
           const tasks = await res.json()
           const now = new Date()
           const startOfWeek = new Date(now)
-          startOfWeek.setDate(now.getDate() - now.getDay())
+          startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7)); // lunes como primer día
+          startOfWeek.setHours(0,0,0,0);
+
+
+          const endOfWeek= new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate()+ 6);
+          endOfWeek.setHours(23,59,59,999);
     
           const tasksThisWeek = tasks.filter(task => {
             const taskDate = new Date(task.start_date)
-            return taskDate >= startOfWeek && taskDate <= now
+            return taskDate >= startOfWeek && taskDate <= endOfWeek;
           })
     
           const completedCount = tasksThisWeek.filter(t => t.status === 'completed').length;
