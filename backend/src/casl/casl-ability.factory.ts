@@ -30,13 +30,14 @@ export class CaslAbilityFactory {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(PureAbility as AbilityClass<AppAbility>);
     console.log('[CASL] Usuario recibido:', user);
     console.log('[CASL] Tipo de usuario:', user.type);
+    console.log('[CASL] id de usuario', user.id);
 
 
     if (user.type?.toLowerCase().trim() === 'admin') {
       can('manage', 'all'); // puede hacer TODO
        
     } else {
-      console.log('[CASL] Tipo de usuario:', user.type);
+      
       can('read', Project);
       can('create', Project);
       can('read', Task);

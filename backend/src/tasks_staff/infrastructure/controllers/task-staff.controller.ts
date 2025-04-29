@@ -131,8 +131,7 @@ import {
 
 
     @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({ summary: 'Obtener las tareas asignadas a un empleado concreto' })
     @ApiResponse({ status: 200, description: 'Listado de tareas asignadas al usuario', type: [TaskByUserResponseDto] })
     @ApiResponse({ status: 404, description: 'No se encontraron tareas o no tienes permisos' })
@@ -144,6 +143,24 @@ import {
     ): Promise<TaskByUserResponseDto[]> {
       const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.getTasksByUserUseCase.execute(id, ability);
+      /*const tareas = await this.getTasksByUserUseCase.execute(id, ability);
+
+       // ⚡ Adaptamos las tareas para que tengan staff: { id }
+  const tareasAdaptadas = (tareas as any[]).map(tarea => ({
+    ...tarea,
+    staff: { id: tarea.staffId }, // 👈 Añadimos staff.id para CASL
+  }));
+
+  // Ahora retornamos normalmente, usando el mapper si quieres
+  return tareasAdaptadas.map(t => ({
+    id: t.id,
+    taskId: t.taskId,
+    staffId: t.staffId,
+    taskTitle: t.taskTitle,
+    projectTitle: t.projectTitle,
+    status: t.status,
+    priority: t.priority,
+  }));*/
     }
 
 
@@ -151,8 +168,7 @@ import {
 
 
     @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @UseGuards(AuthGuard('jwt'))
     @Get('proyectos/:id')
     @ApiOperation({ summary: 'Obtener proyectos asignados al usuario' })
     @ApiResponse({
