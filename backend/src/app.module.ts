@@ -49,11 +49,11 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
       type: 'postgres', // Tipo de base de datos
-      host: config.get('DB_HOST'), // Host de la base de datos (puede ser un contenedor de Docker o una IP)
-      port: parseInt(config.get('DB_PORT') || '5432', 10), // Puerto
-      username: config.get('DB_USER'), // Usuario de la base de datos
-      password: config.get('DB_PASSWORD'), // Contraseña de la base de datos
-      database: config.get('DB_NAME'), // Nombre de la base de datos
+      host: config.get<string>('DB_HOST'), // Host de la base de datos (puede ser un contenedor de Docker o una IP)
+      port: parseInt(config.get<string>('DB_PORT') || '5432', 10), // Puerto
+      username: config.get<string>('DB_USER'), // Usuario de la base de datos
+      password: config.get<string>('DB_PASSWORD'), // Contraseña de la base de datos
+      database: config.get<string>('DB_NAME'), // Nombre de la base de datos
       entities: [ Project, Task, Staff, TaskStaff, Message,  StaffOrmEntity, MessageOrmEntity, ProjectTypeOrmEntity, TaskTypeOrmEntity, TaskStaffOrmEntity], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
     }),
@@ -64,8 +64,8 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     BullModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
       redis: {
-        host: config.get('REDIS_HOST'),
-        port: parseInt(config.get('REDIS_PORT') || '6379', 10),
+        host: config.get<string>('REDIS_HOST'),
+        port: parseInt(config.get<string>('REDIS_PORT') || '6379', 10),
       },
     }),
     inject: [ConfigService],
