@@ -5,6 +5,8 @@ import { TaskStaffResponseDto } from '../../infrastructure/dto/task-staff-respon
 import { TaskStaffOrmEntity } from '../../infrastructure/persistence/task-staff.orm-entity';
 import { TaskStaff } from '../../domain/entities/task-staff.entity';
 import { TASK_STAFF_REPOSITORY } from 'src/tasks_staff/domain/token/tasks-staff-repository.token';
+import { TaskStaffMapper } from 'src/tasks_staff/infrastructure/mappers/task-staff.mapper';
+import { StaffType } from 'src/staff/domain/entities/staff.entity';
 
 @Injectable()
 export class FindAllTaskStaffUseCase {
@@ -20,13 +22,27 @@ export class FindAllTaskStaffUseCase {
       throw new ForbiddenException('No tienes permiso para acceder a las relaciones tarea-empleado');
     }
 
-    return relaciones.map((rel) => ({
-      id: rel.id,
-      taskId: rel.task.id,
-      staffId: rel.staff.id,
-      taskTitle: rel.task.title,
-      staffName: rel.staff.name,
-      taskCompleted: rel.task.completed,
-    }));
+    const permitidas = relaciones.filter(relacion =>
+      ability.can('read', {
+        ...relacion,
+        staff: {
+          id: relacion.staff.id,
+          name: '',
+          email: '',
+          register_date: new Date(),
+          phone: '',
+          password: '',
+          profileImage: '',
+          type: StaffType.USER,
+          resetToken: '',
+          resetTokenExpiry: new Date(),
+          sentMessages: [],
+        },
+      })
+    );
+
+    //Se mapea taskStaffOrmEntity a TaskStaff
+    const tareasDominio = permitidas.map(relacion => TaskStaffMapper.toDomainEntity(relacion));
+    return tareasDominio.map(TaskStaffMapper.toResponseDto);
   }
 }

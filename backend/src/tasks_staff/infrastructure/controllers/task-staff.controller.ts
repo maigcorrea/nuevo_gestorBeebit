@@ -99,8 +99,7 @@ import {
 
 
     @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({ summary: 'Obtener todas las relaciones tarea-empleado' })
     @ApiResponse({ status: 200, type: [TaskStaffResponseDto] })
     @ApiResponse({ status: 403, description: 'No tienes permiso' })
