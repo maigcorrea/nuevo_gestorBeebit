@@ -52,7 +52,7 @@ const ShowMessages = () => {
     const searchLower = search.toLowerCase();
     return (
       msg.subject.toLowerCase().includes(searchLower) ||
-      msg.receiver.email.toLowerCase().includes(searchLower)
+      msg.receiverEmail.toLowerCase().includes(searchLower)
     );
   });
   

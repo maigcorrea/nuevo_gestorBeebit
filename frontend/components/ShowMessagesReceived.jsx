@@ -48,7 +48,7 @@ const ShowMessagesReceived = () => {
     const searchLower = search.toLowerCase();
     return (
       msg.subject.toLowerCase().includes(searchLower) ||
-      msg.receiver.email.toLowerCase().includes(searchLower)
+      msg.senderEmail.toLowerCase().includes(searchLower)
     );
   });
 
