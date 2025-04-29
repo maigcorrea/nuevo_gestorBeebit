@@ -45,9 +45,10 @@ const WelcomeMessage = () => {
       <div className="flex items-center justify-center p-6 bg-white/50 rounded-2xl shadow-xl w-full max-w-md mx-auto text-center">
         <div className=''>
           <h2 className="text-3xl font-bold text-black mb-6">{userName ? `¡Bienvenid@ ${userName}!` : '¡Bienvenid@!'}</h2>
+          <h4 className='font-bold'>Tareas de esta semana</h4>
           <MeterGroup
             values={[
-              { label: 'Completadas', value: tasksSummary.completed, color: '#10b981' },
+              { label: 'Completadas', value: tasksSummary.completed , color: '#10b981' },
               { label: 'Pendientes', value: tasksSummary.total - tasksSummary.completed, color: '#f59e0b' }
             ]}
             max={tasksSummary.total}
