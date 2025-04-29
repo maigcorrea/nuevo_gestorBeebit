@@ -105,10 +105,8 @@ import {
 
 
 
-
     @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: ProjectSubject })
+    @UseGuards(AuthGuard('jwt'))
     @Get()
     @ApiOperation({ summary: 'Listar todos los proyectos' })
     @ApiResponse({

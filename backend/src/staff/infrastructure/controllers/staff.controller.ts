@@ -75,8 +75,7 @@ export class StaffController{
     
 
     @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: 'Staff' })
+    @UseGuards(AuthGuard('jwt'))
     @Get('emails')
     @ApiOperation({ summary: 'Obtener todos los correos electrónicos de los empleados' })
     @ApiResponse({

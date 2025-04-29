@@ -256,8 +256,7 @@ import {
 
 
 
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @UseGuards(AuthGuard('jwt'))
     @Post('export-excel')
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Exportar proyectos seleccionados a Excel' })
@@ -280,8 +279,7 @@ import {
 
 
 
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'read', subject: TaskStaff })
+    @UseGuards(AuthGuard('jwt'))
     @Post('export-pdf')
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Exportar proyectos seleccionados a PDF' })

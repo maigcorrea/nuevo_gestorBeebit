@@ -30,7 +30,7 @@ export class ExportProjectsToExcelUseCase {
 
     for (const rel of relaciones) {
       const proyecto = rel.task.associated_project;
-      if (!proyecto || !ability.can('read', rel)) continue;
+      if (!proyecto || !ability.can('read', proyecto)) continue;
 
       worksheet.addRow({
         project: proyecto.title,
