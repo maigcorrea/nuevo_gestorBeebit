@@ -13,19 +13,47 @@ export default function PomodoroTimer() {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
-          if (prev === 1) {
+
+        const newTime = prev - 1;
+        // Guardar cada segundo en el localeStorage
+        localStorage.setItem('pomodoroTimeLeft', newTime.toString());
+        localStorage.setItem('pomodoroIsBreak', JSON.stringify(isBreak));
+        localStorage.setItem('pomodoroIsRunning', JSON.stringify(true));
+
+          if (newTime === 0) {
             clearInterval(intervalRef.current);
             setIsRunning(false);
             setIsBreak((prevBreak) => !prevBreak);
             return isBreak ? 25 * 60 : 5 * 60;
           }
-          return prev - 1;
+          return newTime;
         });
       }, 1000);
     }
 
     return () => clearInterval(intervalRef.current);
   }, [isRunning]);
+
+
+
+  //RECUPERAR DATOS DEL LOCALSTORAGE AL RECARGAR PÁGINA
+  useEffect(() => {
+    const storedTime = localStorage.getItem('pomodoroTimeLeft');
+    const storedIsBreak = localStorage.getItem('pomodoroIsBreak');
+    const storedIsRunning = localStorage.getItem('pomodoroIsRunning');
+  
+    if (storedTime !== null) {
+      setTimeLeft(parseInt(storedTime, 10));
+    }
+    if (storedIsBreak !== null) {
+      setIsBreak(JSON.parse(storedIsBreak));
+    }
+    if (storedIsRunning !== null) {
+      setIsRunning(JSON.parse(storedIsRunning));
+    }
+  }, []);
+
+
 
   const formatTime = (seconds) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -65,7 +93,11 @@ export default function PomodoroTimer() {
           label={isRunning ? 'Pausar' : 'Iniciar'}
           icon={isRunning ? 'pi pi-pause' : 'pi pi-play'}
           style={{ backgroundColor: 'black', border: 'none' }}
-          onClick={() => setIsRunning((prev) => !prev)}
+          onClick={() => {
+            const prev= !isRunning; //Valor que cambia
+            setIsRunning(prev); //Aplicar el valor al estado
+            localStorage.setItem('pomodoroIsRunning', JSON.stringify(prev));
+          }}
         />
         <Button
           label="Reiniciar"
@@ -75,6 +107,9 @@ export default function PomodoroTimer() {
             clearInterval(intervalRef.current);
             setTimeLeft(isBreak ? 5 * 60 : 25 * 60);
             setIsRunning(false);
+            localStorage.removeItem('pomodoroTimeLeft');
+            localStorage.removeItem('pomodoroIsBreak');
+            localStorage.removeItem('pomodoroIsRunning');
           }}
         />
       </div>
