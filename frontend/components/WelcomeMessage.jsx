@@ -38,6 +38,7 @@ const WelcomeMessage = () => {
 
   //Resumen de tareas completadas/totales
   const {tasksSummary}=useTaskSummary();
+  console.log("TASK SUMMARY", tasksSummary);
 
 
   return (
@@ -48,10 +49,10 @@ const WelcomeMessage = () => {
           <h4 className='font-bold'>Tareas de esta semana</h4>
           <MeterGroup
             values={[
-              { label: 'Completadas', value: tasksSummary.completed , color: '#10b981' },
-              { label: 'Pendientes', value: tasksSummary.total - tasksSummary.completed, color: '#f59e0b' }
+              { label: 'Completadas', value: tasksSummary.completed ?? 0 , color: '#10b981' },
+              { label: 'Pendientes', value: (tasksSummary.total ?? 0) - (tasksSummary.completed ?? 0), color: '#f59e0b' }
             ]}
-            max={tasksSummary.total}
+            max={tasksSummary.total > 0 ? tasksSummary.total : 1}
           />
           <div className='flex justify-center gap-4 mt-6'>
             <div className='text-center align-center items-center'>
