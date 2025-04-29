@@ -40,7 +40,10 @@ export class ExportProjectsToPDFUseCase {
 
     doc.pipe(stream);
 
-    for (const proyecto of proyectosMap.values()) {
+    //Se pasa de Map a array
+    const proyectos= Array.from(proyectosMap.values());
+
+    proyectos.forEach((proyecto, i) =>{
       doc.fontSize(16).text(`Proyecto: ${proyecto.title}`, { underline: true });
       doc.text(`Descripción: ${proyecto.description || '---'}`);
       doc.text(`Inicio: ${new Date(proyecto.start_date).toLocaleDateString()}`);
@@ -53,8 +56,10 @@ export class ExportProjectsToPDFUseCase {
         doc.fontSize(12).text(`- ${tarea.title} (${tarea.completed ? 'Completada' : 'Pendiente'}) - Empleado: ${tarea.empleados.join(', ')}`);
       });
 
-      doc.addPage();
-    }
+      if(i < proyectos.length -1){
+        doc.addPage();
+      }
+    })
 
     doc.end();
 
