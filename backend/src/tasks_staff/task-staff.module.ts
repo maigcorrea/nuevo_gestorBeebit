@@ -28,6 +28,7 @@ import { ExportProjectsToPDFUseCase } from './application/use-cases/export-proje
 import { TASK_STAFF_REPOSITORY } from './domain/token/tasks-staff-repository.token';
 import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
+import { GetProductivityRankingUseCase } from './application/use-cases/get-productivity-ranking.use-case';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
     FindTasksDueTomorrowUseCase,
     ExportProjectsToExcelUseCase,
     ExportProjectsToPDFUseCase,
+    GetProductivityRankingUseCase,
 
     // Repositorio principal de TaskStaff
     {

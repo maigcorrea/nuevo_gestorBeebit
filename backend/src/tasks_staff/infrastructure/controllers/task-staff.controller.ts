@@ -55,7 +55,13 @@ import {
 
   import { ExportProjectsToExcelUseCase } from 'src/tasks_staff/application/use-cases/export-projects-to-excel.use-case';
   import { ExportProjectsToPDFUseCase } from 'src/tasks_staff/application/use-cases/export-project-to-pdf.use-case';
-  //
+
+
+
+  import { GetProductivityRankingUseCase } from '../../application/use-cases/get-productivity-ranking.use-case';
+  import { ProductivityRankingResponseDto } from '../dto/productivity-ranking.response.dto';
+
+  
   @ApiTags('Task-Staff')
   @Controller('task-staff')
   export class TaskStaffController {
@@ -71,6 +77,7 @@ import {
       private readonly findTasksDueTomorrowUseCase: FindTasksDueTomorrowUseCase,
       private readonly exportProjectsToExcelUseCase: ExportProjectsToExcelUseCase,
       private readonly exportProjectsToPDFUseCase: ExportProjectsToPDFUseCase,
+      private readonly getProductivityRankingUseCase: GetProductivityRankingUseCase,
     ) {}
   
     @ApiBearerAuth('jwt')
@@ -142,24 +149,6 @@ import {
     ): Promise<TaskByUserResponseDto[]> {
       const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
       return this.getTasksByUserUseCase.execute(id, ability);
-      /*const tareas = await this.getTasksByUserUseCase.execute(id, ability);
-
-       // ⚡ Adaptamos las tareas para que tengan staff: { id }
-  const tareasAdaptadas = (tareas as any[]).map(tarea => ({
-    ...tarea,
-    staff: { id: tarea.staffId }, // 👈 Añadimos staff.id para CASL
-  }));
-
-  // Ahora retornamos normalmente, usando el mapper si quieres
-  return tareasAdaptadas.map(t => ({
-    id: t.id,
-    taskId: t.taskId,
-    staffId: t.staffId,
-    taskTitle: t.taskTitle,
-    projectTitle: t.projectTitle,
-    status: t.status,
-    priority: t.priority,
-  }));*/
     }
 
 
@@ -299,5 +288,19 @@ import {
 
       res.end(buffer);
     }
+
+
+
+
+
+    @ApiBearerAuth('jwt')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Obtener ranking de productividad de empleados' })
+  @ApiResponse({ status: 200, type: [ProductivityRankingResponseDto] })
+  @Get('productivity-ranking')
+  async getProductivityRanking(@Req() req: Request): Promise<ProductivityRankingResponseDto[]> {
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+    return this.getProductivityRankingUseCase.execute(ability);
+  }
   }
   

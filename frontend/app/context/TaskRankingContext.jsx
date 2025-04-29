@@ -13,7 +13,7 @@ export const TaskRankingProvider = ({ children }) => {
     if (isLoading || !token) return;
     const fetchRanking = async () => {
       try {
-        const res = await fetch('http://localhost:3000/task-staff/todo',{
+        const res = await fetch('http://localhost:3000/task-staff/productivity-ranking',{
           headers:{
               Authorization: `Bearer ${token}`,
           }
@@ -23,31 +23,17 @@ export const TaskRankingProvider = ({ children }) => {
         }
   
         const data = await res.json();
-        console.log("Datos recibidos:", data);
-  
-        const resumen = {};
-        data.forEach(item => {
-          const empleado = item.staff?.name;
-          const completed = item.tarea?.completed;
-          console.log("Evaluando:", { empleado, completed });
-
-          if (empleado && completed) {
-            resumen[empleado] = (resumen[empleado] || 0) + 1;
-          }
-        });
-  
-        const rankingList = Object.entries(resumen)
-          .map(([name, completed]) => ({ name, completed }))
-          .sort((a, b) => b.completed - a.completed);
-  
-        setRanking(rankingList);
+        console.log("Datos recibidossss:", data);
+        console.log ("Data[0]",data[0]);
+        
+        setRanking(data);
       } catch (err) {
-        console.error("Error al obtener ranking:", err); // 👈 ¿Ves esto en consola?
+        console.error("Error al obtener ranking:", err);
       }
     };
   
     fetchRanking();
-  }, [isLoading| token]);
+  }, [isLoading, token]);
 
   return (
     <TaskRankingContext.Provider value={{ ranking }}>
