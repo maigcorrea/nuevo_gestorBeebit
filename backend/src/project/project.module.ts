@@ -19,6 +19,8 @@ import { TaskRepository } from 'src/task/infrastructure/persistence/task.reposit
 import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 import { PROJECT_REPOSITORY } from './domain/token/project-repository.token';
 import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
+import { ClockifyModule } from 'src/infrastructure/clockify/clockify.module';
+import { ClockifyService } from 'src/infrastructure/clockify/clockyfy.service';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.type
     TypeOrmModule.forFeature([TaskTypeOrmEntity]),
     MinioModule,
     CaslModule,
+    ClockifyModule,
   ],
   controllers: [ProjectController],
   providers: [
@@ -47,6 +50,7 @@ import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.type
       provide: TASK_REPOSITORY,
       useClass: TaskRepository,
     },
+    ClockifyService,
   ],
   exports: [PROJECT_REPOSITORY],
 })

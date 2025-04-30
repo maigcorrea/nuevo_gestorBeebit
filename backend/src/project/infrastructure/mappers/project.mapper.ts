@@ -14,6 +14,7 @@ export class ProjectMapper {
       entity.status,
       entity.document_url,
       [], // en esta fase no cargamos tareas; se puede extender después
+      entity.clockifyProjectId ?? '',
     );
   }
 
@@ -27,6 +28,7 @@ export class ProjectMapper {
     orm.last_update = domain.last_update;
     orm.status = domain.status;
     orm.document_url = domain.document_url;
+    orm.clockifyProjectId = domain.clockifyProjectId;
     // tareas omitidas por ahora
     return orm;
   }
@@ -41,6 +43,7 @@ export class ProjectMapper {
       last_update: project.last_update,
       status: project.status,
       document_url: project.document_url ?? undefined,
+      clockifyProjectId:project.clockifyProjectId ?? undefined,
     };
   }
 

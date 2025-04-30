@@ -1,11 +1,10 @@
 // data-source.ts
 import { DataSource } from 'typeorm'; // importa tus entidades
-import { Project } from 'src/project/domain/entities/project.entity';
-import { Staff } from 'src/staff/domain/entities/staff.entity';
-import { TaskStaff } from 'src/tasks_staff/domain/entities/task-staff.entity';
-import { Task } from 'src/task/domain/entities/task.entity';
-import { Message } from 'src/messages/domain/entities/messages.entity';
-// ...otras entidades
+import { ProjectTypeOrmEntity } from 'src/project/infrastructure/persistence/project.typeorm.entity';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
+import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
+import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
+import { MessageOrmEntity } from 'src/messages/infrastructure/persistence/message.orm-entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -14,7 +13,7 @@ export const AppDataSource = new DataSource({
   username: 'postgres',
   password: 'password',
   database: 'test',
-  entities: [ Project, Staff, TaskStaff, Task, Message],
+  entities: [ ProjectTypeOrmEntity, StaffOrmEntity, TaskStaffOrmEntity, TaskTypeOrmEntity, MessageOrmEntity],
   migrations: ['src/migrations/*.ts'],
   synchronize: false, // ⚠️ muy importante desactivarlo para usar migraciones
 });

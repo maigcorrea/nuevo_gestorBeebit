@@ -6,6 +6,7 @@ import { AppAbility } from '../../../casl/casl-ability.factory';
 import { MinioService } from '../../../infrastructure/minio/minio.service';
 import { Inject } from '@nestjs/common';
 import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
+import { ClockifyService } from 'src/infrastructure/clockify/clockyfy.service';
 
 @Injectable()
 export class CreateProjectUseCase {
@@ -13,6 +14,7 @@ export class CreateProjectUseCase {
     @Inject(PROJECT_REPOSITORY)
     private readonly projectRepo: ProjectRepositoryPort,
     private readonly minioService: MinioService,
+    private readonly clockifyService: ClockifyService,
   ) {}
 
   async execute(
@@ -37,6 +39,14 @@ export class CreateProjectUseCase {
 
     const status = data.status ?? ProjectStatus.ACTIVE; 
 
+    // Crear proyecto en Clockify
+    const clockifyProject = await this.clockifyService.createProjectOnClockify({
+      name: data.title,
+      workspaceId: process.env.CLOCKIFY_WORKSPACE_ID!, // o úsalo desde ConfigService
+    });
+
+    const clockifyProjectId = clockifyProject.id;
+
     const project = new Project(
       crypto.randomUUID(), // o lo que uses para generar ID
       data.title,
@@ -47,6 +57,7 @@ export class CreateProjectUseCase {
       status,
       document_url ?? null,
       [],
+      clockifyProjectId
     );
 
     return await this.projectRepo.create(project);

@@ -18,5 +18,6 @@ export class Project {
     public status: ProjectStatus,
     public document_url: string | null,
     public tasks: Task[], // relación inversa
+    public clockifyProjectId: string | null,
   ) {}
 }

@@ -36,4 +36,7 @@ export class ProjectTypeOrmEntity {
 
   @OneToMany(() => TaskTypeOrmEntity, (task) => task.associated_project)
   tasks: TaskTypeOrmEntity[];
+
+  @Column({ type: 'varchar', nullable: true })
+  clockifyProjectId?: string | null;
 }

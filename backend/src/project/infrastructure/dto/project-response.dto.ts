@@ -28,4 +28,11 @@ export class ProjectResponseDto {
     example: 'http://localhost:9000/archivos/projects/manual.pdf',
   })
   document_url?: string;
+
+
+  @ApiPropertyOptional({
+    description: 'ID del proyecto en Clockify',
+    example: '6630e7ea943c7c32b3e527c9',
+  })
+  clockifyProjectId?: string;
 }
