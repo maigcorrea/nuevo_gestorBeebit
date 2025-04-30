@@ -275,8 +275,7 @@ import {
 
 
     @ApiBearerAuth('jwt')
-    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
-    @CheckAbilities({ action: 'update', subject: Project })
+    @UseGuards(AuthGuard('jwt'))
     @Patch(':id')
     @ApiOperation({ summary: 'Actualizar proyecto' })
     @ApiResponse({ status: 200, description: 'Proyecto actualizado con éxito' })
