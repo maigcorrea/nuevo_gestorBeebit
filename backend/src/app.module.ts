@@ -15,6 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './infrastructure/scheduler/sheduler.module';
 import { MessagesModule } from './messages/messages.module';
 import { CaslModule } from './casl/casl.module';
+import { ClockifyModule } from './infrastructure/clockify/clockify.module';
 // ENTIDADES
 import { Project } from './project/domain/entities/project.entity';
 import { Task } from './task/domain/entities/task.entity';
@@ -33,6 +34,8 @@ import { MessageOrmEntity } from './messages/infrastructure/persistence/message.
 import { ProjectTypeOrmEntity } from './project/infrastructure/persistence/project.typeorm.entity';
 import { TaskTypeOrmEntity } from './task/infrastructure/persistence/task.typeorm.entity';
 import { TaskStaffOrmEntity } from './tasks_staff/infrastructure/persistence/task-staff.orm-entity';
+import { ClockifyController } from './infrastructure/clockify/clockify.controller';
+import { ClockifyService } from './infrastructure/clockify/clockyfy.service';
 
 
 console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
@@ -70,9 +73,10 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     MailQueueModule,
     SchedulerModule,
     MessagesModule,
-    CaslModule
+    CaslModule,
+    ClockifyModule,
   ],
-  controllers: [AppController, ],
-  providers: [],
+  controllers: [AppController, ClockifyController ],
+  providers: [ClockifyService],
 })
 export class AppModule {}
