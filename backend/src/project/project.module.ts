@@ -4,7 +4,7 @@ import { ProjectTypeOrmEntity } from './infrastructure/persistence/project.typeo
 import { ProjectRepository } from './infrastructure/persistence/project.repository';
 import { ProjectController } from './infrastructure/controllers/project.controller';
 import { CreateProjectUseCase } from './application/use-cases/create-project.use-case';
-import { MinioModule } from '../minio/minio.module';
+import { MinioModule } from '../infrastructure/minio/minio.module';
 import { CaslModule } from '../casl/casl.module';
 import { FindAllProjectsUseCase } from './application/use-cases/find-all-projects.use-case';
 import { FindProjectsByTitleUseCase } from './application/use-cases/find-projects-by-title.use-case';

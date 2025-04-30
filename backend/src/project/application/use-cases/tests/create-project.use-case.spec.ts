@@ -1,6 +1,6 @@
 import { CreateProjectUseCase } from '../create-project.use-case';
 import { ProjectRepositoryPort } from '../../../domain/ports/project.repository.port';
-import { MinioService } from '../../../../minio/minio.service';
+import { MinioService } from '../../../../infrastructure/minio/minio.service';
 import { ForbiddenException } from '@nestjs/common';
 import { Project, ProjectStatus } from '../../../domain/entities/project.entity';
 

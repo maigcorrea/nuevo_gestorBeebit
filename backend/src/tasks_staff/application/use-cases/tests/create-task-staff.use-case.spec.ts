@@ -2,7 +2,7 @@ import { CreateTaskStaffUseCase } from '../create-task-staff.use-case';
 import { TaskRepositoryPort } from 'src/task2/domain/ports/task.repository.port';
 import { StaffRepositoryPort } from 'src/staff2/domain/ports/staff.repository.port';
 import { TaskStaffRepositoryPort } from 'src/tasks_staff2/domain/ports/task-staff.repository.port';
-import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { MailQueueService } from 'src/infrastructure/mail/mail-queue/mail-queue.service';
 import { AppAbility } from 'src/casl/casl-ability.factory';
 import { TaskStaff } from 'src/tasks_staff2/domain/entities/task-staff.entity';
 

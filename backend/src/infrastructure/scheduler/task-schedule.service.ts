@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { MailQueueService } from 'src/infrastructure/mail/mail-queue/mail-queue.service';
 import { Project } from 'src/project/domain/entities/project.entity';
 import { TaskStaffOrmEntity } from 'src/tasks_staff/infrastructure/persistence/task-staff.orm-entity';
 import { FindTasksDueTomorrowUseCase } from 'src/tasks_staff/application/use-cases/find-tasks-due-tomorrow.use-case';

@@ -7,12 +7,12 @@ import { TaskModule } from './task/task.module';
 import { StaffModule } from './staff/staff.module';
 import { TaskStaffModule } from './tasks_staff/task-staff.module';
 import { AuthModule } from './auth/auth.module';
-import { MailModule } from './mail/mail.module';
+import { MailModule } from './infrastructure/mail/mail.module';
 import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
-import { MailQueueModule } from './mail/mail-queue/mail-queue.module';
+import { MailQueueModule } from './infrastructure/mail/mail-queue/mail-queue.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SchedulerModule } from './scheduler/sheduler.module';
+import { SchedulerModule } from './infrastructure/scheduler/sheduler.module';
 import { MessagesModule } from './messages/messages.module';
 import { CaslModule } from './casl/casl.module';
 // ENTIDADES
@@ -21,12 +21,9 @@ import { Task } from './task/domain/entities/task.entity';
 import { Staff } from './staff/domain/entities/staff.entity';
 import { TaskStaff } from './tasks_staff/domain/entities/task-staff.entity';
 import { Message } from './messages/domain/entities/messages.entity';
-import { TareaOrmEntity } from './EjemploArquitectura/infrastructure/persistence/tarea.orm-entity';
-import { TareaRepository } from './EjemploArquitectura/infrastructure/persistence/tarea.repository';
 
 
-//Ejemplo arquitectura hexagonal
-import { TaskController } from './EjemploArquitectura/infrastructure/controllers/task.controller';
+
 import { StaffOrmEntity } from './staff/infrastructure/persistence/staff.orm-entity';
 
 
@@ -56,7 +53,7 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
       entities: [ Project, Task, Staff, TaskStaff, Message,  StaffOrmEntity, MessageOrmEntity, ProjectTypeOrmEntity, TaskTypeOrmEntity, TaskStaffOrmEntity], // Entidades que se utilizarán
       synchronize: false, // Sincroniza automáticamente la base de datos (solo en desarrollo) ← Esto borra y recrea la base de datos en cada inicio. Debería ser false y generar una migración.
     }),
-    TypeOrmModule.forFeature([TareaOrmEntity]),
+    TypeOrmModule.forFeature([]),
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST,
@@ -75,7 +72,7 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     MessagesModule,
     CaslModule
   ],
-  controllers: [AppController, TaskController],
-  providers: [TareaRepository],
+  controllers: [AppController, ],
+  providers: [],
 })
 export class AppModule {}

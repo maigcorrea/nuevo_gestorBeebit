@@ -12,8 +12,8 @@ import { StaffRepository } from 'src/staff/infrastructure/persistence/staff.repo
 
 import { CreateTaskStaffUseCase } from './application/use-cases/create-task-staff.use-case';
 import { CaslModule } from 'src/casl/casl.module';
-import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
-import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { MailQueueModule } from 'src/infrastructure/mail/mail-queue/mail-queue.module';
+import { MailQueueService } from 'src/infrastructure/mail/mail-queue/mail-queue.service';
 import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
 import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 import { FindAllTaskStaffUseCase } from './application/use-cases/find-all-task-staff.use-case';

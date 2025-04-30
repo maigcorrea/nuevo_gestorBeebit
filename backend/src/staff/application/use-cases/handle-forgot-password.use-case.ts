@@ -1,5 +1,5 @@
 import { StaffRepositoryPort } from '../../domain/ports/staff.repository.port';
-import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+import { MailQueueService } from 'src/infrastructure/mail/mail-queue/mail-queue.service';
 import { HandleForgotPasswordInput } from '../../domain/interfaces/handle-forgot-password.input';
 import { randomBytes } from 'crypto';
 

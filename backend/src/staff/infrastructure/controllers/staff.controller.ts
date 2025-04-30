@@ -25,7 +25,7 @@ import { VerifyPasswordDto } from '../dto/verify-password.dto';
 import { ChangePasswordUseCase } from 'src/staff/application/use-cases/change-password.use-case';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { SaveProfileImageUseCase } from 'src/staff/application/use-cases/save-profile-image.use-case';
-import { MinioService } from 'src/minio/minio.service';
+import { MinioService } from 'src/infrastructure/minio/minio.service';
 import { Express } from 'express';
 import { StaffOrmEntity } from '../persistence/staff.orm-entity';
 

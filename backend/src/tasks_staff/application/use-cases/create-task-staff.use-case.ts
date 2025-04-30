@@ -11,7 +11,7 @@ import {
   import { TaskRepositoryPort } from 'src/task/domain/ports/task.repository.port';
   import { StaffRepositoryPort } from 'src/staff/domain/ports/staff.repository.port';
   import { TaskStaffRepositoryPort } from '../../domain/ports/task-staff.repository.port';
-  import { MailQueueService } from 'src/mail/mail-queue/mail-queue.service';
+  import { MailQueueService } from 'src/infrastructure/mail/mail-queue/mail-queue.service';
 import { TaskTypeOrmEntity } from 'src/task/infrastructure/persistence/task.typeorm.entity';
 import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';

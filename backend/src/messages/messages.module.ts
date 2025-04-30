@@ -13,7 +13,7 @@ import { FindSentMessagesByUserUseCase } from './application/use-cases/find-sent
 import { FindReceivedMessagesByUserUseCase } from './application/use-cases/find-received-messages-by-user.use-case';
 
 import { forwardRef } from '@nestjs/common';
-import { MailQueueModule } from 'src/mail/mail-queue/mail-queue.module';
+import { MailQueueModule } from 'src/infrastructure/mail/mail-queue/mail-queue.module';
 
 @Module({
   imports: [

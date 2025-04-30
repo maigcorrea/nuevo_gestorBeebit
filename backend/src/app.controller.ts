@@ -1,6 +1,6 @@
 import { Controller, Get, Post } from '@nestjs/common';
 //import { AppService } from './app.service';
-import { MailQueueService } from './mail/mail-queue/mail-queue.service';
+import { MailQueueService } from './infrastructure/mail/mail-queue/mail-queue.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller()

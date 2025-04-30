@@ -3,7 +3,7 @@ import { ProjectRepositoryPort } from '../../domain/ports/project.repository.por
 import { CreateProjectInput } from 'src/project/domain/interfaces/create-project.input';
 import { Project, ProjectStatus } from '../../domain/entities/project.entity'; //La de dominio
 import { AppAbility } from '../../../casl/casl-ability.factory';
-import { MinioService } from '../../../minio/minio.service';
+import { MinioService } from '../../../infrastructure/minio/minio.service';
 import { Inject } from '@nestjs/common';
 import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
 
