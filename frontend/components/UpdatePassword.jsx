@@ -13,6 +13,7 @@ const UpdatePassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleVerify = async () => {
         const id = localStorage.getItem('id');
@@ -43,6 +44,7 @@ const UpdatePassword = () => {
             return;
         }
 
+        setIsSaving(true);// Para que mientras se guarde se deshabilite el botón
         const id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
 
@@ -65,9 +67,11 @@ const UpdatePassword = () => {
                 setConfirmPassword('');
                 setSuccessMessage('');
                 setError('');
+                setIsSaving(false);
             }, 2000);
         } else {
             setError('Error al actualizar la contraseña');
+            setIsSaving(false);
         }
     };
 
@@ -96,7 +100,7 @@ const UpdatePassword = () => {
                     <Password value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} toggleMask className="w-full mb-3" />
 
                     {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <Button label="Guardar contraseña" className="mt-2" onClick={handlePasswordChange} />
+                    <Button label="Guardar contraseña" className="mt-2" onClick={handlePasswordChange} disabled={isSaving} />
                 </>
             )}
         </Dialog>
