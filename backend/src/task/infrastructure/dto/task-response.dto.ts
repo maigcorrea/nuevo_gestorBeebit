@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TaskPriority, TaskStatus } from '../../domain/enums/task.enums';
 
 export class TaskResponseDto {
@@ -51,4 +51,10 @@ export class TaskResponseDto {
     enum: TaskStatus,
   })
   status: TaskStatus;
+
+  @ApiPropertyOptional({
+    description: 'ID de la tarea en Clockify',
+    example: '6630e7ea943c7c32b3e527c9',
+  })
+  clockifyTaskId?: string | null;
 }

@@ -43,7 +43,13 @@ import {
       enum: TaskStatus,
     })
     status: TaskStatus;
+
+
+    @Column({ type: 'varchar', nullable: true })
+    clockifyTaskId?: string | null;
   }
+
+  
   
 
   export { TaskTypeOrmEntity as Task };

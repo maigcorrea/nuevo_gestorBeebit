@@ -16,12 +16,17 @@ import { TASK_REPOSITORY } from './domain/token/task-repository.token';
 import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
 import { ProjectRepository } from 'src/project/infrastructure/persistence/project.repository';
 import { ProjectModule } from 'src/project/project.module';
+import { ClockifyModule } from 'src/infrastructure/clockify/clockify.module';
+import { ClockifyService } from 'src/infrastructure/clockify/clockyfy.service';
+import { ConfigModule } from '@nestjs/config';// necesario si usas ConfigService directamente
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskTypeOrmEntity]),
     CaslModule,
     ProjectModule,
+    ClockifyModule,
+    ConfigModule,
   ],
   controllers: [TaskController],
   providers: [

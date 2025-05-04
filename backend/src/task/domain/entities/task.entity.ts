@@ -11,11 +11,13 @@ export class Task {
     public completed: boolean,
     public priority: TaskPriority,
     public status: TaskStatus,
+    public clockifyTaskId: string | null,
     public associated_project?: {
       id: string;
       last_update: Date | null;
       status: string;
       deadline?: Date;
-    }
+    },
+    
   ) {}
 }

@@ -15,6 +15,7 @@ export class TaskMapper {
       entity.completed,
       entity.priority,
       entity.status,
+      entity.clockifyTaskId ?? null,
       {
         id: entity.associated_project.id,
         last_update: entity.associated_project.last_update,
@@ -55,6 +56,7 @@ export class TaskMapper {
       completed: task.completed,
       priority: task.priority,
       status: task.status,
+      clockifyTaskId: task.clockifyTaskId,
     };
   }
 

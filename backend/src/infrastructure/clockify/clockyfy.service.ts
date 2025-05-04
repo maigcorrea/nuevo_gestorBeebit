@@ -27,6 +27,13 @@ export class ClockifyService {
     return response.json();
   }
 
+
+  getWorkspaceId(): string {
+    return this.configService.get<string>('CLOCKIFY_WORKSPACE_ID')!;
+  }
+
+
+  
   async getUser(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/user`, {
       headers: {
@@ -71,4 +78,35 @@ export class ClockifyService {
   
     return response.json();
   }
+
+
+  //Añadir una tarea asociada a un proyecto a Clockify
+  async createTaskOnClockify({
+    name,
+    projectId,
+    workspaceId,
+  }: {
+    name: string;
+    projectId: string;
+    workspaceId: string;
+  }): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/projects/${projectId}/tasks`, {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': this.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    });
+  
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Error creando tarea en Clockify: ${response.status} ${text}`);
+    }
+  
+    return response.json(); // contiene el clockifyTaskId como `id`
+  }
+ 
 }
