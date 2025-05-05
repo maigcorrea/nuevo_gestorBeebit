@@ -33,7 +33,8 @@ export class CreateStaffUseCase {
           input.type ?? StaffType.USER,
           null,
           null,
-          null
+          null,
+          null,
         );
   
         const created = await this.staffRepo.save(staff);

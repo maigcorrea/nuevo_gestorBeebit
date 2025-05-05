@@ -46,5 +46,8 @@ import {
   
     @OneToMany(() => MessageOrmEntity, (message) => message.sender)
     sentMessages: MessageOrmEntity[];
+
+    @Column({ type: 'varchar', nullable: true })
+    clockifyUserId?: string | null;
   }
   

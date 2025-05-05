@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards, Get, Param, Put, Delete, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, Get, Param, Put, Delete, UseInterceptors, UploadedFile, BadRequestException, Patch } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -28,6 +28,9 @@ import { SaveProfileImageUseCase } from 'src/staff/application/use-cases/save-pr
 import { MinioService } from 'src/infrastructure/minio/minio.service';
 import { Express } from 'express';
 import { StaffOrmEntity } from '../persistence/staff.orm-entity';
+import { UpdateClockifyIdDto } from '../dto/update-clockify-id.dto';
+import { StaffMapper } from '../mappers/staff.mapper';
+import { UpdateClockifyUserIdUseCase } from 'src/staff/application/use-cases/update-clockify-id.use-case';
 
 
 @ApiTags('Staff') //COntrolador para rutas protegidas(con JWT)
@@ -47,6 +50,7 @@ export class StaffController{
         private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
         private readonly changePasswordUseCase: ChangePasswordUseCase,
         private readonly saveProfileImageUseCase: SaveProfileImageUseCase,
+        private readonly updateClockifyUserIdUseCase: UpdateClockifyUserIdUseCase,
         private readonly minioService: MinioService,
     ) {}
 
@@ -58,6 +62,25 @@ export class StaffController{
     async create(@Body() createStaffDto: CreateStaffDto, @Req() req: Request) {
         const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
         return await this.createStaffUseCase.execute(createStaffDto, ability);
+    }
+
+
+    //Recuperar id de Clockify
+    @Patch(':id/clockify-id')
+    @ApiOperation({ summary: 'Actualizar clockifyUserId de un empleado' })
+    @ApiResponse({ status: 200, description: 'ID actualizado correctamente', type: StaffResponseDto })
+    @ApiResponse({ status: 404, description: 'Empleado no encontrado' })
+    @UseGuards(AuthGuard('jwt'), AbilitiesGuard)
+    @CheckAbilities({ action: 'update', subject: Staff })
+    @ApiBearerAuth('jwt')
+    async updateClockifyUserId(
+    @Param('id') id: string,
+    @Body() dto: UpdateClockifyIdDto,
+    @Req() req: Request,
+    ): Promise<StaffResponseDto> {
+    const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
+    const updated = await this.updateClockifyUserIdUseCase.execute(id, dto.clockifyUserId, ability);
+    return StaffMapper.toResponseDto(updated);
     }
 
 

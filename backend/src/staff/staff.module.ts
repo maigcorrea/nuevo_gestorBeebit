@@ -24,6 +24,7 @@ import { SaveProfileImageUseCase } from './application/use-cases/save-profile-im
 import { StaffRepositoryPort } from './domain/ports/staff.repository.port';
 import { PublicStaffController } from './infrastructure/controllers/public-staff.controller';
 import { ValidateTokenUseCase } from './application/use-cases/validate-token.use-case';
+import { UpdateClockifyUserIdUseCase } from './application/use-cases/update-clockify-id.use-case';
 
 
 @Module({
@@ -106,6 +107,11 @@ import { ValidateTokenUseCase } from './application/use-cases/validate-token.use
     {
       provide: ValidateTokenUseCase,
       useFactory: (repo: StaffRepositoryPort) => new ValidateTokenUseCase(repo),
+      inject: [StaffRepository],
+    },
+    {
+      provide: UpdateClockifyUserIdUseCase,
+      useFactory: (repo: StaffRepositoryPort) => new UpdateClockifyUserIdUseCase(repo),
       inject: [StaffRepository],
     },
     

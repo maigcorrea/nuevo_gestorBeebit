@@ -26,6 +26,7 @@ export class StaffRepository implements StaffRepositoryPort {
       resetToken: staff.resetToken,
       resetTokenExpiry: staff.resetTokenExpiry,
       ...(staff.profileImage && { profileImage: staff.profileImage }),
+      ...(staff.clockifyUserId && { clockifyUserId: staff.clockifyUserId }),
     });
 
     const saved = await this.repo.save(entity);
@@ -117,6 +118,7 @@ export class StaffRepository implements StaffRepositoryPort {
       entity.resetToken,
       entity.resetTokenExpiry,
       entity.profileImage,
+      entity.clockifyUserId ?? null,
     );
   }
 

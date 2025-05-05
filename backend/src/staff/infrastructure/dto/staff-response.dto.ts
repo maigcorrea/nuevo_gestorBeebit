@@ -47,7 +47,14 @@ export class StaffResponseDto{
         description: 'URL de la imagen de perfil del usuario',
         example: 'https://tuapp.com/uploads/avatars/imagen.jpg',
       })
-    profileImage?: string;
+    profileImage?: string | null;
+
+
+    @ApiPropertyOptional({
+        description: 'ID del usuario en Clockify',
+        example: '6630e7ea943c7c32b3e527c9',
+    })
+    clockifyUserId?: string | null;
 
 
     static fromEntity(staff: import('../../domain/entities/staff.entity').Staff): StaffResponseDto {
@@ -58,6 +65,8 @@ export class StaffResponseDto{
         dto.phone = staff.phone;
         dto.type = staff.type;
         dto.register_date = staff.register_date;
+        dto.profileImage = staff.profileImage;
+        dto.clockifyUserId = staff.clockifyUserId;
         return dto;
     }
 }

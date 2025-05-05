@@ -16,6 +16,7 @@ export class StaffMapper {
       entity.resetToken,
       entity.resetTokenExpiry,
       entity.profileImage,
+      entity.clockifyUserId ?? null,
     );
   }
 
@@ -32,6 +33,7 @@ export class StaffMapper {
     entity.resetToken = domain.resetToken;
     entity.resetTokenExpiry = domain.resetTokenExpiry;
     entity.profileImage = domain.profileImage;
+    entity.clockifyUserId = domain.clockifyUserId ?? null;
     return entity;
   }
 
@@ -45,6 +47,7 @@ export class StaffMapper {
       profileImage: domain.profileImage ?? undefined,
       type: domain.type,
       register_date: domain.register_date,
+      clockifyUserId: domain.clockifyUserId ?? undefined,
     };
   }
 }

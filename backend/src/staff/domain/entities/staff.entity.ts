@@ -15,6 +15,7 @@ export class Staff{
         public resetToken: string | null = null,
         public resetTokenExpiry: Date | null = null,
         public profileImage: string | null = null,
+        public clockifyUserId: string | null,
     ) {}
     
 }

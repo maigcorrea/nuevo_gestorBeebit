@@ -109,4 +109,52 @@ export class ClockifyService {
     return response.json(); // contiene el clockifyTaskId como `id`
   }
  
+
+  //Invitar un usuario al Workspace
+  async inviteUserToWorkspace({
+    email,
+    workspaceId,
+  }: {
+    email: string;
+    workspaceId: string;
+  }): Promise<void> {
+    const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/users`, {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': this.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error invitando al usuario a Clockify: ${response.status} - ${errorText}`);
+    }
+  }
+
+
+
+
+  //Recuperar el id de Clockify de un empleado después de que haya aceptado la invitación a Clockify
+  async getClockifyUserIdByEmail(email: string): Promise<string | null> {
+    const workspaceId = this.getWorkspaceId(); // puedes cambiar esto si prefieres pasarlo como parámetro
+  
+    const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/users`, {
+      headers: {
+        'X-Api-Key': this.apiKey,
+      },
+    });
+  
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Error al obtener usuarios de Clockify: ${response.status} ${text}`);
+    }
+  
+    const users = await response.json();
+  
+    const user = users.find((u: any) => u.email.toLowerCase() === email.toLowerCase());
+  
+    return user ? user.id : null;
+  }
 }
