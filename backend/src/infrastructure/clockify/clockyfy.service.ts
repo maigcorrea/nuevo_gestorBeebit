@@ -161,4 +161,42 @@ export class ClockifyService {
   
     return user ? user.id : null;
   }
+
+
+  async startTimeEntry({
+    userId,
+    projectId,
+    taskId,
+    description = 'Trabajo en tarea',
+  }: {
+    userId: string;
+    projectId: string;
+    taskId: string;
+    description?: string;
+  }): Promise<any> {
+    const workspaceId = this.getWorkspaceId();
+    const start = new Date().toISOString(); // hora actual en formato UTC
+  
+    const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries`, {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': this.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        start,
+        description,
+        projectId,
+        taskId,
+        billable: false,
+      }),
+    });
+  
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Error al iniciar time entry en Clockify: ${response.status} ${text}`);
+    }
+  
+    return response.json();
+  }
 }
