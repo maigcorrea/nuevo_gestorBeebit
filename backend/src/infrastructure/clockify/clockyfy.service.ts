@@ -113,8 +113,9 @@ export class ClockifyService {
   }
  
 
+  //NO ME SIRVE PORQUE CON EL PLAN GRATUITO NO SE PUEDE INVITAR A TRAVÉS DE LA API
   //Invitar un usuario al Workspace
-  async inviteUserToWorkspace({
+  /*async inviteUserToWorkspace({
     email,
     workspaceId,
   }: {
@@ -134,7 +135,7 @@ export class ClockifyService {
       const errorText = await response.text();
       throw new Error(`Error invitando al usuario a Clockify: ${response.status} - ${errorText}`);
     }
-  }
+  }*/
 
 
 
