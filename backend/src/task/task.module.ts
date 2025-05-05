@@ -19,10 +19,13 @@ import { ProjectModule } from 'src/project/project.module';
 import { ClockifyModule } from 'src/infrastructure/clockify/clockify.module';
 import { ClockifyService } from 'src/infrastructure/clockify/clockyfy.service';
 import { ConfigModule } from '@nestjs/config';// necesario si usas ConfigService directamente
+import { StaffRepository } from 'src/staff/infrastructure/persistence/staff.repository';
+import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
+import { StaffOrmEntity } from 'src/staff/infrastructure/persistence/staff.orm-entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TaskTypeOrmEntity]),
+    TypeOrmModule.forFeature([TaskTypeOrmEntity, StaffOrmEntity]),
     CaslModule,
     ProjectModule,
     ClockifyModule,
@@ -40,6 +43,10 @@ import { ConfigModule } from '@nestjs/config';// necesario si usas ConfigService
     {
       provide: TASK_REPOSITORY,
       useClass: TaskRepository,
+    },
+    {
+      provide: STAFF_REPOSITORY,
+      useClass: StaffRepository,
     },
     
   ],

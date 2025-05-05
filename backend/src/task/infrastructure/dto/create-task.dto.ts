@@ -46,4 +46,13 @@ export class CreateTaskDto {
     message: "Debe ser high, medium o low",
   })
   priority: TaskPriority;
+
+  @ApiPropertyOptional({
+    description: 'IDs de los empleados asignados a la tarea',
+    type: [String],
+    example: ['f4036c1a-57a2-4cb9-9b67-bdf0a4c7edc1'],
+  })
+  @IsOptional()
+  @IsUUID('4', { each: true })
+  staffIds?: string[];
 }

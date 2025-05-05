@@ -85,10 +85,12 @@ export class ClockifyService {
     name,
     projectId,
     workspaceId,
+    assigneeIds=[],
   }: {
     name: string;
     projectId: string;
     workspaceId: string;
+    assigneeIds?: string[];
   }): Promise<any> {
     const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/projects/${projectId}/tasks`, {
       method: 'POST',
@@ -98,6 +100,7 @@ export class ClockifyService {
       },
       body: JSON.stringify({
         name,
+        assigneeIds,
       }),
     });
   

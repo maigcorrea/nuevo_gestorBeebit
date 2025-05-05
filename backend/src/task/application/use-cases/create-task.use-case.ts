@@ -11,6 +11,9 @@ import { TASK_REPOSITORY } from 'src/task/domain/token/task-repository.token';
 import { ClockifyService } from 'src/infrastructure/clockify/clockyfy.service';
 import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.token';
 import { ProjectRepositoryPort } from 'src/project/domain/ports/project.repository.port';
+import { Staff } from 'src/staff/domain/entities/staff.entity';
+import { StaffRepositoryPort } from 'src/staff/domain/ports/staff.repository.port';
+import { STAFF_REPOSITORY } from 'src/staff/domain/token/staff.token';
 
 @Injectable()
 export class CreateTaskUseCase {
@@ -19,6 +22,8 @@ export class CreateTaskUseCase {
     private readonly taskRepo: TaskRepositoryPort,
     @Inject(PROJECT_REPOSITORY)
     private readonly projectRepo: ProjectRepositoryPort,
+    @Inject(STAFF_REPOSITORY)
+    private readonly staffRepo: StaffRepositoryPort,
     private readonly clockifyService: ClockifyService,
   ) {}
 
@@ -58,13 +63,45 @@ export class CreateTaskUseCase {
 
      if (clockifyProjectId) {
       try {
-        const createdTask = await this.clockifyService.createTaskOnClockify({
-          name: task.title,
-          projectId: clockifyProjectId,
-          workspaceId: this.clockifyService.getWorkspaceId(), // o úsalo desde ConfigService,
-        });
+      const assigneeIds: string[] = [];
 
-        task.clockifyTaskId = createdTask.id;
+      if (input.staffIds?.length) {
+        for (const staffId of input.staffIds) {
+          const staff = await this.staffRepo.findById(staffId);
+          if (!staff) continue;
+  
+          // Si no tiene clockifyUserId, invítalo (esto ya lo tienes implementado)
+          if (!staff.clockifyUserId) {
+            try {
+              await this.clockifyService.inviteUserToWorkspace({
+                email: staff.email,
+                workspaceId: this.clockifyService.getWorkspaceId(),
+              });
+              console.log(`[Clockify] Invitación enviada a ${staff.email}`);
+            } catch (inviteError) {
+              console.warn(`[Clockify] Error invitando a ${staff.email}:`, inviteError.message);
+            }
+          }
+  
+          // Volvemos a buscar por si ya tiene clockifyUserId (se puede mejorar con un servicio que espere confirmación)
+          const refreshedStaff = await this.staffRepo.findById(staffId);
+          if (refreshedStaff?.clockifyUserId) {
+            assigneeIds.push(refreshedStaff.clockifyUserId);
+          }
+        }
+      }
+
+
+      const createdTask = await this.clockifyService.createTaskOnClockify({
+        name: task.title,
+        projectId: clockifyProjectId,
+        workspaceId: this.clockifyService.getWorkspaceId(),
+        assigneeIds,
+      });
+  
+      task.clockifyTaskId = createdTask.id;
+      
+        
       } catch (error) {
         console.warn('[Clockify] No se pudo crear la tarea en Clockify:', error.message);
         // puedes continuar sin lanzar excepción
