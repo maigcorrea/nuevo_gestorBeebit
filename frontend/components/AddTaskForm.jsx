@@ -163,7 +163,8 @@ const AddTaskForm = () => {
             description,
             associated_project_id: associated_project,
             priority: priority.code,
-            ...(start_date !== '' && { start_date })
+            ...(start_date !== '' && { start_date }),
+            staffIds: staff,
           };
           
           console.log('Body enviado:', body);

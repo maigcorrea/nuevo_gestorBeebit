@@ -13,5 +13,6 @@ export interface StaffRepositoryPort {
   update(staff: Staff): Promise<Staff>;              // útil para edición o recuperación
   delete(id: string): Promise<void>;                 // si luego añades soft/hard delete
   findByEmailWithPassword(email: string): Promise<StaffOrmEntity | null>;
+  updateClockifyUserId(staffId: string, clockifyUserId: string): Promise<void>;
   
 }

@@ -128,4 +128,15 @@ export class StaffRepository implements StaffRepositoryPort {
       select: ['id', 'name', 'email', 'password', 'type', 'profileImage'],
     });
   }
+
+
+  async updateClockifyUserId(staffId: string, clockifyUserId: string): Promise<void> {
+    console.log("HOLA");
+    await this.repo.update(staffId, { clockifyUserId });
+
+    // Luego verifica manualmente que se guarda:
+    const updated = await this.repo.findOneById(staffId);
+    console.log('[Clockify] Verificación post-guardado:', updated?.clockifyUserId);
+  }
+
 }

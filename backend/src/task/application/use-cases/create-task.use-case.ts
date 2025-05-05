@@ -28,6 +28,7 @@ export class CreateTaskUseCase {
   ) {}
 
   async execute(input: CreateTaskInput, ability: AppAbility): Promise<Task> {
+    console.log('[CreateTaskUseCase] Entrando al caso de uso');
     if (!ability.can('create', TaskSubject)) {
       throw new ForbiddenException('No tienes permiso para crear nuevas tareas');
     }
@@ -60,38 +61,37 @@ export class CreateTaskUseCase {
      // Obtener el ID del proyecto en Clockify (desde tu repositorio)
       const project = await this.projectRepo.findById(input.associated_project_id);
       const clockifyProjectId = project?.clockifyProjectId;
-
+      console.log('clockifyProjectId:', clockifyProjectId);
      if (clockifyProjectId) {
       try {
       const assigneeIds: string[] = [];
 
       if (input.staffIds?.length) {
+        console.log('CLOCKIFY: input.staffIds recibido:', input.staffIds);
         for (const staffId of input.staffIds) {
           const staff = await this.staffRepo.findById(staffId);
           if (!staff) continue;
   
-          // Si no tiene clockifyUserId, invítalo (esto ya lo tienes implementado)
-          if (!staff.clockifyUserId) {
-            try {
-              await this.clockifyService.inviteUserToWorkspace({
-                email: staff.email,
-                workspaceId: this.clockifyService.getWorkspaceId(),
-              });
-              console.log(`[Clockify] Invitación enviada a ${staff.email}`);
-            } catch (inviteError) {
-              console.warn(`[Clockify] Error invitando a ${staff.email}:`, inviteError.message);
+          
+
+          // Si no tiene clockifyUserId, intenta obtenerlo desde la API
+          if (!staff.clockifyUserId || staff.clockifyUserId === '') {
+            const userIdFromClockify = await this.clockifyService.getClockifyUserIdByEmail(staff.email);
+            console.log("Datos de clockify del usuario", userIdFromClockify, staff.email)
+
+            if (userIdFromClockify) {
+              await this.staffRepo.updateClockifyUserId(staffId, userIdFromClockify);
+              assigneeIds.push(userIdFromClockify);
+            } else {
+              console.warn(`[Clockify] No se encontró el ID para ${staff.email}. Debe estar en el workspace.`);
             }
-          }
-  
-          // Volvemos a buscar por si ya tiene clockifyUserId (se puede mejorar con un servicio que espere confirmación)
-          const refreshedStaff = await this.staffRepo.findById(staffId);
-          if (refreshedStaff?.clockifyUserId) {
-            assigneeIds.push(refreshedStaff.clockifyUserId);
+          }else{
+            assigneeIds.push(staff.clockifyUserId);
           }
         }
       }
 
-
+      console.log("assigneeIds:",assigneeIds);
       const createdTask = await this.clockifyService.createTaskOnClockify({
         name: task.title,
         projectId: clockifyProjectId,
