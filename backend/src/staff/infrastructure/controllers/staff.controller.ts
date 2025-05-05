@@ -93,7 +93,9 @@ export class StaffController{
     @ApiResponse({ status: 403, description: 'No tienes permiso para ver los empleados' })
     async findAll(@Req() req: Request): Promise<StaffResponseDto[]> {
         const ability = this.caslAbilityFactory.createForUser(req.user as StaffOrmEntity);
-        return await this.findAllStaffUseCase.execute(ability);
+        //return await this.findAllStaffUseCase.execute(ability);
+        const staffList = await this.findAllStaffUseCase.execute(ability);
+        return staffList.map(StaffMapper.toResponseDto); 
     }
     
 
