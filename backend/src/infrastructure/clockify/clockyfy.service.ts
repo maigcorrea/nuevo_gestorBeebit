@@ -175,7 +175,7 @@ export class ClockifyService {
     description?: string;
   }): Promise<any> {
     const workspaceId = this.getWorkspaceId();
-    const start = new Date().toISOString(); // hora actual en formato UTC
+    const now = new Date().toISOString();// hora actual en formato UTC
   
     const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries`, {
       method: 'POST',
@@ -184,11 +184,12 @@ export class ClockifyService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        start,
-        description,
+        start:now,
+        description: description || 'Entrada de tiempo',
         projectId,
         taskId,
         billable: false,
+        type: 'REGULAR',
       }),
     });
   

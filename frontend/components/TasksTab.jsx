@@ -199,8 +199,45 @@ const TasksTab = () => {
     return match ? match.name : code;
   };
 
+  //Paginación de las tablas
   const totalPaginas = Math.ceil(tareas.length / tareasPorPagina);
   const tareasPaginadas = tareas.slice((currentPage - 1) * tareasPorPagina, currentPage * tareasPorPagina);
+
+
+  //Integración con clockify
+  const handleStartTimeEntry = async (taskId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`http://localhost:3000/clockify/start-time-entry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // asumiendo que ya lo tienes en contexto
+        },
+        body: JSON.stringify({
+          taskId,
+          staffId: localStorage.getItem('id'), // O como tengas identificado al usuario logueado
+        }),
+      });
+  
+      const data = await res.json();
+      console.log('Time entry iniciada en Clockify:', data);
+  
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Time Entry iniciada',
+        detail: 'Se ha comenzado a contar tiempo en Clockify',
+      });
+  
+    } catch (err) {
+      console.error('Error iniciando time entry:', err);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo iniciar el time entry',
+      });
+    }
+  };
 
   return (
     <>
@@ -228,6 +265,7 @@ const TasksTab = () => {
                   <th>Prioridad</th>
                   <th>Estado</th>
                   <th className="text-center">Acciones</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -269,6 +307,13 @@ const TasksTab = () => {
                       >
                         {tarea.status === 'completed' ? 'Completada' : 'Completar'}
                       </button>
+                    </td>
+                    <td>
+                    <Button 
+                      label="Start" 
+                      onClick={() => handleStartTimeEntry(tarea.id)} 
+                      className="p-button-success"
+                    />
                     </td>
                   </tr>
                 ))}

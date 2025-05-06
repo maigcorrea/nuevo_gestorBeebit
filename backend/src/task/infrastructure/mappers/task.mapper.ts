@@ -41,6 +41,7 @@ export class TaskMapper {
     orm.completed = domain.completed;
     orm.priority = domain.priority;
     orm.status = domain.status;
+    orm.clockifyTaskId = domain.clockifyTaskId;
 
     return orm;
   }

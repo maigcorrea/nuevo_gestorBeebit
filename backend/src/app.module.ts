@@ -76,7 +76,7 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     CaslModule,
     ClockifyModule,
   ],
-  controllers: [AppController, ClockifyController ],
+  controllers: [AppController,],
   providers: [],
 })
 export class AppModule {}
