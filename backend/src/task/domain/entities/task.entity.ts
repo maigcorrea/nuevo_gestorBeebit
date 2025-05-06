@@ -17,6 +17,7 @@ export class Task {
       last_update: Date | null;
       status: string;
       deadline?: Date;
+      clockifyProjectId?: string | null; 
     },
     
   ) {}

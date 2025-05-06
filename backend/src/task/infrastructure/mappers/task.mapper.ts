@@ -20,7 +20,8 @@ export class TaskMapper {
         id: entity.associated_project.id,
         last_update: entity.associated_project.last_update,
         status: entity.associated_project.status,
-        deadline: entity.associated_project.deadline ?? undefined
+        deadline: entity.associated_project.deadline ?? undefined,
+        clockifyProjectId: entity.associated_project.clockifyProjectId ?? undefined,
       }
     );
   }

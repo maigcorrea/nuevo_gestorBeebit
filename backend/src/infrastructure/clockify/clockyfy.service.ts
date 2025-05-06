@@ -225,44 +225,6 @@ export class ClockifyService {
   }
 
 
-  async stopTimeEntryById(timeEntryId: string): Promise<any> {
-    const workspaceId = this.getWorkspaceId();
-  const now = new Date().toISOString();
-
-  // 1. Obtener el time entry actual para saber el valor de `start`
-  const getResponse = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${timeEntryId}`, {
-    headers: {
-      'X-Api-Key': this.apiKey,
-    },
-  });
-
-  if (!getResponse.ok) {
-    const text = await getResponse.text();
-    throw new Error(`Error obteniendo time entry: ${getResponse.status} ${text}`);
-  }
-
-  const timeEntry = await getResponse.json();
-
-  // 2. Enviar PUT con start original y end actual
-  const putResponse = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${timeEntryId}`, {
-    method: 'PUT',
-    headers: {
-      'X-Api-Key': this.apiKey,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      start: timeEntry.timeInterval.start,
-      end: now,
-    }),
-  });
-
-  if (!putResponse.ok) {
-    const text = await putResponse.text();
-    throw new Error(`Error al detener time entry: ${putResponse.status} ${text}`);
-  }
-
-  return putResponse.json();
-  }
 
 
 
@@ -284,5 +246,71 @@ export class ClockifyService {
   
     const data = await res.json();
     return data; // Devuelve todas las entradas en progreso
+  }
+
+
+
+
+
+  async stopTimeEntryById(entryId: string): Promise<any> {
+    const workspaceId = this.getWorkspaceId();
+    const now = new Date().toISOString();
+  
+    const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${entryId}`, {
+      method: 'PATCH',
+      headers: {
+        'X-Api-Key': this.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ end: now }),
+    });
+  
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Error al detener time entry por ID: ${response.status} ${text}`);
+    }
+  
+    return response.json();
+  }
+
+
+
+
+
+
+  async deleteTaskOnClockify(clockifyProjectId: string, clockifyTaskId: string): Promise<void> {
+    console.log("ENTRANDO A DELETETASKONCLOCKIFY");
+    const workspaceId = this.getWorkspaceId();
+
+     // 1. Cambiar estado a DONE (requerido por Clockify para poder eliminar)
+  const updateUrl = `${this.baseUrl}/workspaces/${workspaceId}/projects/${clockifyProjectId}/tasks/${clockifyTaskId}`;
+  const updateRes = await fetch(updateUrl, {
+    method: 'PUT',
+    headers: {
+      'X-Api-Key': this.apiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: 'Tarea eliminada', // Clockify requiere nombre aunque solo cambies status
+      status: 'DONE',
+    }),
+  });
+
+  if (!updateRes.ok) {
+    const text = await updateRes.text();
+    throw new Error(`Error al actualizar la tarea en Clockify: ${updateRes.status} ${text}`);
+  }
+  
+    const res = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/projects/${clockifyProjectId}/tasks/${clockifyTaskId}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Api-Key': this.apiKey,
+      },
+    });
+  
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Error al borrar la tarea en Clockify: ${res.status} ${text}`);
+    }
   }
 }
