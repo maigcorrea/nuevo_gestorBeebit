@@ -358,6 +358,7 @@ const TasksTab = () => {
                           await handleStartTimeEntry(tarea.id);
                         }
                       }}
+                      disabled={tarea.status === 'completed' || tarea.completed}
                     />
                     </td>
                   </tr>
