@@ -75,7 +75,30 @@ services:
       - "6379:6379"
     env_file:
       - .env
+
+  directus:
+    container_name: directus
+    image: directus/directus:latest
+    ports:
+      - "8055:8055"  # Panel web de Directus
+    environment:
+      KEY: ${DIRECTUS_SECRET} # Puedes poner cualquier valor secreto
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin1234
+      DB_CLIENT: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PUBLIC_URL: http://localhost:8055
+      SECRET: ${DIRECTUS_SECRET}
+    depends_on:
+      - postgres
+    volumes:
+      - directus_data:/directus
 volumes:
   postgres_data:
   minio_data:
+  directus_data:
 
