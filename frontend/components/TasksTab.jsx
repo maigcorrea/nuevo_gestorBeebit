@@ -9,6 +9,7 @@ import { Toast } from 'primereact/toast';
 const TasksTab = () => {
   const [tareas, setTareas] = useState([]); //Aquí se almacenan las tareas
   const [error, setError] = useState('');
+  const [tareasActivas, setTareasActivas] = useState({});//Para las tareas que están siendo contabilizadas desde Clockify
 
   //Para editar prioridad y estado de la tarea
   const [editVisible, setEditVisible] = useState(false);
@@ -222,6 +223,8 @@ const TasksTab = () => {
   
       const data = await res.json();
       console.log('Time entry iniciada en Clockify:', data);
+
+      setTareasActivas(prev => ({ ...prev, [taskId]: data.id })); // Guardamos el ID real de la tarea activa
   
       toast.current?.show({
         severity: 'success',
@@ -236,6 +239,42 @@ const TasksTab = () => {
         summary: 'Error',
         detail: 'No se pudo iniciar el time entry',
       });
+    }
+  };
+
+
+
+
+
+
+  const handleStopTimeEntry = async (taskId) => {
+    const token = localStorage.getItem('token');
+    const timeEntryId = tareasActivas[taskId];
+  
+    if (!timeEntryId) return;
+  
+    try {
+      const res = await fetch(`http://localhost:3000/clockify/stop-time-entry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ timeEntryId }),
+      });
+  
+      const data = await res.json();
+      console.log('Time entry detenido:', data);
+  
+      setTareasActivas(prev => ({ ...prev, [taskId]: null }));
+  
+      toast.current?.show({
+        severity: 'info',
+        summary: 'Time Entry detenido',
+        detail: 'Se ha detenido el tiempo en Clockify',
+      });
+    } catch (err) {
+      console.error('Error deteniendo time entry:', err);
     }
   };
 
@@ -310,9 +349,15 @@ const TasksTab = () => {
                     </td>
                     <td>
                     <Button 
-                      label="Start" 
-                      onClick={() => handleStartTimeEntry(tarea.id)} 
-                      className="p-button-success"
+                      label={tareasActivas[tarea.id] ? 'Stop' : 'Start'} 
+                      className={tareasActivas[tarea.id] ? 'p-button-danger' : 'p-button-success'}
+                      onClick={async () => {
+                        if (tareasActivas[tarea.id]) {
+                          await handleStopTimeEntry(tarea.id);
+                        } else {
+                          await handleStartTimeEntry(tarea.id);
+                        }
+                      }}
                     />
                     </td>
                   </tr>

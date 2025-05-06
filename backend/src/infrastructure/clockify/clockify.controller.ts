@@ -10,6 +10,7 @@ import { PROJECT_REPOSITORY } from 'src/project/domain/token/project-repository.
 import { StaffRepositoryPort } from 'src/staff/domain/ports/staff.repository.port';
 import { TaskRepositoryPort } from 'src/task/domain/ports/task.repository.port';
 import { ProjectRepositoryPort } from 'src/project/domain/ports/project.repository.port';
+import { StopTimeEntryDto } from './dto/stop-time-entry.dto';
 
 @ApiTags('Clockify')
 @ApiBearerAuth('jwt')
@@ -59,4 +60,11 @@ export class ClockifyController {
       description: `Trabajando en ${task.title}`,
     });
   }
+
+
+  @Post('/stop-time-entry')
+  async stopTimeEntry(@Body() body: StopTimeEntryDto) {
+    return this.clockifyService.stopTimeEntryById(body.timeEntryId);
+  }
+
 }

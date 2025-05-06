@@ -200,4 +200,89 @@ export class ClockifyService {
   
     return response.json();
   }
+
+
+
+  //Obtener la entrada activa actual del usuario
+  async getRunningTimeEntry(userId: string): Promise<any> {
+    const workspaceId = this.getWorkspaceId();
+
+    const res = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/user/${userId}/time-entries?in-progress=true`, {
+      headers: {
+        'X-Api-Key': this.apiKey,
+      },
+    });
+  
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Error al obtener time entry: ${res.status} ${text}`);
+    }
+  
+    const data = await res.json();
+    if (!data.length) throw new Error('No hay time entry activo para este usuario');
+  
+    return data[0];
+  }
+
+
+  async stopTimeEntryById(timeEntryId: string): Promise<any> {
+    const workspaceId = this.getWorkspaceId();
+  const now = new Date().toISOString();
+
+  // 1. Obtener el time entry actual para saber el valor de `start`
+  const getResponse = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${timeEntryId}`, {
+    headers: {
+      'X-Api-Key': this.apiKey,
+    },
+  });
+
+  if (!getResponse.ok) {
+    const text = await getResponse.text();
+    throw new Error(`Error obteniendo time entry: ${getResponse.status} ${text}`);
+  }
+
+  const timeEntry = await getResponse.json();
+
+  // 2. Enviar PUT con start original y end actual
+  const putResponse = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${timeEntryId}`, {
+    method: 'PUT',
+    headers: {
+      'X-Api-Key': this.apiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      start: timeEntry.timeInterval.start,
+      end: now,
+    }),
+  });
+
+  if (!putResponse.ok) {
+    const text = await putResponse.text();
+    throw new Error(`Error al detener time entry: ${putResponse.status} ${text}`);
+  }
+
+  return putResponse.json();
+  }
+
+
+
+
+
+  async getAllRunningTimeEntries(): Promise<any[]> {
+    const workspaceId = this.getWorkspaceId();
+  
+    const res = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/status/in-progress`, {
+      headers: {
+        'X-Api-Key': this.apiKey,
+      },
+    });
+  
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Error al obtener time entries en progreso: ${res.status} ${text}`);
+    }
+  
+    const data = await res.json();
+    return data; // Devuelve todas las entradas en progreso
+  }
 }
