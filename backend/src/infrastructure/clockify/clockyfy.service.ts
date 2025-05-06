@@ -252,25 +252,43 @@ export class ClockifyService {
 
 
 
-  async stopTimeEntryById(entryId: string): Promise<any> {
+  async stopTimeEntryById(timeEntryId: string): Promise<any> {
     const workspaceId = this.getWorkspaceId();
-    const now = new Date().toISOString();
-  
-    const response = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${entryId}`, {
-      method: 'PATCH',
-      headers: {
-        'X-Api-Key': this.apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ end: now }),
-    });
-  
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Error al detener time entry por ID: ${response.status} ${text}`);
-    }
-  
-    return response.json();
+  const now = new Date().toISOString();
+
+  // 1. Obtener el time entry actual para saber el valor de `start`
+  const getResponse = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${timeEntryId}`, {
+    headers: {
+      'X-Api-Key': this.apiKey,
+    },
+  });
+
+  if (!getResponse.ok) {
+    const text = await getResponse.text();
+    throw new Error(`Error obteniendo time entry: ${getResponse.status} ${text}`);
+  }
+
+  const timeEntry = await getResponse.json();
+
+  // 2. Enviar PUT con start original y end actual
+  const putResponse = await fetch(`${this.baseUrl}/workspaces/${workspaceId}/time-entries/${timeEntryId}`, {
+    method: 'PUT',
+    headers: {
+      'X-Api-Key': this.apiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      start: timeEntry.timeInterval.start,
+      end: now,
+    }),
+  });
+
+  if (!putResponse.ok) {
+    const text = await putResponse.text();
+    throw new Error(`Error al detener time entry: ${putResponse.status} ${text}`);
+  }
+
+  return putResponse.json();
   }
 
 
