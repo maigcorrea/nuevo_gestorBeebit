@@ -38,7 +38,7 @@ const RegisterForm = () => {
 
 
     //Validación de nombre (Si ya existe en la bd)
-    const checkNameExists = async (name) => {
+    /*const checkNameExists = async (name) => {
         const res = await fetch(`http://localhost:3000/staff/nameExists/${name}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -71,12 +71,12 @@ const RegisterForm = () => {
         const data = await res.json();
         return data.exists;
     };
-
+*/
 
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (await checkNameExists(name)) {
+        /*if (await checkNameExists(name)) {
             setNameError('Ya existe un usuario con ese nombre');
             return;
         }
@@ -93,7 +93,7 @@ const RegisterForm = () => {
         if (await checkEmailExists(email)) {
             setEmailError('Ya existe un usuario con ese email');
             return;
-        }
+        }*/
 
 
         //Validación de contraseñas
@@ -115,7 +115,7 @@ const RegisterForm = () => {
         try {
             console.log("TOKEN:", token);
 
-          const res = await fetch('http://localhost:3000/staff', {
+          const res = await fetch('http://localhost:3000/directus/staff', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ name, phone, email, type: type?.code, password })
@@ -130,6 +130,8 @@ const RegisterForm = () => {
                 setFieldErrors({
                     password: data.message.join('. '),
                   });
+            }else {
+              setError(data.message || 'Error al registrar');
             }
 
             return;
