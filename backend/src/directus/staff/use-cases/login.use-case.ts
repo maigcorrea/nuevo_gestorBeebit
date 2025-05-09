@@ -25,11 +25,32 @@ export class LoginUseCase {
       const loginData = await loginResponse.json();
       const token = loginData.data.access_token;
       console.log("TOKEN", token);
-  
+
+      //Obtener el type (u otros datos)
+       const meResponse = await fetch(`${this.directusUrl}/users/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        const meData = await meResponse.json();
+        console.log("🔎 meData:", meData);
+        const userType = meData.data.type;
+        //const userId = meData.data.id;
+        //const profileImage = meData.data.profileImage || '';
+
   
       return {
         message:"Login correcto",
         token,
+        user: {
+          type: userType,
+        }
+       /* user: {
+          id: userId,
+          type: userType,
+          profileImage,
+        },*/
       };
     } catch (error) {
       console.error('❌ Error en LoginUseCase:', error);

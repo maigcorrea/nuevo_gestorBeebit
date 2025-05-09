@@ -42,12 +42,21 @@ const LoginForm = () => {
 
       //Guardamos el token y demás datos
       localStorage.setItem('token', data.token);
-      /*localStorage.setItem('type', data.user.type);
-      localStorage.setItem('id', data.user.id);
-      localStorage.setItem('profileImage', data.user.profileImage || '');
+      //setToken(data.token); SI DESCOMENTAS ESTO PETA EL PROGRAMA
 
+      localStorage.setItem('type', data.user.type);
       setUserType(data.user.type);
-      setProfileImage(data.user.profileImage || '');
+
+
+      localStorage.setItem('id', data.id); //EL ID NO SE GUARDA DE NINGUNA MANERA
+
+      localStorage.setItem('profileImage', data.user.profileImage || 'NO HAY');
+      /*
+      localStorage.setItem('id', data.id);
+      localStorage.setItem('profileImage', data.profileImage || '');
+      setUserType(data.type);
+      setProfileImage(data.profileImage || '');
+      setToken(data.token);
 */
       
       console.log("Login correcto");

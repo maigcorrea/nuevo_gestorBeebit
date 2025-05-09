@@ -24,6 +24,7 @@ export const UserProvider = ({ children }) => {
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
     const [token, setToken] = useState('');
     const [profileImage, setProfileImage] = useState('');
+    //const [id, setId] = useState('');
     const logout = () => {
       localStorage.clear();
       setUserType(null);
@@ -37,6 +38,7 @@ export const UserProvider = ({ children }) => {
     const storedType = localStorage.getItem('type');
     const storedImage = localStorage.getItem('profileImage');
     const storedToken = localStorage.getItem('token');
+    //const storedId = localStorage.getItem('id');
     console.log('t',storedToken);
 
     // Si lo encuentra, lo actualiza en el estado 
@@ -51,6 +53,10 @@ export const UserProvider = ({ children }) => {
     if (storedToken) {
       setToken(storedToken);
     }
+
+    /*if(storedId){
+      setId(storedId);
+    }*/
 
     setIsLoading(false); //Ya se ha cargado el contexto
   }, []);

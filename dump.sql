@@ -44,8 +44,8 @@ CREATE TABLE public."Messages" (
     subject character varying(255),
     text text NOT NULL,
     "sendAt" date NOT NULL,
-    sender uuid,
-    receiver uuid
+    receiver uuid,
+    sender uuid
 );
 
 
@@ -69,27 +69,6 @@ CREATE TABLE public."Project" (
 
 
 ALTER TABLE public."Project" OWNER TO postgres;
-
---
--- Name: Staff; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."Staff" (
-    id uuid NOT NULL,
-    name character varying(255),
-    email character varying(255) DEFAULT NULL::character varying NOT NULL,
-    phone character varying(255) DEFAULT NULL::character varying NOT NULL,
-    password character varying(255) DEFAULT NULL::character varying NOT NULL,
-    register_date date NOT NULL,
-    type character varying(255) DEFAULT 'user'::character varying NOT NULL,
-    "resetToken" character varying(255),
-    "resetTokenExpiry" character varying(255),
-    "profileImage" character varying(255),
-    "clockifyUserId" character varying(255)
-);
-
-
-ALTER TABLE public."Staff" OWNER TO postgres;
 
 --
 -- Name: Task; Type: TABLE; Schema: public; Owner: postgres
@@ -833,7 +812,14 @@ CREATE TABLE public.directus_users (
     theme_dark character varying(255),
     theme_light character varying(255),
     theme_light_overrides json,
-    theme_dark_overrides json
+    theme_dark_overrides json,
+    phone character varying(255) DEFAULT NULL::character varying NOT NULL,
+    register_date date,
+    type character varying(255) DEFAULT 'user'::character varying,
+    "resetToken" character varying(255),
+    "resetTokenExpiry" character varying(255),
+    "profileImage" character varying(255),
+    "clockifyUserId" character varying(255)
 );
 
 
@@ -970,8 +956,8 @@ ALTER TABLE ONLY public.directus_webhooks ALTER COLUMN id SET DEFAULT nextval('p
 -- Data for Name: Messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Messages" (id, subject, text, "sendAt", sender, receiver) FROM stdin;
-5096b02a-9133-4263-9e98-3465cc81c91c	\N	dewdq3we	2025-05-08	13f3f0a0-f25e-4c21-9fc8-af5302eb2874	f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d
+COPY public."Messages" (id, subject, text, "sendAt", receiver, sender) FROM stdin;
+5096b02a-9133-4263-9e98-3465cc81c91c	\N	dewdq3we	2025-05-08	\N	\N
 \.
 
 
@@ -981,16 +967,6 @@ COPY public."Messages" (id, subject, text, "sendAt", sender, receiver) FROM stdi
 
 COPY public."Project" (id, title, description, start_date, deadline, last_update, status, document_url, "clockifyProjectId") FROM stdin;
 2674e6ed-0779-4afe-b9cd-a74ad55c0605	P1	\N	2025-05-08	\N	\N	active	\N	\N
-\.
-
-
---
--- Data for Name: Staff; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Staff" (id, name, email, phone, password, register_date, type, "resetToken", "resetTokenExpiry", "profileImage", "clockifyUserId") FROM stdin;
-f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d	admin	admin@gmail.com	600767821	holaMundo_2	2025-05-08	user	\N	\N	\N	\N
-13f3f0a0-f25e-4c21-9fc8-af5302eb2874	maite	maite@gmail.com	609474291	holaMundo_2	2025-05-08	user	\N	\N	\N	\N
 \.
 
 
@@ -1008,7 +984,7 @@ b6d9a9c6-ac6c-4533-92b6-248efb111401	t1	\N	2025-05-08	\N	f	medium	active	\N	2674
 --
 
 COPY public."Task_staff" (id, task, staff) FROM stdin;
-ad7aa93e-ea6c-4390-99d3-69944dd48e01	b6d9a9c6-ac6c-4533-92b6-248efb111401	f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d
+ad7aa93e-ea6c-4390-99d3-69944dd48e01	b6d9a9c6-ac6c-4533-92b6-248efb111401	\N
 \.
 
 
@@ -1018,10 +994,10 @@ ad7aa93e-ea6c-4390-99d3-69944dd48e01	b6d9a9c6-ac6c-4533-92b6-248efb111401	f5fe3f
 
 COPY public.directus_access (id, role, "user", policy, sort) FROM stdin;
 c504421c-a3f1-4106-8535-f9b07604141f	\N	3d59b549-1665-4368-8631-586f02ea12e5	839e307f-de45-4dd6-9715-818dbc2103ef	2
-c1e7917b-f4d5-4ef9-baee-bff3f7c79398	\N	7136fddd-4146-40f5-b506-25b77ededdf5	abf8a154-5b1c-4a46-ac9c-7300570f4f17	1
 16c217b4-040c-46a6-ba90-949fac9618dd	\N	\N	abf8a154-5b1c-4a46-ac9c-7300570f4f17	1
 2b313a97-8a94-4133-a3a3-c41d43cefa88	4256f46d-8fe5-4a49-92b8-310645edb13f	\N	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a	\N
 b66e73f1-9eb2-43cc-b2fd-349e84ae3e3e	\N	ccd2cde6-bda7-46d3-8658-760a82e3f952	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a	\N
+120f41ed-a4fd-490d-97cf-6227795249d1	\N	aafe6467-b329-42b7-b91e-e7b70c118437	839e307f-de45-4dd6-9715-818dbc2103ef	1
 \.
 
 
@@ -1107,7 +1083,6 @@ COPY public.directus_activity (id, action, "user", "timestamp", ip, user_agent, 
 75	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 11:59:29.974+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	43	http://localhost:8055
 76	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 11:59:54.196+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	44	http://localhost:8055
 77	update	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:52:51.906+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	10	http://localhost:8055
-78	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:53:34.198+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	Staff	f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d	http://localhost:8055
 79	update	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:53:59.031+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	19	http://localhost:8055
 80	update	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:55:24.737+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	38	http://localhost:8055
 81	update	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:55:45.587+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	29	http://localhost:8055
@@ -1115,7 +1090,6 @@ COPY public.directus_activity (id, action, "user", "timestamp", ip, user_agent, 
 83	delete	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:58:17.964+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	28	http://localhost:8055
 84	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:58:50.068+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	Task	b6d9a9c6-ac6c-4533-92b6-248efb111401	http://localhost:8055
 85	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:59:12.509+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	Task_staff	ad7aa93e-ea6c-4390-99d3-69944dd48e01	http://localhost:8055
-86	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 12:59:44.023+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	Staff	13f3f0a0-f25e-4c21-9fc8-af5302eb2874	http://localhost:8055
 87	create	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 13:00:04.96+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	Messages	5096b02a-9133-4263-9e98-3465cc81c91c	http://localhost:8055
 88	login	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 13:17:10.28+00	172.22.0.8	axios/1.9.0	directus_users	a4588c22-c82e-4f17-a623-e2c159646e80	\N
 89	login	a4588c22-c82e-4f17-a623-e2c159646e80	2025-05-08 13:18:46.302+00	172.22.0.8	node	directus_users	a4588c22-c82e-4f17-a623-e2c159646e80	\N
@@ -1468,6 +1442,96 @@ COPY public.directus_activity (id, action, "user", "timestamp", ip, user_agent, 
 436	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:01:45.545+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_permissions	39	http://localhost:8055
 437	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:01:45.546+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_permissions	40	http://localhost:8055
 438	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:01:45.547+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_policies	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a	http://localhost:8055
+439	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:15:32.228+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	45	http://localhost:8055
+440	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:16:21.387+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	46	http://localhost:8055
+441	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:16:28.901+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	46	http://localhost:8055
+442	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:17:53.593+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	47	http://localhost:8055
+443	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:17:57.796+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	47	http://localhost:8055
+444	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:18:11.247+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	48	http://localhost:8055
+445	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:18:21.486+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	49	http://localhost:8055
+446	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:18:51.085+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	50	http://localhost:8055
+447	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:19:05.515+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	51	http://localhost:8055
+448	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:20:13.279+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	http://localhost:8055
+449	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:20:31.027+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	7136fddd-4146-40f5-b506-25b77ededdf5	http://localhost:8055
+450	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:20:43.13+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	3d59b549-1665-4368-8631-586f02ea12e5	http://localhost:8055
+451	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:21:53.042+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	http://localhost:8055
+452	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:22:05.045+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	http://localhost:8055
+453	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:22:13.753+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	7136fddd-4146-40f5-b506-25b77ededdf5	http://localhost:8055
+454	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:23:31.442+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_access	120f41ed-a4fd-490d-97cf-6227795249d1	http://localhost:8055
+455	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:23:31.444+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	http://localhost:8055
+456	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:23:44.099+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	3d59b549-1665-4368-8631-586f02ea12e5	http://localhost:8055
+457	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:23:49.181+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	http://localhost:8055
+458	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:47:26.919+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_access	120f41ed-a4fd-490d-97cf-6227795249d1	http://localhost:8055
+459	update	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 08:47:26.923+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	http://localhost:8055
+460	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 08:55:27.323+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+461	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 08:55:31.747+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+462	login	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-09 09:48:47.581+00	172.22.0.8	node	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	\N
+463	create	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-09 09:48:48.114+00	172.22.0.8	node	directus_users	44648516-c025-442d-b23f-7840246c4b6b	\N
+464	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.071+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	44	http://localhost:8055
+465	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.115+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	40	http://localhost:8055
+466	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.15+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	41	http://localhost:8055
+467	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.185+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_collections	Staff	http://localhost:8055
+468	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.186+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	5	http://localhost:8055
+469	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.187+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	6	http://localhost:8055
+470	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.187+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	7	http://localhost:8055
+471	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.188+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	8	http://localhost:8055
+472	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.189+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	9	http://localhost:8055
+473	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.189+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	10	http://localhost:8055
+474	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.19+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	11	http://localhost:8055
+475	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.19+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	12	http://localhost:8055
+476	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.191+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	13	http://localhost:8055
+477	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.191+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	14	http://localhost:8055
+478	delete	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:53:20.192+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	15	http://localhost:8055
+479	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:58:17.398+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	52	http://localhost:8055
+480	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 09:59:30.153+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	53	http://localhost:8055
+481	create	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-09 10:00:08.749+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	directus_fields	54	http://localhost:8055
+482	login	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-09 10:03:44.01+00	172.22.0.8	node	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	\N
+483	create	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-09 10:03:44.521+00	172.22.0.8	node	directus_users	f17613ee-ba32-4206-97ac-db75ab955e44	\N
+484	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:32.701+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+485	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:37.751+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+486	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:38.571+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+487	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:38.779+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+488	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:39.187+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+489	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:39.43+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+490	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:39.664+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+491	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:39.977+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+492	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:40.197+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+493	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:40.718+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+494	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:40.898+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+495	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:41.056+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+496	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:41.228+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+497	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:41.399+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+498	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:41.607+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+499	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:42.105+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+500	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:42.317+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+501	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:42.563+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+502	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:52.114+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+503	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:52.668+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+504	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:56:55.778+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+505	login	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-09 10:57:59.498+00	172.22.0.8	node	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	\N
+506	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 10:59:30.411+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+507	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:02:30.606+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+508	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:09:14.016+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+509	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:11:14.596+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+510	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:12:40.862+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+511	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:15:40.989+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+512	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:18:02.389+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+513	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:19:57.959+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+514	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:24:05.103+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+515	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:24:06.974+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+516	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:24:07.361+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+517	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:24:07.518+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+518	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:24:27.8+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+519	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:25:02.362+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+520	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:25:17.541+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+521	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:25:44.373+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+522	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:31:18.926+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+523	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:31:39.972+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+524	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:34:04.288+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+525	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:34:29.318+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+526	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:38:41.213+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+527	login	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-09 11:39:34.74+00	172.22.0.8	node	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	\N
+528	login	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-09 11:42:15.197+00	172.22.0.8	node	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	\N
 \.
 
 
@@ -1476,7 +1540,6 @@ COPY public.directus_activity (id, action, "user", "timestamp", ip, user_agent, 
 --
 
 COPY public.directus_collections (collection, icon, note, display_template, hidden, singleton, translations, archive_field, archive_app_filter, archive_value, unarchive_value, sort_field, accountability, color, item_duplication_fields, sort, "group", collapse, preview_url, versioning) FROM stdin;
-Staff	\N	\N	\N	f	f	\N	\N	t	\N	\N	\N	all	\N	\N	\N	\N	open	\N	f
 Project	\N	\N	\N	f	f	\N	\N	t	\N	\N	\N	all	\N	\N	\N	\N	open	\N	f
 Task	\N	\N	\N	f	f	\N	\N	t	\N	\N	\N	all	\N	\N	\N	\N	open	\N	f
 Messages	\N	\N	\N	f	f	\N	\N	t	\N	\N	\N	all	\N	\N	\N	\N	open	\N	f
@@ -1513,18 +1576,11 @@ COPY public.directus_extensions (enabled, id, folder, source, bundle) FROM stdin
 --
 
 COPY public.directus_fields (id, collection, field, special, interface, options, display, display_options, readonly, hidden, sort, width, translations, note, conditions, required, "group", validation, validation_message) FROM stdin;
-5	Staff	id	uuid	input	\N	\N	\N	t	t	1	full	\N	\N	\N	f	\N	\N	\N
-6	Staff	name	\N	input	\N	\N	\N	f	f	2	full	\N	\N	\N	f	\N	\N	\N
-7	Staff	email	\N	input	\N	\N	\N	f	f	3	full	\N	\N	\N	t	\N	\N	\N
-8	Staff	phone	\N	input	\N	\N	\N	f	f	4	full	\N	\N	\N	f	\N	\N	\N
-9	Staff	password	\N	input	\N	\N	\N	f	f	5	full	\N	\N	\N	t	\N	\N	\N
-11	Staff	type	\N	select-dropdown	{"choices":[{"text":"ADMIN","value":"admin"},{"text":"USER","value":"user"}]}	\N	\N	f	f	7	full	\N	\N	\N	t	\N	\N	\N
-12	Staff	resetToken	\N	input	\N	\N	\N	f	f	8	full	\N	\N	\N	f	\N	\N	\N
-13	Staff	resetTokenExpiry	\N	input	\N	\N	\N	f	f	9	full	\N	\N	\N	f	\N	\N	\N
-14	Staff	profileImage	\N	input	\N	\N	\N	f	f	10	full	\N	\N	\N	f	\N	\N	\N
-15	Staff	clockifyUserId	\N	input	\N	\N	\N	f	f	11	full	\N	\N	\N	f	\N	\N	\N
+48	directus_users	resetToken	\N	input	\N	\N	\N	f	f	4	full	\N	\N	\N	f	\N	\N	\N
 16	Project	id	uuid	input	\N	\N	\N	t	t	1	full	\N	\N	\N	f	\N	\N	\N
+49	directus_users	resetTokenExpiry	\N	input	\N	\N	\N	f	f	5	full	\N	\N	\N	f	\N	\N	\N
 18	Project	description	\N	input-multiline	{"trim":true}	\N	\N	f	f	3	full	\N	\N	\N	f	\N	\N	\N
+50	directus_users	profileImage	\N	input	\N	\N	\N	f	f	6	full	\N	\N	\N	f	\N	\N	\N
 20	Project	deadline	\N	datetime	\N	\N	\N	f	f	5	full	\N	\N	\N	f	\N	\N	\N
 21	Project	last_update	\N	datetime	\N	\N	\N	f	f	6	full	\N	\N	\N	f	\N	\N	\N
 22	Project	status	\N	select-dropdown	{"choices":[{"text":"PENDING","value":"pending"},{"text":"ACTIVE","value":"active"},{"text":"PAUSED","value":"paused"},{"text":"COMPLETED","value":"completed"}]}	\N	\N	f	f	7	full	\N	\N	\N	t	\N	\N	\N
@@ -1534,6 +1590,10 @@ COPY public.directus_fields (id, collection, field, special, interface, options,
 26	Task	title	\N	input	\N	\N	\N	f	f	2	full	\N	\N	\N	f	\N	\N	\N
 17	Project	title	\N	input	\N	\N	\N	f	f	2	full	\N	\N	\N	f	\N	\N	\N
 27	Task	description	\N	input-multiline	\N	\N	\N	f	f	3	full	\N	\N	\N	f	\N	\N	\N
+51	directus_users	clockifyUserId	\N	input	\N	\N	\N	f	f	7	full	\N	\N	\N	f	\N	\N	\N
+52	Task_staff	staff	m2o	select-dropdown-m2o	{"template":"{{first_name}}"}	\N	\N	f	f	3	full	\N	\N	\N	f	\N	\N	\N
+53	Messages	receiver	m2o	select-dropdown-m2o	{"template":"{{email}}"}	\N	\N	f	f	5	full	\N	\N	\N	f	\N	\N	\N
+54	Messages	sender	m2o	select-dropdown-m2o	{"template":"{{email}}"}	\N	\N	f	f	6	full	\N	\N	\N	f	\N	\N	\N
 30	Task	end_date	\N	datetime	\N	\N	\N	f	f	6	full	\N	\N	\N	f	\N	\N	\N
 31	Task	completed	cast-boolean	boolean	\N	\N	\N	f	f	7	full	\N	\N	\N	f	\N	\N	\N
 33	Task	status	\N	select-dropdown	{"choices":[{"text":"PENDING","value":"pending"},{"text":"ACTIVE","value":"active"},{"text":"COMPLETED","value":"completed"}]}	\N	\N	f	f	9	full	\N	\N	\N	t	\N	\N	\N
@@ -1543,15 +1603,14 @@ COPY public.directus_fields (id, collection, field, special, interface, options,
 36	Messages	subject	\N	input	\N	\N	\N	f	f	2	full	\N	\N	\N	f	\N	\N	\N
 37	Messages	text	\N	input-multiline	{"trim":true}	\N	\N	f	f	3	full	\N	\N	\N	f	\N	\N	\N
 39	Task_staff	id	uuid	input	\N	\N	\N	t	t	1	full	\N	\N	\N	f	\N	\N	\N
-40	Messages	sender	m2o	select-dropdown-m2o	{"template":"{{email}}"}	\N	\N	f	f	5	full	\N	\N	\N	f	\N	\N	\N
-41	Messages	receiver	m2o	select-dropdown-m2o	{"template":"{{email}}"}	\N	\N	f	f	6	full	\N	\N	\N	f	\N	\N	\N
 42	Task	associated_project	m2o	select-dropdown-m2o	\N	\N	\N	f	f	11	full	\N	\N	\N	f	\N	\N	\N
 43	Task_staff	task	m2o	select-dropdown-m2o	\N	\N	\N	f	f	2	full	\N	\N	\N	f	\N	\N	\N
-44	Task_staff	staff	m2o	select-dropdown-m2o	\N	\N	\N	f	f	3	full	\N	\N	\N	f	\N	\N	\N
-10	Staff	register_date	date-created	datetime	\N	\N	\N	f	f	6	full	\N	\N	\N	f	\N	\N	\N
 19	Project	start_date	date-created	datetime	\N	\N	\N	f	f	4	full	\N	\N	\N	f	\N	\N	\N
 38	Messages	sendAt	date-created	datetime	\N	\N	\N	f	f	4	full	\N	\N	\N	f	\N	\N	\N
 29	Task	start_date	date-created	datetime	\N	\N	\N	f	f	5	full	\N	\N	\N	f	\N	\N	\N
+45	directus_users	phone	\N	input	\N	\N	\N	f	f	1	full	\N	\N	\N	f	\N	\N	\N
+46	directus_users	register_date	date-created	datetime	\N	\N	\N	f	f	2	full	\N	\N	\N	f	\N	\N	\N
+47	directus_users	type	\N	select-dropdown	{"choices":[{"text":"ADMIN","value":"admin"},{"text":"USER","value":"user"}]}	\N	\N	f	f	3	full	\N	\N	\N	t	\N	\N	\N
 \.
 
 
@@ -1703,12 +1762,6 @@ COPY public.directus_panels (id, dashboard, name, icon, color, show_header, note
 --
 
 COPY public.directus_permissions (id, collection, action, permissions, validation, presets, fields, policy) FROM stdin;
-1	Staff	create	\N	\N	\N	*	abf8a154-5b1c-4a46-ac9c-7300570f4f17
-2	Staff	read	\N	\N	\N	*	abf8a154-5b1c-4a46-ac9c-7300570f4f17
-3	Staff	update	\N	\N	\N	*	abf8a154-5b1c-4a46-ac9c-7300570f4f17
-4	Staff	delete	\N	\N	\N	*	abf8a154-5b1c-4a46-ac9c-7300570f4f17
-5	Staff	share	\N	\N	\N	*	abf8a154-5b1c-4a46-ac9c-7300570f4f17
-17	Staff	read	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 26	Messages	create	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 27	Messages	read	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 28	Messages	update	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
@@ -1723,7 +1776,6 @@ COPY public.directus_permissions (id, collection, action, permissions, validatio
 21	Project	create	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 32	Task	read	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 33	Task	update	\N	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
-18	Staff	update	{"_and":[{"id":{"_eq":"$CURRENT_USER"}}]}	\N	\N	name,email,phone,password,register_date,type,resetToken,resetTokenExpiry,profileImage,clockifyUserId,id	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 37	Task_staff	read	{"_and":[{"id":{"_eq":"$CURRENT_USER"}}]}	\N	\N	*	47e6f0a5-e4fe-46e4-83ee-3cc55be3135a
 \.
 
@@ -1744,8 +1796,8 @@ abf8a154-5b1c-4a46-ac9c-7300570f4f17	$t:public_label	public	$t:public_descriptio
 --
 
 COPY public.directus_presets (id, bookmark, "user", role, collection, search, layout, layout_query, layout_options, refresh_interval, filter, icon, color) FROM stdin;
-2	\N	7136fddd-4146-40f5-b506-25b77ededdf5	\N	directus_users	\N	cards	{"cards":{"sort":["email"],"page":1}}	{"cards":{"icon":"account_circle","title":"{{ first_name }} {{ last_name }}","subtitle":"{{ email }}","size":4}}	\N	\N	bookmark	\N
 3	\N	3d59b549-1665-4368-8631-586f02ea12e5	\N	directus_users	\N	cards	{"cards":{"sort":["email"],"page":1}}	{"cards":{"icon":"account_circle","title":"{{ first_name }} {{ last_name }}","subtitle":"{{ email }}","size":4}}	\N	\N	bookmark	\N
+4	\N	3d59b549-1665-4368-8631-586f02ea12e5	\N	directus_activity	\N	tabular	{"tabular":{"sort":["-timestamp"],"fields":["action","collection","timestamp","user"],"page":1}}	{"tabular":{"widths":{"action":120,"collection":210,"timestamp":240,"user":240}}}	\N	\N	bookmark	\N
 \.
 
 
@@ -1754,11 +1806,11 @@ COPY public.directus_presets (id, bookmark, "user", role, collection, search, la
 --
 
 COPY public.directus_relations (id, many_collection, many_field, one_collection, one_field, one_collection_field, one_allowed_collections, junction_field, sort_field, one_deselect_action) FROM stdin;
-1	Messages	sender	Staff	\N	\N	\N	\N	\N	nullify
-2	Messages	receiver	Staff	\N	\N	\N	\N	\N	nullify
 3	Task	associated_project	Project	\N	\N	\N	\N	\N	nullify
-5	Task_staff	staff	Staff	\N	\N	\N	\N	\N	nullify
 4	Task_staff	task	Task	\N	\N	\N	\N	\N	nullify
+6	Task_staff	staff	directus_users	\N	\N	\N	\N	\N	nullify
+7	Messages	receiver	directus_users	\N	\N	\N	\N	\N	nullify
+8	Messages	sender	directus_users	\N	\N	\N	\N	\N	nullify
 \.
 
 
@@ -1838,13 +1890,11 @@ COPY public.directus_revisions (id, activity, collection, item, data, delta, par
 68	75	directus_fields	43	{"sort":2,"interface":"select-dropdown-m2o","special":["m2o"],"collection":"Task_staff","field":"task"}	{"sort":2,"interface":"select-dropdown-m2o","special":["m2o"],"collection":"Task_staff","field":"task"}	\N	\N
 69	76	directus_fields	44	{"sort":3,"interface":"select-dropdown-m2o","special":["m2o"],"collection":"Task_staff","field":"staff"}	{"sort":3,"interface":"select-dropdown-m2o","special":["m2o"],"collection":"Task_staff","field":"staff"}	\N	\N
 70	77	directus_fields	10	{"id":10,"collection":"Staff","field":"register_date","special":["date-created"],"interface":"datetime","options":null,"display":null,"display_options":null,"readonly":false,"hidden":false,"sort":6,"width":"full","translations":null,"note":null,"conditions":null,"required":false,"group":null,"validation":null,"validation_message":null}	{"collection":"Staff","field":"register_date","required":false}	\N	\N
-71	78	Staff	f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d	{"name":"admin","email":"admin@gmail.com","phone":"600767821","password":"holaMundo_2"}	{"name":"admin","email":"admin@gmail.com","phone":"600767821","password":"holaMundo_2"}	\N	\N
 72	79	directus_fields	19	{"id":19,"collection":"Project","field":"start_date","special":["date-created"],"interface":"datetime","options":null,"display":null,"display_options":null,"readonly":false,"hidden":false,"sort":4,"width":"full","translations":null,"note":null,"conditions":null,"required":false,"group":null,"validation":null,"validation_message":null}	{"collection":"Project","field":"start_date","required":false}	\N	\N
 73	80	directus_fields	38	{"id":38,"collection":"Messages","field":"sendAt","special":["date-created"],"interface":"datetime","options":null,"display":null,"display_options":null,"readonly":false,"hidden":false,"sort":4,"width":"full","translations":null,"note":null,"conditions":null,"required":false,"group":null,"validation":null,"validation_message":null}	{"collection":"Messages","field":"sendAt","required":false}	\N	\N
 74	81	directus_fields	29	{"id":29,"collection":"Task","field":"start_date","special":["date-created"],"interface":"datetime","options":null,"display":null,"display_options":null,"readonly":false,"hidden":false,"sort":5,"width":"full","translations":null,"note":null,"conditions":null,"required":false,"group":null,"validation":null,"validation_message":null}	{"collection":"Task","field":"start_date","required":false}	\N	\N
 76	84	Task	b6d9a9c6-ac6c-4533-92b6-248efb111401	{"title":"t1","associated_project":"2674e6ed-0779-4afe-b9cd-a74ad55c0605","priority":"medium"}	{"title":"t1","associated_project":"2674e6ed-0779-4afe-b9cd-a74ad55c0605","priority":"medium"}	\N	\N
 77	85	Task_staff	ad7aa93e-ea6c-4390-99d3-69944dd48e01	{"task":"b6d9a9c6-ac6c-4533-92b6-248efb111401","staff":"f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d"}	{"task":"b6d9a9c6-ac6c-4533-92b6-248efb111401","staff":"f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d"}	\N	\N
-78	86	Staff	13f3f0a0-f25e-4c21-9fc8-af5302eb2874	{"name":"maite","email":"maite@gmail.com","phone":"609474291","password":"holaMundo_2"}	{"name":"maite","email":"maite@gmail.com","phone":"609474291","password":"holaMundo_2"}	\N	\N
 79	87	Messages	5096b02a-9133-4263-9e98-3465cc81c91c	{"sender":"13f3f0a0-f25e-4c21-9fc8-af5302eb2874","receiver":"f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d","text":"dewdq3we"}	{"sender":"13f3f0a0-f25e-4c21-9fc8-af5302eb2874","receiver":"f5fe3f20-ebdc-4b6a-8e50-630cb12d7a8d","text":"dewdq3we"}	\N	\N
 80	94	directus_permissions	1	{"policy":"abf8a154-5b1c-4a46-ac9c-7300570f4f17","permissions":null,"validation":null,"fields":["*"],"presets":null,"collection":"Staff","action":"create"}	{"policy":"abf8a154-5b1c-4a46-ac9c-7300570f4f17","permissions":null,"validation":null,"fields":["*"],"presets":null,"collection":"Staff","action":"create"}	\N	\N
 81	95	directus_permissions	2	{"policy":"abf8a154-5b1c-4a46-ac9c-7300570f4f17","permissions":null,"validation":null,"fields":["*"],"presets":null,"collection":"Staff","action":"read"}	{"policy":"abf8a154-5b1c-4a46-ac9c-7300570f4f17","permissions":null,"validation":null,"fields":["*"],"presets":null,"collection":"Staff","action":"read"}	\N	\N
@@ -1950,6 +2000,30 @@ COPY public.directus_revisions (id, activity, collection, item, data, delta, par
 181	421	directus_permissions	33	{"id":33,"collection":"Task","action":"update","permissions":null,"validation":null,"presets":null,"fields":["*"],"policy":"47e6f0a5-e4fe-46e4-83ee-3cc55be3135a"}	{"collection":"Task","action":"update","permissions":null,"validation":null,"presets":null,"fields":["*"],"policy":"47e6f0a5-e4fe-46e4-83ee-3cc55be3135a"}	\N	\N
 182	429	directus_permissions	18	{"id":18,"collection":"Staff","action":"update","permissions":{"_and":[{"id":{"_eq":"$CURRENT_USER"}}]},"validation":null,"presets":null,"fields":["name","email","phone","password","register_date","type","resetToken","resetTokenExpiry","profileImage","clockifyUserId","id"],"policy":"47e6f0a5-e4fe-46e4-83ee-3cc55be3135a"}	{"collection":"Staff","action":"update","permissions":{"_and":[{"id":{"_eq":"$CURRENT_USER"}}]},"validation":null,"presets":null,"fields":["name","email","phone","password","register_date","type","resetToken","resetTokenExpiry","profileImage","clockifyUserId","id"],"policy":"47e6f0a5-e4fe-46e4-83ee-3cc55be3135a"}	\N	\N
 183	430	directus_permissions	37	{"id":37,"collection":"Task_staff","action":"read","permissions":{"_and":[{"id":{"_eq":"$CURRENT_USER"}}]},"validation":null,"presets":null,"fields":["*"],"policy":"47e6f0a5-e4fe-46e4-83ee-3cc55be3135a"}	{"collection":"Task_staff","action":"read","permissions":{"_and":[{"id":{"_eq":"$CURRENT_USER"}}]},"validation":null,"presets":null,"fields":["*"],"policy":"47e6f0a5-e4fe-46e4-83ee-3cc55be3135a"}	\N	\N
+184	439	directus_fields	45	{"sort":1,"interface":"input","special":null,"collection":"directus_users","field":"phone"}	{"sort":1,"interface":"input","special":null,"collection":"directus_users","field":"phone"}	\N	\N
+185	440	directus_fields	46	{"sort":2,"interface":"datetime","special":null,"collection":"directus_users","field":"register_date"}	{"sort":2,"interface":"datetime","special":null,"collection":"directus_users","field":"register_date"}	\N	\N
+186	441	directus_fields	46	{"id":46,"collection":"directus_users","field":"register_date","special":["date-created"],"interface":"datetime","options":null,"display":null,"display_options":null,"readonly":false,"hidden":false,"sort":2,"width":"full","translations":null,"note":null,"conditions":null,"required":false,"group":null,"validation":null,"validation_message":null}	{"collection":"directus_users","field":"register_date","special":["date-created"]}	\N	\N
+187	442	directus_fields	47	{"sort":3,"interface":"select-dropdown","special":null,"options":{"choices":[{"text":"ADMIN","value":"admin"},{"text":"USER","value":"user"}]},"collection":"directus_users","field":"type"}	{"sort":3,"interface":"select-dropdown","special":null,"options":{"choices":[{"text":"ADMIN","value":"admin"},{"text":"USER","value":"user"}]},"collection":"directus_users","field":"type"}	\N	\N
+188	443	directus_fields	47	{"id":47,"collection":"directus_users","field":"type","special":null,"interface":"select-dropdown","options":{"choices":[{"text":"ADMIN","value":"admin"},{"text":"USER","value":"user"}]},"display":null,"display_options":null,"readonly":false,"hidden":false,"sort":3,"width":"full","translations":null,"note":null,"conditions":null,"required":true,"group":null,"validation":null,"validation_message":null}	{"collection":"directus_users","field":"type","required":true}	\N	\N
+189	444	directus_fields	48	{"sort":4,"interface":"input","special":null,"collection":"directus_users","field":"resetToken"}	{"sort":4,"interface":"input","special":null,"collection":"directus_users","field":"resetToken"}	\N	\N
+190	445	directus_fields	49	{"sort":5,"interface":"input","special":null,"collection":"directus_users","field":"resetTokenExpiry"}	{"sort":5,"interface":"input","special":null,"collection":"directus_users","field":"resetTokenExpiry"}	\N	\N
+191	446	directus_fields	50	{"sort":6,"interface":"input","special":null,"collection":"directus_users","field":"profileImage"}	{"sort":6,"interface":"input","special":null,"collection":"directus_users","field":"profileImage"}	\N	\N
+192	447	directus_fields	51	{"sort":7,"interface":"input","special":null,"collection":"directus_users","field":"clockifyUserId"}	{"sort":7,"interface":"input","special":null,"collection":"directus_users","field":"clockifyUserId"}	\N	\N
+193	448	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	{"id":"ccd2cde6-bda7-46d3-8658-760a82e3f952","first_name":"maite","last_name":null,"email":"maite@gmail.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"4256f46d-8fe5-4a49-92b8-310645edb13f","token":null,"last_access":"2025-05-09T07:12:03.421Z","last_page":null,"provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474291","register_date":null,"type":"user","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["b66e73f1-9eb2-43cc-b2fd-349e84ae3e3e"]}	{"phone":"609474291"}	\N	\N
+194	449	directus_users	7136fddd-4146-40f5-b506-25b77ededdf5	{"id":"7136fddd-4146-40f5-b506-25b77ededdf5","first_name":"ApiUser","last_name":null,"email":"apiuser@example.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"fd0935c8-df79-4771-84c9-c73875fdd763","token":null,"last_access":"2025-05-09T05:51:17.506Z","last_page":"/users/7136fddd-4146-40f5-b506-25b77ededdf5","provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474290","register_date":null,"type":"user","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["c1e7917b-f4d5-4ef9-baee-bff3f7c79398"]}	{"phone":"609474290"}	\N	\N
+195	450	directus_users	3d59b549-1665-4368-8631-586f02ea12e5	{"id":"3d59b549-1665-4368-8631-586f02ea12e5","first_name":"Admin","last_name":"Admin","email":"admin@example.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"fd0935c8-df79-4771-84c9-c73875fdd763","token":null,"last_access":"2025-05-09T08:14:04.770Z","last_page":"/users/3d59b549-1665-4368-8631-586f02ea12e5","provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474292","register_date":null,"type":"user","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["c504421c-a3f1-4106-8535-f9b07604141f"]}	{"phone":"609474292"}	\N	\N
+196	451	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	{"id":"ccd2cde6-bda7-46d3-8658-760a82e3f952","first_name":"maite","last_name":null,"email":"maite@gmail.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"4256f46d-8fe5-4a49-92b8-310645edb13f","token":null,"last_access":"2025-05-09T07:12:03.421Z","last_page":null,"provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474291","register_date":null,"type":"admin","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["b66e73f1-9eb2-43cc-b2fd-349e84ae3e3e"]}	{"type":"admin"}	\N	\N
+197	452	directus_users	ccd2cde6-bda7-46d3-8658-760a82e3f952	{"id":"ccd2cde6-bda7-46d3-8658-760a82e3f952","first_name":"maite","last_name":null,"email":"maite@gmail.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"4256f46d-8fe5-4a49-92b8-310645edb13f","token":null,"last_access":"2025-05-09T07:12:03.421Z","last_page":null,"provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474291","register_date":null,"type":"user","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["b66e73f1-9eb2-43cc-b2fd-349e84ae3e3e"]}	{"type":"user"}	\N	\N
+199	455	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	{"first_name":"Admin","email":"admin@gmail.com","password":"**********","role":"fd0935c8-df79-4771-84c9-c73875fdd763","policies":{"create":[{"user":"+","policy":{"id":"839e307f-de45-4dd6-9715-818dbc2103ef"}}],"update":[],"delete":[]},"phone":"609474293","type":"admin"}	{"first_name":"Admin","email":"admin@gmail.com","password":"**********","role":"fd0935c8-df79-4771-84c9-c73875fdd763","policies":{"create":[{"user":"+","policy":{"id":"839e307f-de45-4dd6-9715-818dbc2103ef"}}],"update":[],"delete":[]},"phone":"609474293","type":"admin"}	\N	\N
+198	454	directus_access	120f41ed-a4fd-490d-97cf-6227795249d1	{"user":"aafe6467-b329-42b7-b91e-e7b70c118437","policy":{"id":"839e307f-de45-4dd6-9715-818dbc2103ef"},"sort":1}	{"user":"aafe6467-b329-42b7-b91e-e7b70c118437","policy":{"id":"839e307f-de45-4dd6-9715-818dbc2103ef"},"sort":1}	199	\N
+200	456	directus_users	3d59b549-1665-4368-8631-586f02ea12e5	{"id":"3d59b549-1665-4368-8631-586f02ea12e5","first_name":"nada","last_name":"nada","email":"admin@example.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"fd0935c8-df79-4771-84c9-c73875fdd763","token":null,"last_access":"2025-05-09T08:14:04.770Z","last_page":"/users/3d59b549-1665-4368-8631-586f02ea12e5","provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474292","register_date":null,"type":"user","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["c504421c-a3f1-4106-8535-f9b07604141f"]}	{"first_name":"nada","last_name":"nada"}	\N	\N
+201	457	directus_users	aafe6467-b329-42b7-b91e-e7b70c118437	{"id":"aafe6467-b329-42b7-b91e-e7b70c118437","first_name":"Admin","last_name":"Admin","email":"admin@gmail.com","password":"**********","location":null,"title":null,"description":null,"tags":null,"avatar":null,"language":null,"tfa_secret":null,"status":"active","role":"fd0935c8-df79-4771-84c9-c73875fdd763","token":null,"last_access":null,"last_page":null,"provider":"default","external_identifier":null,"auth_data":null,"email_notifications":true,"appearance":null,"theme_dark":null,"theme_light":null,"theme_light_overrides":null,"theme_dark_overrides":null,"phone":"609474293","register_date":"2025-05-09","type":"admin","resetToken":null,"resetTokenExpiry":null,"profileImage":null,"clockifyUserId":null,"policies":["120f41ed-a4fd-490d-97cf-6227795249d1"]}	{"last_name":"Admin"}	\N	\N
+202	458	directus_access	120f41ed-a4fd-490d-97cf-6227795249d1	{"id":"120f41ed-a4fd-490d-97cf-6227795249d1","role":null,"user":"aafe6467-b329-42b7-b91e-e7b70c118437","policy":"839e307f-de45-4dd6-9715-818dbc2103ef","sort":1}	{"policy":"839e307f-de45-4dd6-9715-818dbc2103ef"}	\N	\N
+203	463	directus_users	44648516-c025-442d-b23f-7840246c4b6b	{"first_name":"Luisa","email":"luisa@gmail.com","password":"**********","role":"4256f46d-8fe5-4a49-92b8-310645edb13f","status":"active","phone":"673883931","type":"user"}	{"first_name":"Luisa","email":"luisa@gmail.com","password":"**********","role":"4256f46d-8fe5-4a49-92b8-310645edb13f","status":"active","phone":"673883931","type":"user"}	\N	\N
+204	479	directus_fields	52	{"sort":3,"interface":"select-dropdown-m2o","special":["m2o"],"options":{"template":"{{first_name}}"},"collection":"Task_staff","field":"staff"}	{"sort":3,"interface":"select-dropdown-m2o","special":["m2o"],"options":{"template":"{{first_name}}"},"collection":"Task_staff","field":"staff"}	\N	\N
+205	480	directus_fields	53	{"sort":5,"interface":"select-dropdown-m2o","special":["m2o"],"options":{"template":"{{email}}"},"collection":"Messages","field":"receiver"}	{"sort":5,"interface":"select-dropdown-m2o","special":["m2o"],"options":{"template":"{{email}}"},"collection":"Messages","field":"receiver"}	\N	\N
+206	481	directus_fields	54	{"sort":6,"interface":"select-dropdown-m2o","special":["m2o"],"options":{"template":"{{email}}"},"collection":"Messages","field":"sender"}	{"sort":6,"interface":"select-dropdown-m2o","special":["m2o"],"options":{"template":"{{email}}"},"collection":"Messages","field":"sender"}	\N	\N
+207	483	directus_users	f17613ee-ba32-4206-97ac-db75ab955e44	{"first_name":"Germán","email":"german@gmail.com","password":"**********","role":"fd0935c8-df79-4771-84c9-c73875fdd763","status":"active","phone":"654421935","type":"admin"}	{"first_name":"Germán","email":"german@gmail.com","password":"**********","role":"fd0935c8-df79-4771-84c9-c73875fdd763","status":"active","phone":"654421935","type":"admin"}	\N	\N
 \.
 
 
@@ -1968,37 +2042,10 @@ fd0935c8-df79-4771-84c9-c73875fdd763	Administrator	verified	$t:admin_description
 --
 
 COPY public.directus_sessions (token, "user", expires, ip, user_agent, share, origin, next_token) FROM stdin;
--p_rY1uHY4pTGYGUZVV-HO5V3CZGxl6c0zOsos6AHpQb1QcUgt9cHiswOufWBKg4	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:30:09.963+00	172.22.0.8	node	\N	\N	\N
-PFyFA89KzPtWyHPSM5rQcIpShiPl1ztzVPthJGfLP7ell_zV8aK4puthg7MdnKlE	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:37:08.098+00	172.22.0.8	node	\N	\N	\N
-j3juxUixxqyc2mCaKjXeZHepoxHHGgR_lU3fe6LMpahxHXW8lEA2gHn5k1JjtHNw	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:11:44.445+00	172.22.0.8	curl/8.12.1	\N	\N	\N
-jbWdmjEAvhLn2tskPQOnEI1SJu1l-vayGyAkZ1RrOlUoVwY_MpCj9MAUjKXymr_r	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:13:18.647+00	172.22.0.8	node	\N	\N	\N
-sA-7tU6QoX-205tKPmwDJQYJ0StrZ9bCxDebB1lE7zl_htESlBHMuWcA-YWJ5lWF	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:16:19.905+00	172.22.0.8	node	\N	\N	\N
-pde0MCX9Zi_hXF1O7wGCQXAAnTrdVq1WkhHXUjmABXiNkeoolg8Or5V1gTYzAg1P	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:19:11.145+00	172.22.0.8	node	\N	\N	\N
-Epztv4wu9eVVd33mV20Mfu31gkHw835pvv9GQU8xPfbrGLF_fs_8AIY1KVopc_PU	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:19:38.87+00	172.22.0.8	node	\N	\N	\N
-B9k69GSny2RvojDfFqfHYgWc62NY1l9qWJ4eObav9SDJmUzhv855_SxU7YHGoq57	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:19:41.775+00	172.22.0.8	node	\N	\N	\N
-HgSUoDLFydfJOBzodbuLYj_CQfmF9A09y_pakH5eYeXKyHn52moTweDBrmRDZ3gl	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:23:17.223+00	172.22.0.8	node	\N	\N	\N
-wS-L317X4iYSbKbZyXSJGGdOWxnAVCyacc6C3ypa_ctsymL08v7TNtUkBDWvz0mf	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:23:23.113+00	172.22.0.8	node	\N	\N	\N
-RXkXPyCCRmIEA8gfN-IZOLiVD_BttmDRDVkJnX_WNwd-42ZlT9_iZmh89SmSg5oH	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:24:40.812+00	172.22.0.8	node	\N	\N	\N
-zjRJBrkdChEM-HnOs5qIyBD7107qqBox4mSlHGwAuWBqYQpFT_XO0dJyjNzxKSBZ	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:24:52.449+00	172.22.0.8	node	\N	\N	\N
-KRic49kRchmLnI7sC7MaeqosPUW_KjxGoiwxsYkpF1gut-d_0dVo8wQ-ganiRyvO	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:26:19.768+00	172.22.0.8	node	\N	\N	\N
-BWEWlPAhqB8SYW2UU1U9D1E5Q0LbrKzbSyX-EC8R3NPzI4prYpfmn5ufimfRSSoU	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:28:11.566+00	172.22.0.8	node	\N	\N	\N
-SsZzdVWI2KgPqlev9KeBJU0flF0k0MU2aWDstr1ZGWfdhj83B4XCwO3KwTkZv4pe	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:28:53.964+00	172.22.0.8	node	\N	\N	\N
-CyuBeSR6vMlfoktVceTEZcHv8O_tZI-cirlqF3ygtQWylCC29NzqRA-Zu508oi-n	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:41:43.174+00	172.22.0.8	node	\N	\N	\N
-pSS5AnqNAGm_PrVuMgMWfzv9ZSPKc4kUDXUHXPwtUjdmXEzjf8Q4n1OFCjiNwaho	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:54:54.585+00	172.22.0.8	node	\N	\N	\N
 E0VSdeFcpn6lbduEUjApHvwGNLUGJrtCr9rbsk8cN4dNmqOELWqJEoTG2_iCT-7L	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:10:09.339+00	172.22.0.8	node	\N	\N	\N
-4I1fpvgcV09jC1n7dlvFer_3ttTekyqLxF0QUKzs_5iLiXYoQ1NCOwLg08w1TIBI	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:56:51.783+00	172.22.0.8	node	\N	\N	\N
-lm05_5GVWL2nIzkRTpn2bFgfKQtlzLDZz__Uej_cSnRqM92ONj7CnA_xSfzE35IW	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:48:32.976+00	172.22.0.8	node	\N	\N	\N
 RpmHzKOk3MrIh_2R3NQNk9N4yHCPlv9WRJbGhBpJ2zvuSOvJtUMSBFOg5fuBEKmR	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:10:09.773+00	172.22.0.8	node	\N	\N	\N
-15WE09ZuuFj4b5gawlYf51np0Co9YY7E3eLhFrr9jTmH7px2qwXsjF-I0M0WvnD7	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-15 14:49:34.314+00	172.22.0.8	node	\N	\N	\N
 aUpIghnC-Zo0UZz9UOtbEo_vpcjLYpECO4rX1MGOWzXfO2CzEro5RhfqwLaEx1oV	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:10:09.934+00	172.22.0.8	node	\N	\N	\N
 qMvZKwXhDu7zs43_hBsWL7G3j7gikXJPQvCsnjYgbofEZgLShqli6N_R_WQnMByy	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:10:10.089+00	172.22.0.8	node	\N	\N	\N
-S7t1-OYlRww4TDoMpYWoV3hfUFqGZuiFzX-DxP3PX84B0cZWplwY77EPH2o9u7IT	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:37:53.984+00	172.22.0.8	node	\N	\N	\N
-DFiSJPHOp8hB2meDy6FWvrNPZhvejZN9YOmBqTInAWMx4gZ-HtoG9oKZPJYcTiVB	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:40:39.773+00	172.22.0.8	node	\N	\N	\N
-YtuC4Q6Amkt-IgvCEs3DVhl0lrVdm645B0vY2RDeTBuZN07uBO-vsUxtJCIcnVhr	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:48:10.785+00	172.22.0.8	node	\N	\N	\N
-tBE7nWeJEp_0OqY8SOdcN9RvCP9i0dqsoHIGOcjcztmd183Q9acN8TUmVm-4hHoJ	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:48:59.712+00	172.22.0.8	node	\N	\N	\N
-nC52_yITrv6MiK0ISFhvucSmovUTPvTYHZmLENz0YqcddyBnprWvHMGE5YAI0mJW	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:49:15.656+00	172.22.0.8	node	\N	\N	\N
-pAJV11W_OoPWCXvitzYJjrnGwELHH-VcbmfVYApfR1pa8NlgKw3nqYwblmtr10VZ	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:50:07.579+00	172.22.0.8	node	\N	\N	\N
-cpZqod9INcVirEUsJ19YLEtr1AdSuxL1VQlo_I_JLV0GXnwFhpLx0c_W6CNHY1u4	7136fddd-4146-40f5-b506-25b77ededdf5	2025-05-16 05:51:17.497+00	172.22.0.8	node	\N	\N	\N
 VBffxGabAH22ePvtpji7cxtEmAfman8gbSfsyK940UEgqonjaTyU4s2J5450WhnH	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:10:10.411+00	172.22.0.8	node	\N	\N	\N
 9S_IHzlLGnNpPofXsroSlrQsr0W_HhG7-knT1OuvpoFVmHNdDsLUU2eFtFtyisgc	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:07:51.137+00	172.22.0.8	node	\N	\N	\N
 eHMbDo7MmWRlSlO1DPkU3DHJMUVvlqHyIjKffIhQZFID9Zl21MtzBv5bJl8i2EJg	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:10:07.871+00	172.22.0.8	node	\N	\N	\N
@@ -2035,7 +2082,6 @@ Q22HVo7uoYnxeij9YMV3nKiZEcZG3gULpK9zwYFeT-pf0Z4z29bmTHPo-ofh2cph	ccd2cde6-bda7-4
 33yFI0P7Q2Aj-TMW90-v4w05FzG4Do2Ks3y2Ur0Qs6kbvyaQZXg5_o97YYw6rp7w	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:25:45.756+00	172.22.0.8	node	\N	\N	\N
 yD18A6OMu8h68sMzDkEk0NIC0Zbr9KBjE6OKRlyZ952uotcVQ184Wvw-OlyOWTE2	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:25:45.933+00	172.22.0.8	node	\N	\N	\N
 mQnmMYkmVo2h5owCr8DdMBRF_O5VfluDtO4y6lRnBgcLUlNkfWonAPMoKNqWu9mm	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:25:52.095+00	172.22.0.1	PostmanRuntime/7.43.4	\N	\N	\N
-rplnrrOx49qZ21s91MWjKQ0uW0fkMHUMSDKyLan_8CNhZC1Fz9sp2IcrpQUqeXA4	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-10 06:26:50.829+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	\N	http://localhost:8055	\N
 EcbGTAc-TQJW9HOJOx-XCyeDR5hfhYmW1n0xC0rdEEgswS3b_fYnKqtajdWSCTJK	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:27:09.897+00	172.22.0.8	node	\N	\N	\N
 JjGEdTDuGbW6B9_AEo2xQRZg4gCILJvzCXg-b4tyhuh5Q8fTNvOTXPbO-j0Aqtrz	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:29:22.153+00	172.22.0.8	node	\N	\N	\N
 SzgbkFZtHeYDxXtAdCZLNrvF-yCOhLBdCBjxo0yOK3Rlh73TvtT6ipPIH-muyevG	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 06:32:46.743+00	172.22.0.8	node	\N	\N	\N
@@ -2132,6 +2178,56 @@ ysjFuUmNcdrUYYeIC2kHzBis8EmcIKwyj0GJDs0bypnoLSg_IESAaXtR6ZIR-Jev	ccd2cde6-bda7-4
 a-NuCUBwzVJPowLWqG6t5HfxDgzVpalj0Ux0TeDTVLl-89HrOJ-xnhe90F1CJrg1	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 07:11:32.13+00	172.22.0.8	node	\N	\N	\N
 xTs3Zr7o4IH2shWJvX7mWYRDYpZig868Khn1UjMkW1k57ef1dWJkJ7RTnVtuBUva	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 07:11:33.68+00	172.22.0.8	node	\N	\N	\N
 dmYZtk8ZmeX4RHlJo1RvqYS0jNomlolYVs8iZCWeh3RD1w6h0h7CxXqp5G88OKHC	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 07:12:03.413+00	172.22.0.8	node	\N	\N	\N
+MMfX76sUTnfGI4_iH-7mPBYFiRNHhVZ16-AnZS0Qx9oBOtSJbCjAkebNP-Gp8Jzy	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:02:30.599+00	172.22.0.8	node	\N	\N	\N
+cnavWGSvwckOLLcyjwmJy6Q_jRqTRQwTHmZJMSz-pcBk7_O_9EGjkbsZEbevSQT8	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 08:55:27.319+00	172.22.0.8	node	\N	\N	\N
+OsxIRe16eWtSEgnZcmS4Sq-np8wOsS87uj5ahP_NLCtkqxjySxDfH9C3xYaS1X7Q	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 08:55:31.743+00	172.22.0.8	node	\N	\N	\N
+WSGu27mZdWPpoJQMQBThlICm9o-w41rEPHrwRQXscb61xDC3TRSso5qoRFNGplrp	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:09:14.01+00	172.22.0.8	node	\N	\N	\N
+vY1hxyKw8NmGKly6j04cITBtYPumDvmvhIbFZgg-cUVyEYhFD0ietaE47BL_FaVC	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:11:14.588+00	172.22.0.8	node	\N	\N	\N
+_zwAFoUyAUx48HFjBnBvh_zL8lJqzQ3sYKx_ywQIW5ri-erNQqjZzeEyZNCcn2Pi	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-16 09:48:47.578+00	172.22.0.8	node	\N	\N	\N
+5o3SVI6TasQfRRtvsGQ7d6XsgYEKIo-_obf_xzc47c5ClNCvjDGRhYIRwMKSnNV5	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:12:40.859+00	172.22.0.8	node	\N	\N	\N
+g6gIjkGS4bw2f1r0Zv2Xr6k2t6vNLBjc2TDz7c6lUiBNq186Ege6OtOH2xd90ySp	3d59b549-1665-4368-8631-586f02ea12e5	2025-05-10 09:48:52.701+00	172.22.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36	\N	http://localhost:8055	\N
+_SJwEhD3Ukjpjhiq6K9am2-KVGj87Ssq5lpLWWq3MqGSeYXr4UfB0sw8tNG_EnAv	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-16 10:03:44.007+00	172.22.0.8	node	\N	\N	\N
+wzAr9i5krLkWNU3H02xjkqZuZakdm0LeKUOOstNtaAvQND6SY-5AS__5D05i0zqX	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:32.699+00	172.22.0.8	node	\N	\N	\N
+fceDufUw2lq-3qnrqSWtTAx6DaTVdz_zEexUyJjLsskWYrQp8bsPIfIHIQceR6tR	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:37.748+00	172.22.0.8	node	\N	\N	\N
+OqZDSn9q3QamCQtvFTN0X-g1ADRwIaabuvZCQY84Z3EIK6mp51VHCYN1dNWkLGHJ	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:38.564+00	172.22.0.8	node	\N	\N	\N
+Eq6mVueb64Qe-9jzZWa6if7LpCa8mFr5-GociULLdh4QbNzbCWkwPIDXK356v-RP	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:38.772+00	172.22.0.8	node	\N	\N	\N
+bFLun34Or-cLAIeeVyZoL8H8jRJLsXxB3wlgJiXBMXiZwIzSaIL5F8pMxunDdJ1J	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:39.18+00	172.22.0.8	node	\N	\N	\N
+QD8YWpsj2IO1IMYhSR4unXGF3jbhx2O8YSW5dmkgFiKz7W9NyZO-yzpbDSJ7MSLp	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:39.424+00	172.22.0.8	node	\N	\N	\N
+sKC2SF7P-t5WvkBk9eYJZ-FPovaacKL6pwtaDQfLlrIBPwNcV4xN8xRAvO4BUVcP	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:39.658+00	172.22.0.8	node	\N	\N	\N
+MqwSW_91Bd3wXuZWvetif7-70Vp7yg7EKBaLWKlSCTDkasSxzSYUIyGTYAWHD1R_	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:39.97+00	172.22.0.8	node	\N	\N	\N
+J9OzGc-ahNofiBNxA4Tfwuor3CCO6CM9ywcVZSIgzsfGp_axaLY4FjmpJxX-9nV9	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:40.194+00	172.22.0.8	node	\N	\N	\N
+GFoJrR2pe7qOtDFuBI8oUfasu8HmfHcPc5RD1HdP-vqW-uKPcasCh2ievcHLGoRk	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:40.711+00	172.22.0.8	node	\N	\N	\N
+BWqX8FGBs_77sADaNaVIyjuNFl_N-sL2SRbNh1g_XKMxZ9fkujoH_HvI--hMpMRE	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:40.891+00	172.22.0.8	node	\N	\N	\N
+fb6j51mDRGM2SyQrrkrJ3jvGYYuRWUMis3_ugsHPO8i10OoyoQht4t6Wc6nnJCHE	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:41.049+00	172.22.0.8	node	\N	\N	\N
+Rg5m1LIvdsasQ5YTsWiGw_d6mQrq-UoJlXhY7CQ-s1xvOFVvBoZfVGNCTPiKV2SO	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:41.221+00	172.22.0.8	node	\N	\N	\N
+YuVm3NlBbVRnvGo9o1l94Nh1mhH2lQQmKLI47ox5H7FAXUrSp5UyfiFZ1LWUcTQK	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:41.397+00	172.22.0.8	node	\N	\N	\N
+CXwIYbcnob6pz78ygVMvZPQRinEF0pPCyy6-2et87jOlqiUK40lzPvyrD01XoJx2	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:41.6+00	172.22.0.8	node	\N	\N	\N
+6nkCFPcm8-_g0rSCEJ346cJUMlkUGA1se4eI_Ucjv5_zdPa9N5f4eyBLDRDXKSYQ	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:42.098+00	172.22.0.8	node	\N	\N	\N
+2m-butXQho-oF5kQYAHlaA5QamkjSG-j-x4XBNKdkIpxrMSMLad2vhUFpPDwgime	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:42.311+00	172.22.0.8	node	\N	\N	\N
+yrxsjEG9MK4syDPnIwxhGJ-s2-8ySovp1w_7vXwF6r6ceaYE0UZyjr9o5gJHnDlr	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:42.56+00	172.22.0.8	node	\N	\N	\N
+PG1JY61rpFw8J_mdYRmXeaYTcW7xGmQKqlDJeJ2xjeKQHlSSwMyPBS0vzqnceh7k	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:52.107+00	172.22.0.8	node	\N	\N	\N
+z5NQOZfex5Bi0qSFEX91kpmFkJFmaDlXdeq5H_O2MepsEph3zI03F8vwdz2s7X7j	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:52.661+00	172.22.0.8	node	\N	\N	\N
+L-rGtlmMNSirJHQg_oJnrVhNJkoLDQdsu7bz9oQfBkOjy9n4Gb9F_6KG_qTOL1BA	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:56:55.776+00	172.22.0.8	node	\N	\N	\N
+a7oKRm8MhCCWZEwlKUy7j_4GORBrkJ-XbCTBNyR1gObvXS8tRdD7vTh-0tEaVLAb	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-16 10:57:59.491+00	172.22.0.8	node	\N	\N	\N
+5UNfNw-oroTTa4MWYjR8pWMpT-C94CBPGdZaqLqk5aWl2yCk_oYrQ_oGny0jp_Gt	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 10:59:30.404+00	172.22.0.8	node	\N	\N	\N
+PBvNc-FY_BFUpme_BQJXW-Kyuptn8tooDj1fOOjkdoxLM-zcNwvvkN3GUP0xokpm	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:15:40.981+00	172.22.0.8	node	\N	\N	\N
+pfEJB-Oho-7CO1GBjuOgEMrqC1Qd7g3fotnno5gruSglXlvgVTncuPIWMG_2veUM	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:18:02.381+00	172.22.0.8	node	\N	\N	\N
+2VW3w-aGiRymfvaOUNUCE42jdl845TnbfPxwOA7z7fSYKzFxKHUxtRMFM9ozz1sG	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:19:57.952+00	172.22.0.8	node	\N	\N	\N
+8q5ZqIm7jMnK4OnuxayLPwzic2OB96-C59hO6A0slMEQRio3qksqQHdZ8A-9GaFx	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:24:05.096+00	172.22.0.8	node	\N	\N	\N
+1VE7b0BNc8Rg7Wy2_EuYctD1D4VyR1Dwe78nPQ7Rn3-HMqptUXwO6CEokovcU5I4	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:24:06.967+00	172.22.0.8	node	\N	\N	\N
+L9Z0ObX29EMljgxVzIDpnySj38wWBIUviXQGaUdo_4I_mCT9i6eppwWzex9XzDba	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:24:07.354+00	172.22.0.8	node	\N	\N	\N
+sDaC0CvNY6It7hQsMw2hlNJxW4SBkzvNisCeOxi7UjQWwLCcDpnxOrsrX3ju7Uk0	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:24:07.511+00	172.22.0.8	node	\N	\N	\N
+Ua2QAigoJiveW5-OXD4xkey_ac5Gf5niLFwEt1Qth5JAvDI2Al5y49-_q2x1_YxF	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:24:27.793+00	172.22.0.8	node	\N	\N	\N
+AQQ3SHhdb7CXZLR3RHMWtB1qmpEj8MqnSYuoIzcYPQGxaEOLadQrMVqY68OYYXAz	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:25:02.355+00	172.22.0.8	node	\N	\N	\N
+wGv1b4e4-a6MpZNsNmRw9BT4cSYNYjHIktx82EZhEe5sFCbDjNAjk7D9gd2kNZCk	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:25:17.534+00	172.22.0.8	node	\N	\N	\N
+vag7xAGPNHLqf0RLGeFif2zeGBIOz-N_llDC3gEYCEj80EtZmmeKyO1hVZynDhnl	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:25:44.367+00	172.22.0.8	node	\N	\N	\N
+yymoFnu2GjQuC-NnPTh3z5QhtjE5eT9LHeJs8IXoBV25r8tf2yuqdhlK1jxtQu8_	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:31:18.919+00	172.22.0.8	node	\N	\N	\N
+6NslTA65P3ImmOAS6cTe_D0c89oIIZEqN7ylRRAvflfB4ZoihxfMAiHScP5kfGrz	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:31:39.965+00	172.22.0.8	node	\N	\N	\N
+32xWwTEHwuNRDL3h8wBFIp7ZRTs5bIyH1EHreP08STqI5dmn-kD2qo4MvlKZpQr5	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:34:04.281+00	172.22.0.8	node	\N	\N	\N
+XEI5Uhi8AYKT-5RNvUL2q1nGhTFOmdFgl-gkI0hNdcNQjqDnJSYHC252zLoYNAWB	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:34:29.312+00	172.22.0.8	node	\N	\N	\N
+OeiL-4C3WyKuap8CAWisHGD3NG2t8tyrzbs0IHDEP8ds_F_2Y1hmIoPvRrZSG9Bi	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:38:41.206+00	172.22.0.8	node	\N	\N	\N
+XbKcZlJA_rqQSVr4c_h04caEBuXp80H4p6Jh1BZivlQexdjVLEok6aag7601hcsq	ccd2cde6-bda7-46d3-8658-760a82e3f952	2025-05-16 11:39:34.732+00	172.22.0.8	node	\N	\N	\N
+qOi_YEYAOFWVM9IjrB-wxsJvv2kAkVYECzvOXEyR5bdxcIgnEPSVi4I6Hf4htkcA	aafe6467-b329-42b7-b91e-e7b70c118437	2025-05-16 11:42:15.19+00	172.22.0.8	node	\N	\N	\N
 \.
 
 
@@ -2163,10 +2259,12 @@ COPY public.directus_translations (id, language, key, value) FROM stdin;
 -- Data for Name: directus_users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.directus_users (id, first_name, last_name, email, password, location, title, description, tags, avatar, language, tfa_secret, status, role, token, last_access, last_page, provider, external_identifier, auth_data, email_notifications, appearance, theme_dark, theme_light, theme_light_overrides, theme_dark_overrides) FROM stdin;
-3d59b549-1665-4368-8631-586f02ea12e5	Admin	Admin	admin@example.com	$argon2id$v=19$m=65536,t=3,p=4$Y954JrEWfCyGH0TIkLGHiw$gsjXCTlne0GIfzaHB/4GDGr1rTop+W1yMcGnlbE8TTc	\N	\N	\N	\N	\N	\N	\N	active	fd0935c8-df79-4771-84c9-c73875fdd763	\N	2025-05-09 06:26:50.839+00	/settings/roles/4256f46d-8fe5-4a49-92b8-310645edb13f	default	\N	\N	t	\N	\N	\N	\N	\N
-7136fddd-4146-40f5-b506-25b77ededdf5	ApiUser	\N	apiuser@example.com	$argon2id$v=19$m=65536,t=3,p=4$RD6DNk1G49MNtsfiGRY9XQ$zADSoBRAEA9S/P2OBYUXyfoWeQsW73URkFHDI7sVTCU	\N	\N	\N	\N	\N	\N	\N	active	fd0935c8-df79-4771-84c9-c73875fdd763	\N	2025-05-09 05:51:17.506+00	/users/7136fddd-4146-40f5-b506-25b77ededdf5	default	\N	\N	t	\N	\N	\N	\N	\N
-ccd2cde6-bda7-46d3-8658-760a82e3f952	maite	\N	maite@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$QcM2OHjLEn9YN9Tfj3g/hg$5HJlqaXnmgp8vjewr1PPma0OTfMNblU7cw5mGL3J9Jg	\N	\N	\N	\N	\N	\N	\N	active	4256f46d-8fe5-4a49-92b8-310645edb13f	\N	2025-05-09 07:12:03.421+00	\N	default	\N	\N	t	\N	\N	\N	\N	\N
+COPY public.directus_users (id, first_name, last_name, email, password, location, title, description, tags, avatar, language, tfa_secret, status, role, token, last_access, last_page, provider, external_identifier, auth_data, email_notifications, appearance, theme_dark, theme_light, theme_light_overrides, theme_dark_overrides, phone, register_date, type, "resetToken", "resetTokenExpiry", "profileImage", "clockifyUserId") FROM stdin;
+ccd2cde6-bda7-46d3-8658-760a82e3f952	maite	\N	maite@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$QcM2OHjLEn9YN9Tfj3g/hg$5HJlqaXnmgp8vjewr1PPma0OTfMNblU7cw5mGL3J9Jg	\N	\N	\N	\N	\N	\N	\N	active	4256f46d-8fe5-4a49-92b8-310645edb13f	\N	2025-05-09 11:39:34.741+00	\N	default	\N	\N	t	\N	\N	\N	\N	\N	609474291	\N	user	\N	\N	\N	\N
+aafe6467-b329-42b7-b91e-e7b70c118437	Admin	Admin	admin@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$ZIGdwXqJDR00t72ud3wMQA$Mwsj2ji/5PMbiPElU7+eH0Y/y82AKePQEfCqMMeMsjE	\N	\N	\N	\N	\N	\N	\N	active	fd0935c8-df79-4771-84c9-c73875fdd763	\N	2025-05-09 11:42:15.198+00	\N	default	\N	\N	t	\N	\N	\N	\N	\N	609474293	2025-05-09	admin	\N	\N	\N	\N
+44648516-c025-442d-b23f-7840246c4b6b	Luisa	\N	luisa@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$97vu8Q3b0AZLtqlfNOeqrg$uuJ4nyplwPFhZ6bD5qTL+BKSIPRzPfQHeqMdFQPSWhI	\N	\N	\N	\N	\N	\N	\N	active	4256f46d-8fe5-4a49-92b8-310645edb13f	\N	\N	\N	default	\N	\N	t	\N	\N	\N	\N	\N	673883931	2025-05-09	user	\N	\N	\N	\N
+f17613ee-ba32-4206-97ac-db75ab955e44	Germán	\N	german@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$6lq8ZOSIkXhZdHs9UtXQHQ$7tO0L2Q1NcNGC8PzXCYwKO3enOInl+z/6h0nVAf4IwI	\N	\N	\N	\N	\N	\N	\N	active	fd0935c8-df79-4771-84c9-c73875fdd763	\N	\N	\N	default	\N	\N	t	\N	\N	\N	\N	\N	654421935	2025-05-09	admin	\N	\N	\N	\N
+3d59b549-1665-4368-8631-586f02ea12e5	nada	nada	admin@example.com	$argon2id$v=19$m=65536,t=3,p=4$Y954JrEWfCyGH0TIkLGHiw$gsjXCTlne0GIfzaHB/4GDGr1rTop+W1yMcGnlbE8TTc	\N	\N	\N	\N	\N	\N	\N	active	fd0935c8-df79-4771-84c9-c73875fdd763	\N	2025-05-09 09:48:52.703+00	/users	default	\N	\N	t	\N	\N	\N	\N	\N	609474292	\N	user	\N	\N	\N	\N
 \.
 
 
@@ -2190,14 +2288,14 @@ COPY public.directus_webhooks (id, name, method, url, status, data, actions, col
 -- Name: directus_activity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.directus_activity_id_seq', 438, true);
+SELECT pg_catalog.setval('public.directus_activity_id_seq', 528, true);
 
 
 --
 -- Name: directus_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.directus_fields_id_seq', 44, true);
+SELECT pg_catalog.setval('public.directus_fields_id_seq', 54, true);
 
 
 --
@@ -2218,21 +2316,21 @@ SELECT pg_catalog.setval('public.directus_permissions_id_seq', 45, true);
 -- Name: directus_presets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.directus_presets_id_seq', 3, true);
+SELECT pg_catalog.setval('public.directus_presets_id_seq', 4, true);
 
 
 --
 -- Name: directus_relations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.directus_relations_id_seq', 5, true);
+SELECT pg_catalog.setval('public.directus_relations_id_seq', 8, true);
 
 
 --
 -- Name: directus_revisions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.directus_revisions_id_seq', 183, true);
+SELECT pg_catalog.setval('public.directus_revisions_id_seq', 207, true);
 
 
 --
@@ -2263,14 +2361,6 @@ ALTER TABLE ONLY public."Messages"
 
 ALTER TABLE ONLY public."Project"
     ADD CONSTRAINT "Project_pkey" PRIMARY KEY (id);
-
-
---
--- Name: Staff Staff_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Staff"
-    ADD CONSTRAINT "Staff_pkey" PRIMARY KEY (id);
 
 
 --
@@ -2522,6 +2612,14 @@ ALTER TABLE ONLY public.directus_users
 
 
 --
+-- Name: directus_users directus_users_phone_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.directus_users
+    ADD CONSTRAINT directus_users_phone_unique UNIQUE (phone);
+
+
+--
 -- Name: directus_users directus_users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2559,22 +2657,6 @@ ALTER TABLE ONLY public.directus_webhooks
 
 ALTER TABLE ONLY public."Project"
     ADD CONSTRAINT project_title_unique UNIQUE (title);
-
-
---
--- Name: Staff staff_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Staff"
-    ADD CONSTRAINT staff_email_unique UNIQUE (email);
-
-
---
--- Name: Staff staff_phone_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Staff"
-    ADD CONSTRAINT staff_phone_unique UNIQUE (phone);
 
 
 --
@@ -2926,7 +3008,7 @@ ALTER TABLE ONLY public.directus_webhooks
 --
 
 ALTER TABLE ONLY public."Messages"
-    ADD CONSTRAINT messages_receiver_foreign FOREIGN KEY (receiver) REFERENCES public."Staff"(id) ON DELETE CASCADE;
+    ADD CONSTRAINT messages_receiver_foreign FOREIGN KEY (receiver) REFERENCES public.directus_users(id) ON DELETE CASCADE;
 
 
 --
@@ -2934,7 +3016,7 @@ ALTER TABLE ONLY public."Messages"
 --
 
 ALTER TABLE ONLY public."Messages"
-    ADD CONSTRAINT messages_sender_foreign FOREIGN KEY (sender) REFERENCES public."Staff"(id) ON DELETE CASCADE;
+    ADD CONSTRAINT messages_sender_foreign FOREIGN KEY (sender) REFERENCES public.directus_users(id) ON DELETE CASCADE;
 
 
 --
@@ -2950,7 +3032,7 @@ ALTER TABLE ONLY public."Task"
 --
 
 ALTER TABLE ONLY public."Task_staff"
-    ADD CONSTRAINT task_staff_staff_foreign FOREIGN KEY (staff) REFERENCES public."Staff"(id) ON DELETE CASCADE;
+    ADD CONSTRAINT task_staff_staff_foreign FOREIGN KEY (staff) REFERENCES public.directus_users(id) ON DELETE CASCADE;
 
 
 --
