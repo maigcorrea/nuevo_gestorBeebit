@@ -91,7 +91,7 @@ services:
       DB_DATABASE: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      PUBLIC_URL: http://localhost:8055
+      PUBLIC_URL: ${DIRECTUS_URL}
       SECRET: ${DIRECTUS_SECRET}
     depends_on:
       - postgres

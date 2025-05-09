@@ -38,6 +38,9 @@ import { ClockifyController } from './infrastructure/clockify/clockify.controlle
 import { ClockifyService } from './infrastructure/clockify/clockyfy.service';
 
 
+
+import { DirectusModule } from './directus/directus.module';
+
 console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
 @Module({
   imports: [
@@ -75,6 +78,7 @@ console.log('🧪 StaffOrmEntity:', StaffOrmEntity);
     MessagesModule,
     CaslModule,
     ClockifyModule,
+    DirectusModule,
   ],
   controllers: [AppController,],
   providers: [],

@@ -16,7 +16,7 @@ async function bootstrap() {
 
   //Si el frontend y el backend están en puertos diferentes, es necesario activar el CORS para transferir los datos
   app.enableCors({
-    origin: 'http://localhost:3001', // tu frontend
+    origin: ['http://localhost:3001'], // tu frontend
     credentials: true,
   })
 

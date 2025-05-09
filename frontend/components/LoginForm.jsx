@@ -27,7 +27,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch('http://localhost:3000/auth/login', {
+      const res = await fetch('http://localhost:3000/directus/staff/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -41,23 +41,19 @@ const LoginForm = () => {
       }
 
       //Guardamos el token y demás datos
-      localStorage.setItem('token', data.access_token);
-      localStorage.setItem('type', data.user.type);
+      localStorage.setItem('token', data.token);
+      /*localStorage.setItem('type', data.user.type);
       localStorage.setItem('id', data.user.id);
+      localStorage.setItem('profileImage', data.user.profileImage || '');
 
-      // Obtener imagen de perfil actualizada desde /staff/:id
-      const resProfile = await fetch(`http://localhost:3000/staff/${data.user.id}`, {
-        headers: { Authorization: `Bearer ${data.access_token}` },
-      });
-      const profile = await resProfile.json();
-      const updatedImage = profile.profileImage || '';
-
-      localStorage.setItem('profileImage', updatedImage);
-      setUserType(data.user.type); //ACTUALIZA el contexto del tipo en tiempo real
-      setProfileImage(updatedImage);//Actualiza el contexto de la imagen
-
-      //Redirigimos al dashboard o página principal
+      setUserType(data.user.type);
+      setProfileImage(data.user.profileImage || '');
+*/
+      
+      console.log("Login correcto");
       router.push('/');
+      //setTimeout(() => router.push('/'), 100);
+
     } catch (err) {
       setError('Error de conexión');
     }

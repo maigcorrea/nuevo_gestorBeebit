@@ -42,7 +42,6 @@ export class CaslAbilityFactory {
       can('create', Project);
       can('read', Task);
       can('update', Task, { assigned_to: user.id });
-      can('delete', Project, {created_by: user.id});
       can('read', Staff); // puede ver la lista de empleados (opcional)
       can('update', Staff, { id: user.id }); // puede actualizar su propio perfil
       cannot('delete', Staff); // no puede borrar empleados
