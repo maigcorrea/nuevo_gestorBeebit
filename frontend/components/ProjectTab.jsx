@@ -99,7 +99,7 @@ const ProjectTab = () => {
       }
 
       try {
-        const res = await fetch(`http://localhost:3000/task-staff/proyectos/${userId}`, {
+        const res = await fetch(`http://localhost:3000/directus/tasks-staff/proyectos/`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

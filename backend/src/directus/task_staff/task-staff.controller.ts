@@ -2,14 +2,17 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { GetTasksByUserUseCase } from './use-cases/get-tasks-by-user.user-case';
 import { Request } from 'express';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UnauthorizedException } from '@nestjs/common';
+import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
+import { GetProjectsByUserUseCase } from './use-cases/get-projects-by-user.use-case';
 
 @ApiTags('Directus - Tasks Staff')
 @Controller('directus/tasks-staff')
 export class TasksStaffController {
   constructor(
     private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
+    private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Obtener las tareas asignadas al usuario logueado' })
@@ -30,11 +33,34 @@ export class TasksStaffController {
 
     return this.getTasksByUserUseCase.execute(token, userId);
   }
+
+
+
+
+  
+  @ApiOperation({ summary: 'Obtener los proyectos asignados al usuario logueado' })
+  @ApiResponse({ status: 200, description: 'Listado de proyectos asignados', type: [ProjectByUserResponseDto] })
+  @Get('proyectos')
+  async getMyProjects(@Req() req: Request): Promise<ProjectByUserResponseDto[]> {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+
+    const token = authorization.split(' ')[1];
+
+    // Decodificamos el token para sacar el id del usuario
+    const decoded = decodeJwtPayload(token);
+    const userId = decoded.id;
+
+    return this.getProjectsByUserUseCase.execute(token, userId);
+  }
 }
 
 
 
-// Función auxiliar
+// Función auxiliar para decodificar el token
 function decodeJwtPayload(token: string): any {
     const payloadBase64 = token.split('.')[1];
     const payloadBuffer = Buffer.from(payloadBase64, 'base64');
