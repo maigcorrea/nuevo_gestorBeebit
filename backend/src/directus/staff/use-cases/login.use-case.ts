@@ -36,6 +36,7 @@ export class LoginUseCase {
         const meData = await meResponse.json();
         console.log("🔎 meData:", meData);
         const userType = meData.data.type;
+        const userId = meData.data.id;
         //const userId = meData.data.id;
         //const profileImage = meData.data.profileImage || '';
 
@@ -44,6 +45,7 @@ export class LoginUseCase {
         message:"Login correcto",
         token,
         user: {
+          id: userId,
           type: userType,
         }
        /* user: {

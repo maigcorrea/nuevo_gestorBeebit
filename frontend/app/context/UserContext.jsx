@@ -9,7 +9,15 @@ import { useMemo } from 'react';
 //Creamos el contexto con un valor por defecto
 export const UserContext = createContext({
   userType:null,
-  setUserType:() => {} // Función vacía para evitar errores antes de que se defina de verdad (en el Provider)
+  setUserType:() => {}, // Función vacía para evitar errores antes de que se defina de verdad (en el Provider)
+  token: '',
+  setToken: () => {},
+  profileImage: '',
+  setProfileImage: () => {},
+  logout: () => {},
+  isLoading: true,
+  id: '',
+  setId: () => {},
 });
 
 

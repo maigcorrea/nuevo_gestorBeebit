@@ -23,7 +23,7 @@ const LoginForm = () => {
   /*
     Cuando el usuario inicia sesión, guardas el tipo en el localStorage, pero React no sabe que lo guardaste, porque localStorage no tiene forma de notificar a React que algo cambió.
   */
-  const { setUserType, setProfileImage } = useContext(UserContext);//Extraer el valor del tipo en el contexto
+  const { setUserType, setProfileImage, setToken } = useContext(UserContext);//Extraer el valor del tipo en el contexto
 
   const handleLogin = async () => {
     try {
@@ -42,22 +42,16 @@ const LoginForm = () => {
 
       //Guardamos el token y demás datos
       localStorage.setItem('token', data.token);
-      //setToken(data.token); SI DESCOMENTAS ESTO PETA EL PROGRAMA
+      setToken(data.token);// SI DESCOMENTAS ESTO PETA EL PROGRAMA
 
       localStorage.setItem('type', data.user.type);
       setUserType(data.user.type);
 
 
-      localStorage.setItem('id', data.id); //EL ID NO SE GUARDA DE NINGUNA MANERA
+      localStorage.setItem('id', data.user.id); //EL ID NO SE GUARDA DE NINGUNA MANERA
 
       localStorage.setItem('profileImage', data.user.profileImage || 'NO HAY');
-      /*
-      localStorage.setItem('id', data.id);
-      localStorage.setItem('profileImage', data.profileImage || '');
-      setUserType(data.type);
-      setProfileImage(data.profileImage || '');
-      setToken(data.token);
-*/
+      setProfileImage(data.user.profileImage || 'No hay');
       
       console.log("Login correcto");
       router.push('/');
