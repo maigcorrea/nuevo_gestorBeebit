@@ -6,7 +6,7 @@ export class GetTasksByUserUseCase {
   async execute(token: string, userId: string): Promise<TaskByUserResponseDto[]> {
     try {
       const response = await fetch(
-         `${process.env.DIRECTUS_URL}/items/Task_staff?filter[staff][_eq]=${userId}&fields=task.id,task.title,task.description,task.start_date,task.end_date,task.status,task.completed,task.priority,task.associated_project.id,task.associated_project.title`,
+        `${process.env.DIRECTUS_URL}/items/Task_staff?filter[staff][_eq]=${userId}&fields=task.*,task.associated_project.id,task.associated_project.title`,
         {
           method: 'GET',
           headers: {

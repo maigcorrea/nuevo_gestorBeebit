@@ -1,17 +1,40 @@
 // src/backend/directus/tasks_staff/dto/task-by-user-response.dto.ts
 
+import { ApiProperty } from '@nestjs/swagger';
+
+class AssociatedProjectDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+}
+
 export class TaskByUserResponseDto {
-    id: string;
-    title: string;
-    description: string;
-    start_date: string;
-    end_date: string | null;
-    status: 'pending' | 'active' | 'completed';
-    completed: boolean;
-    priority: 'high' | 'medium' | 'low';
-    associated_project: {
-      id: string | null;
-      name: string | null;
-    };
-  }
-  
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  title: string;
+
+  @ApiProperty({ required: false })
+  description: string | null;
+
+  @ApiProperty({ required: false })
+  start_date: string | null;
+
+  @ApiProperty({ required: false })
+  end_date: string | null;
+
+  @ApiProperty()
+  status: string;
+
+  @ApiProperty()
+  completed: boolean;
+
+  @ApiProperty()
+  priority: string;
+
+  @ApiProperty({ required: false, type: () => AssociatedProjectDto })
+  associated_project: AssociatedProjectDto | null;
+}
