@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Post, Res, Body } from '@nestjs/common';
 import { GetTasksByUserUseCase } from './use-cases/get-tasks-by-user.user-case';
 import { Request } from 'express';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
@@ -55,6 +55,34 @@ export class TasksStaffController {
     const userId = decoded.id;
 
     return this.getProjectsByUserUseCase.execute(token, userId);
+  }
+
+
+  
+  @ApiOperation({ summary: 'Exportar proyectos seleccionados a Excel' })
+  @ApiResponse({ status: 200, description: 'Archivo Excel generado correctamente' })
+  @Post('export-excel')
+  async exportToExcel(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body('ids') ids: string[],
+  ) {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+
+    const token = authorization.split(' ')[1];
+
+    const buffer = await this.exportProjectsToExcelUseCase.execute(ids, token);
+
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': 'attachment; filename=proyectos.xlsx',
+    });
+
+    res.end(buffer);
   }
 }
 
