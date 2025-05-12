@@ -18,20 +18,20 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <body className='bg-[#d0e4e5] min-h-screen'>
         <UserProvider>
-          <TaskSummaryProvider>
+          {/*<TaskSummaryProvider>*/}
             <header>
               {<Navbar></Navbar>}
             </header>
             <main>
-              <TaskStatsProvider>
-              <ProjectStatsProvider>
-              <TaskRankingProvider>
+              {/*<TaskStatsProvider>*/}
+              {/*<ProjectStatsProvider>*/}
+              {/*<TaskRankingProvider>*/}
                 {children}
-              </TaskRankingProvider>
-              </ProjectStatsProvider>
-              </TaskStatsProvider>
+              {/*</TaskRankingProvider>*/}
+              {/*</ProjectStatsProvider>*/}
+              {/*</TaskStatsProvider>*/}
             </main>
-          </TaskSummaryProvider>
+          {/*</TaskSummaryProvider>*/}
         </UserProvider>
       </body>
     </html>

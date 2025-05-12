@@ -24,8 +24,8 @@ export default function Home() {
     <>
     <ProtectRoutes>
         <div className="flex mb-[80px] flex-wrap gap-2">
-          <WelcomeMessage></WelcomeMessage>
-          <ProjectCalendar></ProjectCalendar>
+          {/*<WelcomeMessage></WelcomeMessage>*/}
+          {/*<ProjectCalendar></ProjectCalendar>*/}
         </div>
         <div className="mb-[100px]">
           <PomodoroTimer></PomodoroTimer>

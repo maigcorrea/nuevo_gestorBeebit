@@ -28,7 +28,7 @@ const TasksTab = () => {
   ];
 
   //Actualizar resumen del componente de bienvenida (welcomeMessage)
-  const { actualizarResumenTareas } = useTaskSummary();
+  //const { actualizarResumenTareas } = useTaskSummary(); CAMBIOOOOOoo
 
   //Cambiar vista
   const [vistaTabla, setVistaTabla] = useState(true);
@@ -62,7 +62,7 @@ const TasksTab = () => {
       
 
       try {
-        const res = await fetch(`http://localhost:3000/task-staff/por-usuario/${userId}`, {
+        const res = await fetch(`http://localhost:3000/directus/tasks-staff/me/`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
