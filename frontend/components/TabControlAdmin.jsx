@@ -114,7 +114,7 @@ const priorityTaskTypes = [
   const endpoint =
     deleteType === 'project'
       ? `http://localhost:3000/projects/${editData.id}`
-      : `http://localhost:3000/tasks/${editData.id}`;
+      : `http://localhost:3000/directus/task/${editData.id}`;
 
     //id y last update no están permitidos a la hora de editar un proyecto, status hay que desestructurarlo para que no se envíe el objeto completo
   const { id, last_update, status, start_date, end_date, completed, priority, associated_project, document_url, clockifyTaskId, clockifyProjectId, ...rest } = editData;
@@ -181,7 +181,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
       const data = await res.json();
       setProjects(data);
     } else {
-      const res = await fetch('http://localhost:3000/tasks', {
+      const res = await fetch('http://localhost:3000/directus/task', {
         headers:{
             Authorization: `Bearer ${token}`,
         }

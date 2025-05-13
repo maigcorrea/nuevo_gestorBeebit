@@ -6,6 +6,8 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { UpdateTaskStatusUseCase } from './use-cases/update-task-status.use-case';
 import { FindAllTasksUseCase } from './use-cases/find-all-tasks.use-case';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateTaskUseCase } from './use-cases/update-task.use-case';
 
 @ApiTags('Directus - Task')
 @Controller('directus/task')
@@ -14,6 +16,7 @@ export class TaskController {
     private readonly updateStatusAndPriorityUseCase: UpdateStatusAndPriorityUseCase,
     private readonly updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     private readonly findAllTasksUseCase: FindAllTasksUseCase,
+    private readonly updateTaskUseCase: UpdateTaskUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Actualizar estado y prioridad de una tarea' })
@@ -69,5 +72,28 @@ export class TaskController {
     return this.findAllTasksUseCase.execute(accessToken);
   }
 
+
+
+
+
+  @ApiOperation({ summary: 'Actualizar una tarea' })
+  @ApiResponse({ status: 200, description: 'Tarea actualizada correctamente' })
+  @ApiBearerAuth('jwt')
+  @Patch(':id')
+  async updateTask(
+    @Param('id') id: string,
+    @Body() dto: UpdateTaskDto,
+    @Req() req: Request,
+  ) {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+
+    const token = authorization.split(' ')[1];
+
+    return this.updateTaskUseCase.execute(id, dto, token);
+  }
   
 }
