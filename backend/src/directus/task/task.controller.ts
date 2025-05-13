@@ -1,4 +1,4 @@
-import { Controller, Patch, Param, Body, Req, UnauthorizedException, Get } from '@nestjs/common';
+import { Controller, Patch, Param, Body, Req, UnauthorizedException, Get, Delete } from '@nestjs/common';
 import { UpdateStatusAndPriorityUseCase } from './use-cases/update-status-and-priority.use-case';
 import { UpdateStatusPriorityDto } from './dto/update-status-priority.dto';
 import { Request } from 'express';
@@ -8,6 +8,7 @@ import { UpdateTaskStatusUseCase } from './use-cases/update-task-status.use-case
 import { FindAllTasksUseCase } from './use-cases/find-all-tasks.use-case';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { UpdateTaskUseCase } from './use-cases/update-task.use-case';
+import { DeleteTaskUseCase } from './use-cases/delete-task.use-case';
 
 @ApiTags('Directus - Task')
 @Controller('directus/task')
@@ -17,6 +18,7 @@ export class TaskController {
     private readonly updateTaskStatusUseCase: UpdateTaskStatusUseCase,
     private readonly findAllTasksUseCase: FindAllTasksUseCase,
     private readonly updateTaskUseCase: UpdateTaskUseCase,
+    private readonly deleteTaskUseCase: DeleteTaskUseCase
   ) {}
 
   @ApiOperation({ summary: 'Actualizar estado y prioridad de una tarea' })
@@ -94,6 +96,26 @@ export class TaskController {
     const token = authorization.split(' ')[1];
 
     return this.updateTaskUseCase.execute(id, dto, token);
+  }
+
+
+
+
+
+  @ApiOperation({ summary: 'Eliminar una tarea' })
+  @ApiResponse({ status: 200, description: 'Tarea eliminada correctamente' })
+  @ApiBearerAuth('jwt')
+  @Delete(':id')
+  async deleteTask(@Param('id') id: string, @Req() req: Request) {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+
+    const token = authorization.split(' ')[1];
+
+    return this.deleteTaskUseCase.execute(id, token);
   }
   
 }

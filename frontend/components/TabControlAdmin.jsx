@@ -212,7 +212,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
   
     const endpoint = deleteType === 'project'
       ? `http://localhost:3000/projects/${selectedRow.id}`
-      : `http://localhost:3000/tasks/${selectedRow.id}`;
+      : `http://localhost:3000/directus/task/${selectedRow.id}`;
   
     try {
       await fetch(endpoint, {
@@ -232,7 +232,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
         const data = await res.json();
         setProjects(data);
       } else {
-        const res = await fetch('http://localhost:3000/tasks',{
+        const res = await fetch('http://localhost:3000/directus/task',{
           headers:{
             Authorization: `Bearer ${token}`,
           }
