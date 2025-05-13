@@ -92,7 +92,7 @@ const TasksTab = () => {
   const completarTarea = async (taskId) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:3000/tasks/${taskId}/status`, {
+      const res = await fetch(`http://localhost:3000/directus/task/${taskId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ const TasksTab = () => {
       );
 
       //Actualizar resumen del componente de bienvenida
-      actualizarResumenTareas();
+      //actualizarResumenTareas(); CAMBIOOOOOOOooooooooo
 
       //Mostrar toast de +1
       toast.current?.show({
