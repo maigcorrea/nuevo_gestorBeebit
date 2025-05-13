@@ -48,7 +48,7 @@ const priorityTaskTypes = [
     const [editData, setEditData] = useState({});
 
     //Actualizar resumen de tareas en el componente de bienvenida (WelcomeMessage)
-    const {actualizarResumenTareas} = useTaskSummary();
+    //const {actualizarResumenTareas} = useTaskSummary(); CAMBIOOOOOO
 
     //Buscador
     const [projectSearch, setProjectSearch] = useState('');
@@ -58,7 +58,7 @@ const priorityTaskTypes = [
 
     // Obtener proyectos
     const fetchProjects = async () => {
-      const res = await fetch('http://localhost:3000/projects', {
+      const res = await fetch('http://localhost:3000/directus/project', {
         headers:{
             Authorization: `Bearer ${token}`,
         }
@@ -70,7 +70,7 @@ const priorityTaskTypes = [
 
     // Obtener tareas
     const fetchTasks = async () => {
-      const res = await fetch('http://localhost:3000/tasks', {
+      const res = await fetch('http://localhost:3000/directus/task', {
         headers:{
             Authorization: `Bearer ${token}`,
         }
@@ -92,7 +92,7 @@ const priorityTaskTypes = [
     };
 
 
-   // Funciones vacías para ahora
+   
    // Editar tarea/proyecto (Abrir el modal con los datos seleccionados)
    const handleEdit = (rowData, type) => {
     let data = { ...rowData };
@@ -190,7 +190,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
       setTasks(data);
     }
 
-    actualizarResumenTareas();
+    //actualizarResumenTareas();CAMBIOOOOOOOOOO
     setEditVisible(false);
     setEditData({});
 
@@ -331,7 +331,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
         </TabView>
         </div>
     
-        <DashboardStats></DashboardStats>
+        {/*<DashboardStats></DashboardStats>*/}
         
         {
             //MODAL PARA ELIMINAR
