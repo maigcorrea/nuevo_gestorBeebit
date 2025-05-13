@@ -7,6 +7,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { GetProjectsByUserUseCase } from './use-cases/get-projects-by-user.use-case';
 import { ExportProjectsToExcelUseCase } from './use-cases/export-projects-to-excel.use-case';
+import { ExportProjectsToPDFUseCase } from './use-cases/export-projects-to-pdf.use-case';
 
 
 @ApiTags('Directus - Tasks Staff')
@@ -16,6 +17,7 @@ export class TasksStaffController {
     private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
     private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
     private readonly exportProjectsToExcelUseCase: ExportProjectsToExcelUseCase,
+    private readonly exportProjectsToPDFUseCase: ExportProjectsToPDFUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Obtener las tareas asignadas al usuario logueado' })
@@ -87,6 +89,32 @@ export class TasksStaffController {
 
     res.end(buffer);
   }
+
+
+
+  @ApiOperation({ summary: 'Exportar proyectos seleccionados a PDF' })
+@ApiResponse({ status: 200, description: 'Archivo PDF generado correctamente' })
+@ApiBearerAuth('jwt')
+@Post('export-pdf')
+async exportToPDF(
+  @Body('ids') ids: string[],
+  @Res() res: Response,
+  @Req() req: Request,
+) {
+  const authorization = req.headers.authorization;
+
+  if (!authorization) {
+    throw new UnauthorizedException('No se encontró el token de autorización');
+  }
+
+  const token = authorization.split(' ')[1];
+
+  const buffer = await this.exportProjectsToPDFUseCase.execute(ids, token);
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename=proyectos.pdf');
+  res.end(buffer);
+}
 }
 
 
