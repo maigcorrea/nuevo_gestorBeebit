@@ -8,10 +8,7 @@ export class ExportProjectsToExcelUseCase {
   async execute(ids: string[], accessToken: string): Promise<Buffer> {
     const query = new URLSearchParams();
     query.append('filter[task][associated_project][id][_in]', ids.join(','));
-    query.append('deep[task][associated_project]', 'true');
-    query.append('deep[task][associated_project][fields]', 'id,title,description,start_date,deadline,status');
-    query.append('deep[staff]', 'true');
-    query.append('deep[task]', 'title,completed,associated_project');
+query.append('fields', 'id,task.*, task.associated_project.*, staff.*'); // 👈 Esta línea clave
 
     const url = `${process.env.DIRECTUS_URL}/items/Task_staff?${query.toString()}`;
 
@@ -21,9 +18,14 @@ export class ExportProjectsToExcelUseCase {
       },
     });
 
+    if (!response.ok) {
+      throw new Error('Error al consultar Directus');
+    }
+
     const data = await response.json();
 
     const relaciones = data.data;
+    console.log('RELACIONES:', JSON.stringify(relaciones, null, 2));
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Proyectos');
@@ -46,13 +48,13 @@ export class ExportProjectsToExcelUseCase {
       if (!proyecto || !task || !staff) continue;
 
       worksheet.addRow({
-        project: proyecto.title,
+        project: proyecto.title || '',
         description: proyecto.description || '',
         start: proyecto.start_date ? new Date(proyecto.start_date).toLocaleDateString('es-ES') : '',
         deadline: proyecto.deadline ? new Date(proyecto.deadline).toLocaleDateString('es-ES') : '',
-        task: task.title,
+        task: task.title || '',
         completed: task.completed ? 'Sí' : 'No',
-        staff: staff.name,
+        staff: `${staff.first_name || ''} ${staff.last_name || ''}`.trim(), // 👈 Aquí importante
       });
     }
 

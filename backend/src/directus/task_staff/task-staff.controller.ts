@@ -1,11 +1,13 @@
 import { Controller, Get, Req, UseGuards, Post, Res, Body } from '@nestjs/common';
 import { GetTasksByUserUseCase } from './use-cases/get-tasks-by-user.user-case';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { TaskByUserResponseDto } from './dto/task-by-user-response.dto';
 import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UnauthorizedException } from '@nestjs/common';
 import { ProjectByUserResponseDto } from './dto/project-by-user-response.dto';
 import { GetProjectsByUserUseCase } from './use-cases/get-projects-by-user.use-case';
+import { ExportProjectsToExcelUseCase } from './use-cases/export-projects-to-excel.use-case';
+
 
 @ApiTags('Directus - Tasks Staff')
 @Controller('directus/tasks-staff')
@@ -13,6 +15,7 @@ export class TasksStaffController {
   constructor(
     private readonly getTasksByUserUseCase: GetTasksByUserUseCase,
     private readonly getProjectsByUserUseCase: GetProjectsByUserUseCase,
+    private readonly exportProjectsToExcelUseCase: ExportProjectsToExcelUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Obtener las tareas asignadas al usuario logueado' })
