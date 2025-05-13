@@ -113,7 +113,7 @@ const priorityTaskTypes = [
   const handleUpdate = async () => {
   const endpoint =
     deleteType === 'project'
-      ? `http://localhost:3000/projects/${editData.id}`
+      ? `http://localhost:3000/directus/project/${editData.id}`
       : `http://localhost:3000/directus/task/${editData.id}`;
 
     //id y last update no están permitidos a la hora de editar un proyecto, status hay que desestructurarlo para que no se envíe el objeto completo
@@ -173,7 +173,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
 
     // Actualizar tabla correspondiente
     if (deleteType === 'project') {
-      const res = await fetch('http://localhost:3000/projects', {
+      const res = await fetch('http://localhost:3000/directus/project', {
         headers:{
             Authorization: `Bearer ${token}`,
         }
