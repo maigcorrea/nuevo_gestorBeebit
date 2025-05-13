@@ -28,7 +28,7 @@ const TasksTab = () => {
   ];
 
   //Actualizar resumen del componente de bienvenida (welcomeMessage)
-  //const { actualizarResumenTareas } = useTaskSummary(); CAMBIOOOOOoo
+  //const { actualizarResumenTareas } = useTaskSummary(); CAMBIOOOOOooooooo
 
   //Cambiar vista
   const [vistaTabla, setVistaTabla] = useState(true);
@@ -142,7 +142,7 @@ const TasksTab = () => {
     console.log(`editData.id (raw): '${editData.id}'`);
     console.log("Token", token);
     try {
-      const res = await fetch(`http://localhost:3000/tasks/${editData.id}/update-status-priority`, {
+      const res = await fetch(`http://localhost:3000/directus/task/${editData.id}/update-status-priority`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const TasksTab = () => {
         prev.map(t => t.id === updated.id ? { ...t, ...updated } : t)
       );
 
-      actualizarResumenTareas();
+      //actualizarResumenTareas(); CAMBIOOOooooo
 
       if(editData.status.code==="completed"){
         //Mostrar toast de +1
