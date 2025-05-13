@@ -211,7 +211,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
     if (!selectedRow || !deleteType) return;
   
     const endpoint = deleteType === 'project'
-      ? `http://localhost:3000/projects/${selectedRow.id}`
+      ? `http://localhost:3000/directus/project/${selectedRow.id}`
       : `http://localhost:3000/directus/task/${selectedRow.id}`;
   
     try {
@@ -224,7 +224,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
   
       // Refrescar datos
       if (deleteType === 'project') {
-        const res = await fetch('http://localhost:3000/projects',{
+        const res = await fetch('http://localhost:3000/directus/project',{
           headers:{
             Authorization: `Bearer ${token}`,
           }
