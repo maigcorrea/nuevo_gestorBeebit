@@ -55,7 +55,7 @@ const UpdateProfileForm = () => {
             setRegisterDate(new Date(data.register_date).toLocaleDateString());
             setEmail(data.email);
             setOriginalEmail(data.email);
-            setProfileImageUrl(prev => prev || data.profileImageUrl);
+            setProfileImageUrl(data.profileImageUrl);
         };
       
         fetchProfile();
@@ -136,6 +136,9 @@ const UpdateProfileForm = () => {
         if (file) {
           setProfileImage(file);
         }
+
+        const localUrl = URL.createObjectURL(file);
+        setProfileImageUrl(localUrl); // Muestra la imagen localmente antes de subirla
     };
 
 

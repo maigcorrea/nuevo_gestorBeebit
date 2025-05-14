@@ -60,6 +60,7 @@ export default function Navbar() {
     },
   ];
 
+  console.log("Imagen de perfil", profileImage);
 
   const start = (
     <Link href="/">
