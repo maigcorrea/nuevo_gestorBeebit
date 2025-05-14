@@ -1,6 +1,6 @@
 // /directus/staff/staff.controller.ts
 
-import { Body, Controller, Post, Get, Req, UnauthorizedException, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Post, Get, Req, UnauthorizedException, Patch, UseInterceptors, UploadedFile, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { LoginUseCase } from './use-cases/login.use-case';
@@ -15,6 +15,7 @@ import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
 import { GetEmailsUseCase } from './use-cases/get-emails.use-case';
+import { CheckEmailExistsUseCase } from './use-cases/check-email-exists.use-case';
 
 @Controller('directus/staff')
 export class StaffController {
@@ -27,6 +28,7 @@ export class StaffController {
     private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
     private readonly changePasswordUseCase: ChangePasswordUseCase,
     private readonly getEmailsUseCase: GetEmailsUseCase,
+    private readonly checkEmailExistsUseCase: CheckEmailExistsUseCase,
   ) {}
 
   @Post('login')
@@ -128,5 +130,21 @@ export class StaffController {
     }
     const token = authorization.split(' ')[1];
     return this.getEmailsUseCase.execute(token);
+  }
+
+
+  
+  @Get('email-exists/:email')
+  async checkEmailExists(@Param('email') email: string, @Req() req: Request) {
+    const authorization = req.headers.authorization;
+    
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+
+    const token = authorization.split(' ')[1];
+
+    const exists = await this.checkEmailExistsUseCase.execute(email, token);
+    return { exists };
   }
 }

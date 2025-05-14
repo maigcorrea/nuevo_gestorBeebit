@@ -38,7 +38,7 @@ const ButtonEmail = () => {
     setError('');
 
     // Validar email antes de enviar
-    const emailCheck = await fetch(`http://localhost:3000/staff/emailExists/${to}`, {
+    const emailCheck = await fetch(`http://localhost:3000/directus/staff/email-exists/${encodeURIComponent(to)}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     });
     const emailData = await emailCheck.json();
