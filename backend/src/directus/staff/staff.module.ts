@@ -9,6 +9,7 @@ import { GetProfileUseCase } from './use-cases/get-profile.use-case';
 import { UpdateProfileUseCase } from './use-cases/update-profile.use-case';
 import { UploadProfilePictureUseCase } from './use-cases/update-profile-picture.use-case';
 import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
+import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
 
 @Module({
   imports: [HttpModule],
@@ -20,6 +21,7 @@ import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
     UpdateProfileUseCase,
     UploadProfilePictureUseCase,
     VerifyPasswordUseCase,
+    ChangePasswordUseCase,
   ],
 })
 export class StaffModule {}

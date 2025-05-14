@@ -12,6 +12,8 @@ import { UpdateProfileUseCase } from './use-cases/update-profile.use-case';
 import { UploadProfilePictureUseCase } from './use-cases/update-profile-picture.use-case';
 import { VerifyPasswordDto } from './dto/verify-password.dto';
 import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
 
 @Controller('directus/staff')
 export class StaffController {
@@ -22,6 +24,7 @@ export class StaffController {
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly uploadProfilePictureUseCase: UploadProfilePictureUseCase,
     private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
+    private readonly changePasswordUseCase: ChangePasswordUseCase,
   ) {}
 
   @Post('login')
@@ -94,9 +97,22 @@ export class StaffController {
 
 
   @Post('verify-password')
-async verifyPassword(@Body() body: VerifyPasswordDto) {
-  console.log('entra a verify-password', body); // TEMPORAL
-  const isValid = await this.verifyPasswordUseCase.execute(body.email, body.password);
-  return { valid: isValid };
-}
+  async verifyPassword(@Body() body: VerifyPasswordDto) {
+    console.log('entra a verify-password', body); // TEMPORAL
+    const isValid = await this.verifyPasswordUseCase.execute(body.email, body.password);
+    return { valid: isValid };
+  }
+
+
+  @Patch('change-password')
+  async changePassword(@Req() req: Request, @Body() body: ChangePasswordDto) {
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+      throw new UnauthorizedException('Token no proporcionado');
+    }
+    const token = authorization.split(' ')[1];
+    const { newPassword } = body;
+
+    return this.changePasswordUseCase.execute(token, newPassword);
+  }
 }

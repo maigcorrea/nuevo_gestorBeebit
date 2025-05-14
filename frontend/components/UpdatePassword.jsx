@@ -79,13 +79,13 @@ const UpdatePassword = () => {
         const id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
 
-        const res = await fetch(`http://localhost:3000/staff/changePassword/${id}`, {
-            method: 'PUT',
+        const res = await fetch(`http://localhost:3000/directus/staff/change-password`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({ userId: id, newPassword })
+            body: JSON.stringify({ newPassword })
         });
 
         if (res.ok) {
