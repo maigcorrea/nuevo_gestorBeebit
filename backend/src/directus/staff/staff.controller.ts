@@ -1,6 +1,7 @@
 // /directus/staff/staff.controller.ts
 
-import { Body, Controller, Post, Get, Req, UnauthorizedException, Patch } from '@nestjs/common';
+import { Body, Controller, Post, Get, Req, UnauthorizedException, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { LoginUseCase } from './use-cases/login.use-case';
 import { CreateStaffUseCase } from './use-cases/create-staff.use-case';
@@ -8,6 +9,7 @@ import { CreateStaffDto } from './dto/create-staff.dto';
 import { GetProfileUseCase } from './use-cases/get-profile.use-case';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { UpdateProfileUseCase } from './use-cases/update-profile.use-case';
+import { UploadProfilePictureUseCase } from './use-cases/update-profile-picture.use-case';
 
 @Controller('directus/staff')
 export class StaffController {
@@ -16,6 +18,7 @@ export class StaffController {
     private readonly createStaffUseCase: CreateStaffUseCase,
     private readonly getProfileUseCase: GetProfileUseCase,
     private readonly updateProfileUseCase: UpdateProfileUseCase,
+    private readonly uploadProfilePictureUseCase: UploadProfilePictureUseCase,
   ) {}
 
   @Post('login')
@@ -65,5 +68,24 @@ export class StaffController {
     const token = authorization.split(' ')[1];
 
     return this.updateProfileUseCase.execute(userId, dto, token);
+  }
+
+
+
+
+  @Post('upload-profile-picture')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadProfilePicture(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('userId') userId: string,
+    @Req() req: Request,
+  ) {
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+      throw new UnauthorizedException('Token no proporcionado');
+    }
+    const token = authorization.split(' ')[1];
+
+    return this.uploadProfilePictureUseCase.execute(file.buffer, file.originalname, token, userId);
   }
 }
