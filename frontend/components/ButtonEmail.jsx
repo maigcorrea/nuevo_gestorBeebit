@@ -16,7 +16,7 @@ const ButtonEmail = () => {
   useEffect(() => {
     const fetchEmails = async () => {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/staff/emails', {
+      const res = await fetch('http://localhost:3000/directus/staff/emails', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

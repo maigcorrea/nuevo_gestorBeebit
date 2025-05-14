@@ -14,6 +14,7 @@ import { VerifyPasswordDto } from './dto/verify-password.dto';
 import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
+import { GetEmailsUseCase } from './use-cases/get-emails.use-case';
 
 @Controller('directus/staff')
 export class StaffController {
@@ -25,6 +26,7 @@ export class StaffController {
     private readonly uploadProfilePictureUseCase: UploadProfilePictureUseCase,
     private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
     private readonly changePasswordUseCase: ChangePasswordUseCase,
+    private readonly getEmailsUseCase: GetEmailsUseCase,
   ) {}
 
   @Post('login')
@@ -114,5 +116,17 @@ export class StaffController {
     const { newPassword } = body;
 
     return this.changePasswordUseCase.execute(token, newPassword);
+  }
+
+
+
+  @Get('emails')
+  async getAllEmails(@Req() req: Request) {
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+    const token = authorization.split(' ')[1];
+    return this.getEmailsUseCase.execute(token);
   }
 }
