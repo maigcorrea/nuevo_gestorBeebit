@@ -10,6 +10,8 @@ import { GetProfileUseCase } from './use-cases/get-profile.use-case';
 import { UpdateStaffDto } from './dto/update-staff.dto';
 import { UpdateProfileUseCase } from './use-cases/update-profile.use-case';
 import { UploadProfilePictureUseCase } from './use-cases/update-profile-picture.use-case';
+import { VerifyPasswordDto } from './dto/verify-password.dto';
+import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
 
 @Controller('directus/staff')
 export class StaffController {
@@ -19,6 +21,7 @@ export class StaffController {
     private readonly getProfileUseCase: GetProfileUseCase,
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly uploadProfilePictureUseCase: UploadProfilePictureUseCase,
+    private readonly verifyPasswordUseCase: VerifyPasswordUseCase,
   ) {}
 
   @Post('login')
@@ -88,4 +91,12 @@ export class StaffController {
 
     return this.uploadProfilePictureUseCase.execute(file.buffer, file.originalname, token, userId);
   }
+
+
+  @Post('verify-password')
+async verifyPassword(@Body() body: VerifyPasswordDto) {
+  console.log('entra a verify-password', body); // TEMPORAL
+  const isValid = await this.verifyPasswordUseCase.execute(body.email, body.password);
+  return { valid: isValid };
+}
 }

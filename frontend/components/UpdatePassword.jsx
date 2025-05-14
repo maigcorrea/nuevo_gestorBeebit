@@ -19,23 +19,54 @@ const UpdatePassword = () => {
         const id = localStorage.getItem('id');
         const token = localStorage.getItem('token');
 
-        const res = await fetch(`http://localhost:3000/public-staff/passwordVerify/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId: id, password: currentPassword })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok || !data.valid) {
-            setError('Contraseña actual incorrecta');
+        if (!token) {
+            setError('No se encontró el token');
             return;
         }
 
-        setStep(2);
-        setError('');
+        try {
+            // 1️⃣ Obtener el email del usuario
+            const profileRes = await fetch('http://localhost:3000/directus/staff', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            if (!profileRes.ok) {
+                setError('Error al obtener el perfil');
+                return;
+            }
+    
+            const profileData = await profileRes.json();
+            const email = profileData.email;
+
+            console.log("DATOOOOS", profileData);
+            console.log("EMAIL", email);
+    
+            // 2️⃣ Verificar contraseña
+            const verifyRes = await fetch('http://localhost:3000/directus/staff/verify-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password: currentPassword }),
+            });
+    
+            const verifyData = await verifyRes.json();
+            
+    
+            if (!verifyRes.ok || !verifyData.valid) {
+                setError('Contraseña actual incorrecta');
+                return;
+            }
+    
+            setStep(2);
+            setError('');
+            
+        } catch (error) {
+            console.error('Error en verificación:', error);
+            setError('Error inesperado al verificar contraseña');
+        }
     };
 
     const handlePasswordChange = async () => {

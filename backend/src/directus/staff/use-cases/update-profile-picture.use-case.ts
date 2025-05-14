@@ -1,5 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import * as FormData from 'form-data';
+import axios from 'axios';
+
 
 @Injectable()
 export class UploadProfilePictureUseCase {
