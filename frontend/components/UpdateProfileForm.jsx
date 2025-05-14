@@ -70,7 +70,7 @@ const UpdateProfileForm = () => {
         setSuccessMessage("");
 
         // Validación del email
-        if (email !== originalEmail) {
+        /*if (email !== originalEmail) {
             const emailRes = await fetch(`http://localhost:3000/staff/emailExists/${email}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -79,10 +79,10 @@ const UpdateProfileForm = () => {
                 setEmailError("Ya existe un usuario con ese email.");
                 return;
             }
-        }
+        }*/
 
         // Validación del teléfono
-        if (phone !== originalPhone) {
+        /*if (phone !== originalPhone) {
             const phoneRes = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -91,18 +91,20 @@ const UpdateProfileForm = () => {
                 setPhoneError("Ya existe un usuario con ese teléfono.");
                 return;
             }
-        }
-
+        }*/
+        //const emailFormat = email.toLowerCase();
         const body = { phone, email };
 
-        const res = await fetch(`http://localhost:3000/staff/update/${userId}`, {
-            method: 'PUT',
+        const res = await fetch(`http://localhost:3000/directus/staff/update/${userId}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(body),
         });
+
+        const data = await res.json();
 
         setLoading(true);
         if (res.ok) {
@@ -116,9 +118,15 @@ const UpdateProfileForm = () => {
                 router.push('/');
             }, 2000);
     
-        } else {
+        } else if(res.status === 400) {
+            // Error 400: Asumimos que es porque el email o teléfono ya existen
+            setSuccessMessage('');
+            setEmailError('Ya existe un usuario con ese email o teléfono.');
+            setLoading(false);    
+        }else{
+            // Otro tipo de error
+            setSuccessMessage('Error al actualizar los datos.');
             setLoading(false);
-            setSuccessMessage('Error al actualizar los datos');
         }
     };
 
