@@ -32,7 +32,16 @@ export const UserProvider = ({ children }) => {
     const [userType, setUserType] = useState(null); //Obtener el tipo de usuario del localStorage, si no hay nada, poner a null
     const [token, setToken] = useState('');
     const [profileImage, setProfileImage] = useState('');
-    //const [id, setId] = useState('');
+    
+
+    //Para refrescar automáticamente el navbar (LA IMAGEN)
+    const [profileImageRefreshKey, setProfileImageRefreshKey] = useState(0);
+
+
+    const refreshProfileImage = () => {
+      setProfileImageRefreshKey(prev => prev + 1);
+    };
+
     const logout = () => {
       localStorage.clear();
       setUserType(null);
@@ -73,8 +82,8 @@ export const UserProvider = ({ children }) => {
   //Por si muchos componentes se están re-renderizando más de la cuenta por el contexto
   //Usa el hook useMemo para memorizar (guardar en caché) el objeto contextValue, evitando que cambie en cada render si sus dependencias no han cambiado.
   const contextValue = useMemo(() => ({
-    userType, setUserType, profileImage, setProfileImage, logout, isLoading, token, setToken
-  }), [userType, profileImage, isLoading, token]);
+    userType, setUserType, profileImage, setProfileImage, logout, isLoading, token, setToken, profileImageRefreshKey, refreshProfileImage, 
+  }), [userType, profileImage, isLoading, token, profileImageRefreshKey]);
   
 
   return (

@@ -24,6 +24,7 @@ const UpdateProfileForm = () => {
     //Imagen
     const [profileImage, setProfileImage] = useState(null); // archivo seleccionado
     const { setProfileImage: setProfileImageUrlContext } = useContext(UserContext); // desde contexto
+    const { refreshProfileImage } = useContext(UserContext);
     const [uploadMessage, setUploadMessage] = useState("");
     const [profileImageUrl, setProfileImageUrl] = useState(null);
 
@@ -170,6 +171,7 @@ const UpdateProfileForm = () => {
             
 
             setUploadMessage("✅ Imagen subida correctamente ");
+            refreshProfileImage(); //Acualizar navbar automáticamente
 
                 // Esto dispara de nuevo el useEffect
             setRefreshData(prev => !prev);

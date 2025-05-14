@@ -19,7 +19,35 @@ export default function Navbar() {
   const { setUserType } = useContext(UserContext);
   const { profileImage } = useContext(UserContext); //La imagen se actualiza según el contexto
   const { logout } = useContext(UserContext); //Para cerrar sesión
-  
+  const { isLoading } = useContext(UserContext);
+  const { profileImageRefreshKey } = useContext(UserContext); //Para refrescar la imagen
+
+
+  const [avatarUrl, setAvatarUrl] = useState(''); // <-- 1. Añadir este estado local
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const res = await fetch('http://localhost:3000/directus/staff/', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        console.log('Response completa de /directus/staff/', data);
+
+        if (data && data.avatar) {
+          const avatarUrl = `http://localhost:8055/assets/${data.avatar}`; // <-- Construimos la URL manualmente
+          setAvatarUrl(avatarUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching profile image:', error);
+      }
+    };
+
+    fetchProfileImage(); // <-- 2. Llamamos a la función
+  }, [profileImageRefreshKey]); // <-- 3. Sólo se ejecuta una vez al montar
 
   const items = useMemo(() => [
     {
@@ -72,7 +100,7 @@ export default function Navbar() {
     <>
     <Menu model={userMenuItems} popup ref={menuRef} />
       <Avatar
-        image={profileImage && profileImage !== '' ? profileImage : '/perfil.jpeg'} // Asegúrate de tener esta imagen en /public
+        image={avatarUrl ? avatarUrl : '/perfil.jpeg'} // Asegúrate de tener esta imagen en /public
         shape="circle"
         size="large"
         className="cursor-pointer"
@@ -82,6 +110,7 @@ export default function Navbar() {
   );
 
   if (!userType) return null; // No mostrar Navbar si no hay sesión
+  if (isLoading) return null;
 
   return (
     <Menubar
