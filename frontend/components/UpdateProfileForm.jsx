@@ -143,11 +143,13 @@ const UpdateProfileForm = () => {
         if (!profileImage) return;
         
         const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("id");
         const formData = new FormData();
         formData.append("file", profileImage);
+        formData.append("userId", userId);
         
         try {
-            const res = await fetch("http://localhost:3000/staff/upload-profile-picture", {
+            const res = await fetch("http://localhost:3000/directus/staff/upload-profile-picture", {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
