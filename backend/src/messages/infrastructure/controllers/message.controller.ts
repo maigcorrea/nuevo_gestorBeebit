@@ -23,13 +23,13 @@ import {
     ) {}
   
     @Post('send')
-    @UseGuards(AuthGuard('jwt'))
+    //@UseGuards(AuthGuard('jwt'))
     @ApiOperation({ summary: 'Enviar un mensaje por correo' })
     @ApiResponse({ status: 201, description: 'Mensaje encolado correctamente' })
     @ApiResponse({ status: 400, description: 'Solicitud inválida' })
     @ApiResponse({ status: 401, description: 'No autorizado' })
     async send(@Body() dto: SendMessageDto, @Req() req) {
-      const senderId = req.user.userId;
+      const senderId = req.user?.userId ?? 'directus';
   
       const input = {
         senderId,
