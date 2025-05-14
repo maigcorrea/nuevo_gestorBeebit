@@ -5,6 +5,7 @@ import { HttpModule } from '@nestjs/axios';
 import { StaffController } from './staff.controller';
 import { LoginUseCase } from './use-cases/login.use-case';
 import { CreateStaffUseCase } from './use-cases/create-staff.use-case';
+import { GetProfileUseCase } from './use-cases/get-profile.use-case';
 
 @Module({
   imports: [HttpModule],
@@ -12,6 +13,7 @@ import { CreateStaffUseCase } from './use-cases/create-staff.use-case';
   providers: [
     LoginUseCase,
     CreateStaffUseCase,
+    GetProfileUseCase,
   ],
 })
 export class StaffModule {}

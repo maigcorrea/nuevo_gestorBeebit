@@ -43,13 +43,13 @@ const UpdateProfileForm = () => {
       
             if (!id || !token) return;
       
-            const res = await fetch(`http://localhost:3000/staff/${id}`, {
+            const res = await fetch(`http://localhost:3000/directus/staff/`, {
               headers: { Authorization: `Bearer ${token}` }
             });
       
             const data = await res.json();
             
-            setName(data.name);
+            setName(data.first_name);
             setPhone(data.phone);
             setOriginalPhone(data.phone);
             setRegisterDate(new Date(data.register_date).toLocaleDateString());
