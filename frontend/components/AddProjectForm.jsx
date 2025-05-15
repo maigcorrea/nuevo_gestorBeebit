@@ -30,11 +30,11 @@ const AddProjectForm = () => {
 
 
     //Validación de título (Si ya existe en la bd)
-    const checkTitleExists = async (title) => {
+    /*const checkTitleExists = async (title) => {
         const res = await fetch(`http://localhost:3000/projects/exists/title/${title}`);
         const data = await res.json();
         return data.exists;
-    };
+    };*/
 
 
     //Validación de startDate(Fecha de inicio). Comprobar que no sea una fecha pasada a la actual
@@ -56,12 +56,12 @@ const AddProjectForm = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (await checkTitleExists(title)) {
+        /*if (await checkTitleExists(title)) {
             setTitleError('Ya existe un proyecto con ese nombre');
             return;
         }
 
-        setTitleError("");
+        setTitleError("");*/
 
         // Validar que deadline no sea anterior a start_date
         if (start_date && deadline && new Date(deadline) < new Date(start_date)) {
@@ -71,13 +71,7 @@ const AddProjectForm = () => {
 
 
 
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
-      
-        if (start_date) formData.append('start_date', start_date);
-        if (deadline) formData.append('deadline', deadline);
-        if (document) formData.append('file', document); // 👈 este campo debe llamarse "file" para que Multer lo capture
+        
 
         // if (await checkPhoneExists(phone)) {
         //     setPhoneError('Ya existe un usuario con ese teléfono');
@@ -109,13 +103,26 @@ const AddProjectForm = () => {
         // }
 
         console.log('Token enviado:', token);
+
+        const projectData = {
+          title,
+          description,
+        };
+
+        //Sólo enviar deadline si contiene algo, si está relleno
+        if (deadline) {
+          projectData.deadline = deadline;
+        }
+        
+
         try {
-          const res = await fetch('http://localhost:3000/projects', {
+          const res = await fetch('http://localhost:3000/directus/project', {
+            method:'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
             },
-            method: 'POST',
-            body: formData // no ponemos headers, fetch lo hace solo para FormData
+            body: JSON.stringify(projectData), // no ponemos headers, fetch lo hace solo para FormData
           });
     
           const data = await res.json();

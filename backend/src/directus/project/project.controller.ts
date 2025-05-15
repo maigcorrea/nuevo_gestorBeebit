@@ -1,12 +1,13 @@
 // src/directus/project/project.controller.ts
 
-import { Controller, Get, Req, UnauthorizedException, Patch, Param, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Req, UnauthorizedException, Patch, Param, Body, Delete, Post } from '@nestjs/common';
 import { Request } from 'express';
 import { FindAllProjectsUseCase } from './use-cases/find-all-projects.use-case';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { UpdateProjectUseCase } from './use-cases/update-project.use-case';
 import { DeleteProjectUseCase } from './use-cases/delete-project.use-case';
+import { CreateProjectUseCase } from './use-cases/create-project.use-case';
 
 @ApiTags('Directus - Project')
 @Controller('directus/project')
@@ -15,6 +16,7 @@ export class ProjectController {
     private readonly findAllProjectsUseCase: FindAllProjectsUseCase,
     private readonly updateProjectUseCase: UpdateProjectUseCase,
     private readonly deleteProjectUseCase: DeleteProjectUseCase,
+    private readonly createProjectUseCase: CreateProjectUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Obtener todos los proyectos' })
@@ -79,4 +81,17 @@ export class ProjectController {
   }
 
 
+
+  @Post()
+  async createProject(@Body() body: any, @Req() req: Request) {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+      throw new UnauthorizedException('No se encontró el token de autorización');
+    }
+
+    const token = authorization.split(' ')[1];
+
+    return this.createProjectUseCase.execute(body, token);
+  }
 }
