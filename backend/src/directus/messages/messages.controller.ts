@@ -15,11 +15,10 @@ export class MessagesController {
   async findSentMessages(@Req() req) {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
-    const userId = req.user.data.id ; // 👈 user.id es el ID en Directus
-    console.log("TOKEN QUE LLEGA:", token);
-    console.log("USERID: ", userId);
+    const userId = req.user?.data?.id; // 👈 sacamos el id del usuario loggeado
 
-    return this.findSentMessagesUseCase.execute(token, userId);
+    const messages = await this.findReceivedMessagesUseCase.execute(token, userId);
+    return { data: messages };
   }
 
 
