@@ -7,6 +7,7 @@ import {
     Get
   } from '@nestjs/common';
   import { AuthGuard } from '@nestjs/passport';
+  import { DirectusAuthGuard } from 'src/common/guards/directus-auth.guard';
   import { SendMessageDto } from '../dto/send-message.dto';
   import { SendMessageUseCase } from 'src/messages/application/use-cases/send-message.use-case';
   import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -23,13 +24,14 @@ import {
     ) {}
   
     @Post('send')
+    @UseGuards(DirectusAuthGuard)//Validación del token de directus
     //@UseGuards(AuthGuard('jwt'))
     @ApiOperation({ summary: 'Enviar un mensaje por correo' })
     @ApiResponse({ status: 201, description: 'Mensaje encolado correctamente' })
     @ApiResponse({ status: 400, description: 'Solicitud inválida' })
     @ApiResponse({ status: 401, description: 'No autorizado' })
     async send(@Body() dto: SendMessageDto, @Req() req) {
-      const senderId = req.user?.userId ?? 'directus';
+      const senderId = req.user?.id ?? 'directus';
   
       const input = {
         senderId,
