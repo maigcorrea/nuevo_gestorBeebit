@@ -5,6 +5,7 @@ import { StaffModule } from './staff/staff.module';
 import { TasksStaffModule } from './task_staff/task-staff.module';
 import { TaskModule } from './task/task.module';
 import { ProjectModule } from './project/project.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ProjectModule } from './project/project.module';
     TasksStaffModule,
     TaskModule,
     ProjectModule,
+    MessagesModule,
   ],
 })
 export class DirectusModule {}

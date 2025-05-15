@@ -14,11 +14,12 @@ const ShowMessages = () => {
     const fetchMessages = async () => {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('id');
+      console.log("TOKEN EN FRONTEND", token);
 
       if (!token || !userId) return;
 
       try {
-        const res = await fetch(`http://localhost:3000/messages/enviados/`, {
+        const res = await fetch(`http://localhost:3000/directus/messages/enviados/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -26,7 +27,7 @@ const ShowMessages = () => {
 
         const data = await res.json();
         console.log(data);
-        setMessages(data);
+        setMessages(data.data || []);
       } catch (error) {
         console.error('Error al obtener mensajes enviados', error);
       }
