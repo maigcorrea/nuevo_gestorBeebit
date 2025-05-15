@@ -58,6 +58,30 @@ const ButtonEmail = () => {
     });
 
     if (res.ok) {
+
+      try {
+        // Guardar en la base de datos de Directus
+        const saveRes = await fetch('http://localhost:3000/directus/messages/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          },
+          body: JSON.stringify({
+            to,
+            subject,
+            text: body,
+          }),
+        });
+    
+        if (!saveRes.ok) {
+          console.error('Error al guardar el mensaje en Directus');
+        }
+      } catch (error) {
+        console.error('Error al guardar el mensaje:', error);
+      }
+
+
       setSuccess('Correo enviado correctamente');
       setTo('');
       setSubject('');
