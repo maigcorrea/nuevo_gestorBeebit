@@ -6,6 +6,7 @@ import { TasksStaffModule } from './task_staff/task-staff.module';
 import { TaskModule } from './task/task.module';
 import { ProjectModule } from './project/project.module';
 import { MessagesModule } from './messages/messages.module';
+import { UploadController } from './upload/upload.controller';
 
 @Module({
   imports: [
@@ -15,5 +16,8 @@ import { MessagesModule } from './messages/messages.module';
     ProjectModule,
     MessagesModule,
   ],
+  controllers: [
+    UploadController,
+  ]
 })
 export class DirectusModule {}

@@ -29,39 +29,9 @@ const AddProjectForm = () => {
     const [fieldErrors, setFieldErrors] = useState({});
 
 
-    //Validación de título (Si ya existe en la bd)
-    /*const checkTitleExists = async (title) => {
-        const res = await fetch(`http://localhost:3000/projects/exists/title/${title}`);
-        const data = await res.json();
-        return data.exists;
-    };*/
-
-
-    //Validación de startDate(Fecha de inicio). Comprobar que no sea una fecha pasada a la actual
-    // const checkEmailExists = async (email) => {
-    //     const res = await fetch(`http://localhost:3000/staff/emailExists/${email}`);
-    //     const data = await res.json();
-    //     return data.exists;
-    // };
-
-
-    //Validación de deadline (Fecha de entrega del proyecto). Comprobar que no sea una fecha pasada a la actual
-    // const checkPhoneExists = async (phone) => {
-    //     const res = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`);
-    //     const data = await res.json();
-    //     return data.exists;
-    // };
-
-
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        /*if (await checkTitleExists(title)) {
-            setTitleError('Ya existe un proyecto con ese nombre');
-            return;
-        }
-
-        setTitleError("");*/
 
         // Validar que deadline no sea anterior a start_date
         if (start_date && deadline && new Date(deadline) < new Date(start_date)) {
@@ -70,91 +40,86 @@ const AddProjectForm = () => {
         }
 
 
-
-        
-
-        // if (await checkPhoneExists(phone)) {
-        //     setPhoneError('Ya existe un usuario con ese teléfono');
-        //     return;
-        // }
-
-
-
-        // if (await checkEmailExists(email)) {
-        //     setEmailError('Ya existe un usuario con ese email');
-        //     return;
-        // }
-
-
         console.log({ title, description, start_date, deadline, document });
 
-        //Validar si las fechas están vacias, si lo están, asignar undefined para que no de error en el backend
-        // const body = {
-        //     title,
-        //     description,
-        // };
-          
-        // if (start_date !== '') {
-        //     body.start_date = start_date;
-        // }
-        
-        // if (deadline !== '') {
-        //     body.deadline = deadline;
-        // }
 
         console.log('Token enviado:', token);
 
-        const projectData = {
-          title,
-          description,
-        };
-
-        //Sólo enviar deadline si contiene algo, si está relleno
-        if (deadline) {
-          projectData.deadline = deadline;
-        }
         
-
-        try {
-          const res = await fetch('http://localhost:3000/directus/project', {
-            method:'POST',
-            headers: {
+      
+          try {
+            let uploadedFileId = null;
+      
+            // 1. Si hay un documento, primero lo subimos
+            if (document) {
+              const formData = new FormData();
+              formData.append('file', document);
+      
+              const uploadRes = await fetch('http://localhost:3000/directus/upload', {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+              });
+      
+              const uploadData = await uploadRes.json();
+              console.log('Resultado de subir archivo:', uploadData);
+      
+              if (uploadRes.ok) {
+                uploadedFileId = uploadData.id; // Nos guardamos el ID del archivo subido
+              } else {
+                throw new Error('Error subiendo archivo');
+              }
+            }
+      
+            // 2. Luego preparamos el proyecto
+            const projectData = {
+              title,
+              description,
+            };
+      
+            if (start_date) {
+              projectData.start_date = start_date;
+            }
+      
+            if (deadline) {
+              projectData.deadline = deadline;
+            }
+      
+            if (uploadedFileId) {
+              projectData.document = uploadedFileId; // Asociamos el archivo subido al proyecto
+            }
+      
+            // 3. Ahora creamos el proyecto
+            const res = await fetch('http://localhost:3000/directus/project', {
+              method: 'POST',
+              headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(projectData), // no ponemos headers, fetch lo hace solo para FormData
-          });
-    
-          const data = await res.json();
-          console.log(data);
-    
-        //   if (!res.ok) {
-        //     // Si es un array de errores de validación:
-        //     if (Array.isArray(data.message)) {
-        //         setFieldErrors({
-        //             password: data.message.join('. '),
-        //           });
-        //     }
-
-        //     return;
-              
-        //   }
-    
-          
-    console.log("Llega");
-           // Redirigir o mostrar éxito
-           toast.current.show({ severity: 'success', summary: 'Protecto añadido', detail: 'Proyecto añadido correctamente' });
-            //LImpiar formulario
+              },
+              body: JSON.stringify(projectData),
+            });
+      
+            const data = await res.json();
+            console.log('Proyecto creado:', data);
+      
+            toast.current.show({ severity: 'success', summary: 'Proyecto añadido', detail: 'Proyecto añadido correctamente' });
+      
+            // Limpiar formulario
             setTitle('');
             setDescription('');
             setStartDate('');
             setDeadline('');
+            setDocument(null);
             setError('');
-            // router.push('/dashboard'); o mostrar un mensaje
-        } catch (err) {
-          setError('Error de conexión');
-        }
+      
+          } catch (err) {
+            console.error(err);
+            setError('Error de conexión o error subiendo archivo');
+          }
       };
+      
 
 
       //Validación de fechas

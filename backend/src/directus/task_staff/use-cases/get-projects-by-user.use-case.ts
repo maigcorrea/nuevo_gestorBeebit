@@ -6,7 +6,7 @@ export class GetProjectsByUserUseCase {
   async execute(token: string, userId: string): Promise<ProjectByUserResponseDto[]> {
     try {
       const response = await fetch(
-        `${process.env.DIRECTUS_URL}/items/Task_staff?filter[staff][_eq]=${userId}&fields=task.associated_project.id,task.associated_project.title,task.associated_project.description,task.associated_project.start_date,task.associated_project.deadline,task.associated_project.last_update,task.associated_project.status,task.associated_project.document_url`,
+        `${process.env.DIRECTUS_URL}/items/Task_staff?filter[staff][_eq]=${userId}&fields=task.associated_project.id,task.associated_project.title,task.associated_project.description,task.associated_project.start_date,task.associated_project.deadline,task.associated_project.last_update,task.associated_project.status,task.associated_project.document.*`,
         {
           method: 'GET',
           headers: {
@@ -44,7 +44,7 @@ export class GetProjectsByUserUseCase {
             deadline: project.deadline,
             last_update: project.last_update,
             status: project.status,
-            document_url: project.document_url ?? undefined,
+            document: project.document ?? undefined,
           });
         }
       }

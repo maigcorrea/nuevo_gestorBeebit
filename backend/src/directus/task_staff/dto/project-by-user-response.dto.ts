@@ -23,5 +23,5 @@ export class ProjectByUserResponseDto {
   status: string;
 
   @ApiProperty({ required: false })
-  document_url?: string;
+  document?: string;
 }

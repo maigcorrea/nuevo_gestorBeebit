@@ -112,6 +112,7 @@ const ProjectTab = () => {
 
         const data = await res.json();
         setProyectos(data);
+        console.log("DATOS DE LOS PROYECTOS", data);
 
       } catch (err) {
         setError(err.message);
@@ -187,14 +188,14 @@ const ProjectTab = () => {
                     </span>
                   </td>
                   <td>
-                    {proyecto.document_url ? (
+                    {proyecto.document ? (
                       <a
-                        href={proyecto.document_url}
+                        href={`http://localhost:8055/assets/${proyecto.document.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500 underline"
                       >
-                        Ver documento
+                        {proyecto.document.filename_dowload || 'Ver documento'}
                       </a>
                     ) : '---'}
                   </td>
@@ -218,10 +219,10 @@ const ProjectTab = () => {
               <p className="text-sm text-gray-600">{proyecto.description || 'Sin descripción'}</p>
               <p>Fechas: {new Date(proyecto.start_date).toLocaleDateString('es-ES')} → {proyecto.deadline ? new Date(proyecto.deadline).toLocaleDateString('es-ES') : 'Sin límite'}</p>
               <p>Estado: {proyecto.status === 'completed' ? 'Completado' : proyecto.status === 'active' ? 'Activo' : 'Pendiente'}</p>
-              {proyecto.document_url && (
+              {proyecto.document && (
                 <p className="mt-2">
                   <a
-                    href={proyecto.document_url}
+                    href={`http://localhost:8055/assets/${proyecto.document.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
