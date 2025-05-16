@@ -17,6 +17,7 @@ export class CreateTaskUseCase {
         start_date: dto.start_date || null,
         priority: dto.priority,
         associated_project: dto.associated_project,
+        status: 'pending'
       }),
     });
 
