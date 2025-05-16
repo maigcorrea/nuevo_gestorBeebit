@@ -5,9 +5,10 @@ import { UpdateTaskStatusUseCase } from './use-cases/update-task-status.use-case
 import { FindAllTasksUseCase } from './use-cases/find-all-tasks.use-case';
 import { UpdateTaskUseCase } from './use-cases/update-task.use-case';
 import { DeleteTaskUseCase } from './use-cases/delete-task.use-case';
+import { CreateTaskUseCase } from './use-cases/create-task.use-case';
 
 @Module({
   controllers: [TaskController],
-  providers: [UpdateStatusAndPriorityUseCase, UpdateTaskStatusUseCase, FindAllTasksUseCase, UpdateTaskUseCase, DeleteTaskUseCase],
+  providers: [UpdateStatusAndPriorityUseCase, UpdateTaskStatusUseCase, FindAllTasksUseCase, UpdateTaskUseCase, DeleteTaskUseCase, CreateTaskUseCase],
 })
 export class TaskModule {}

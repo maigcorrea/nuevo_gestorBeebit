@@ -155,17 +155,16 @@ const AddTaskForm = () => {
         const body = {
             title,
             description,
-            associated_project_id: associated_project,
             priority: priority.code,
+            associated_project: associated_project,
             ...(start_date !== '' && { start_date }),
-            staffIds: staff,
           };
           
           console.log('Body enviado:', body);
 
         try {
             //Insertar tarea
-          const res = await fetch('http://localhost:3000/task', {
+          const res = await fetch('http://localhost:3000/directus/task/crear', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(body)
