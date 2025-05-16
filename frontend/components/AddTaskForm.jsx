@@ -20,6 +20,7 @@ const AddTaskForm = () => {
     const [description, setDescription] = useState('');
     const [associated_project, setAssociatedProject] = useState('');
     const [start_date, setStartDate] = useState('');
+    const [deadline, setDeadline] = useState('');
     const [priority, setPriority] = useState('');
     const priorityTypes = [
         { name: 'High', code: 'high' },
@@ -38,12 +39,11 @@ const AddTaskForm = () => {
     //ERRORES
     const [titleError, setTitleError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
-
     //ACTUALIZAR EL MENSAJE DE BIENVENIDA CON LOS DATOS
-    const {actualizarResumenTareas} = useTaskSummary();
+    //const {actualizarResumenTareas} = useTaskSummary();
 
 
-    //Validación de título (Si ya existe en la bd)
+    //Validación de título (Si ya existe en la bd) YA LO CONTROLA DIRECTUS AL PONER QUE EL CAMPO ES UNIQUE
     /*const checkTitleExists = async (title) => {
         const res = await fetch(`http://localhost:3000/projects/titleExists/${title}`);
         const data = await res.json();
@@ -54,7 +54,7 @@ const AddTaskForm = () => {
     useEffect(() => {
         const projectList= async() =>{
             try {
-                const projects = await fetch(`http://localhost:3000/projects/`,{
+                const projects = await fetch(`http://localhost:3000/directus/project/all`,{
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -82,7 +82,7 @@ const AddTaskForm = () => {
     useEffect(() => {
       const staff = async() =>{
         try {
-            const staff = await fetch(`http://localhost:3000/staff/all`,{
+            const staff = await fetch(`http://localhost:3000/directus/staff/all`,{
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -107,27 +107,11 @@ const AddTaskForm = () => {
     }, []);
 
     const staffOptions = staffList.map(st => ({
-        label: st.name,
+        label: st.first_name,
         value: st.id
     }));
 
     console.log(staffOptions);
-    
-
-    //Validación de startDate(Fecha de inicio). Comprobar que no sea una fecha pasada a la actual
-    // const checkEmailExists = async (email) => {
-    //     const res = await fetch(`http://localhost:3000/staff/emailExists/${email}`);
-    //     const data = await res.json();
-    //     return data.exists;
-    // };
-
-
-    //Validación de deadline (Fecha de entrega del proyecto). Comprobar que no sea una fecha pasada a la actual
-    // const checkPhoneExists = async (phone) => {
-    //     const res = await fetch(`http://localhost:3000/staff/phoneExists/${phone}`);
-    //     const data = await res.json();
-    //     return data.exists;
-    // };
 
 
     const handleRegister = async (e) => {
@@ -148,11 +132,21 @@ const AddTaskForm = () => {
             setFieldErrors(errors);
             return;
         }
+
+
+        if (start_date && new Date(start_date) < new Date(today)) {
+            toast.current.show({ 
+              severity: 'warn', 
+              summary: 'Fecha inválida', 
+              detail: 'La fecha de inicio no puede ser anterior a hoy.', 
+              life: 4000 
+            });
+            return;
+        }
     
         // Si no hay errores, limpiamos posibles errores anteriores
         setFieldErrors({});
 
-        //Validaciónd e fechas
 
 
 
@@ -171,7 +165,7 @@ const AddTaskForm = () => {
 
         try {
             //Insertar tarea
-          const res = await fetch('http://localhost:3000/tasks', {
+          const res = await fetch('http://localhost:3000/task', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify(body)
@@ -180,7 +174,7 @@ const AddTaskForm = () => {
         const taskData = await res.json();
         console.log('Respuesta backend:', taskData);
 
-        // Asignar el empleado si se ha seleccionado uno
+        // Asignar el empleado o empleados 
         console.log("STAFF SELECCIONADO:", staff)
         if (staff.length > 0 && taskData.id) {
             const assignRes = await fetch('http://localhost:3000/task-staff', {
@@ -206,18 +200,6 @@ const AddTaskForm = () => {
         }
         
       }
-    
-        //   if (!res.ok) {
-        //     // Si es un array de errores de validación:
-        //     if (Array.isArray(data.message)) {
-        //         setFieldErrors({
-        //             password: data.message.join('. '),
-        //           });
-        //     }
-
-        //     return;
-              
-        //   }
     
           
     console.log("Llega");

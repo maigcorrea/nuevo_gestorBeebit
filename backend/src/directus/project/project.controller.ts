@@ -8,6 +8,7 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { UpdateProjectUseCase } from './use-cases/update-project.use-case';
 import { DeleteProjectUseCase } from './use-cases/delete-project.use-case';
 import { CreateProjectUseCase } from './use-cases/create-project.use-case';
+import { GetAllProjectsUseCase } from './use-cases/get-all-projects.use-case';
 
 @ApiTags('Directus - Project')
 @Controller('directus/project')
@@ -17,6 +18,7 @@ export class ProjectController {
     private readonly updateProjectUseCase: UpdateProjectUseCase,
     private readonly deleteProjectUseCase: DeleteProjectUseCase,
     private readonly createProjectUseCase: CreateProjectUseCase,
+    private readonly getAllProjectsUseCase: GetAllProjectsUseCase
   ) {}
 
   @ApiOperation({ summary: 'Obtener todos los proyectos' })
@@ -94,4 +96,16 @@ export class ProjectController {
 
     return this.createProjectUseCase.execute(body, token);
   }
+
+
+
+  @Get('all')
+  async getAll(@Req() req: Request) {
+    const authorization = req.headers.authorization;
+    if (!authorization) throw new UnauthorizedException();
+
+    const token = authorization.split(' ')[1];
+    return this.getAllProjectsUseCase.execute(token);
+  }
+
 }

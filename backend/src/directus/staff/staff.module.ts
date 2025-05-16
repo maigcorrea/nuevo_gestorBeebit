@@ -12,6 +12,7 @@ import { VerifyPasswordUseCase } from './use-cases/verify-password.use-case';
 import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
 import { GetEmailsUseCase } from './use-cases/get-emails.use-case';
 import { CheckEmailExistsUseCase } from './use-cases/check-email-exists.use-case';
+import { GetAllUsersUseCase } from './use-cases/get-all-users.use-case';
 
 @Module({
   imports: [HttpModule],
@@ -26,6 +27,7 @@ import { CheckEmailExistsUseCase } from './use-cases/check-email-exists.use-case
     ChangePasswordUseCase,
     GetEmailsUseCase,
     CheckEmailExistsUseCase,
+    GetAllUsersUseCase,
   ],
 })
 export class StaffModule {}

@@ -16,6 +16,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { ChangePasswordUseCase } from './use-cases/change-password.use-case';
 import { GetEmailsUseCase } from './use-cases/get-emails.use-case';
 import { CheckEmailExistsUseCase } from './use-cases/check-email-exists.use-case';
+import { GetAllUsersUseCase } from './use-cases/get-all-users.use-case';
 
 @Controller('directus/staff')
 export class StaffController {
@@ -29,6 +30,7 @@ export class StaffController {
     private readonly changePasswordUseCase: ChangePasswordUseCase,
     private readonly getEmailsUseCase: GetEmailsUseCase,
     private readonly checkEmailExistsUseCase: CheckEmailExistsUseCase,
+    private readonly getAllUsersUseCase: GetAllUsersUseCase,
   ) {}
 
   @Post('login')
@@ -146,5 +148,14 @@ export class StaffController {
 
     const exists = await this.checkEmailExistsUseCase.execute(email, token);
     return { exists };
+  }
+
+  @Get('all')
+  async getAll(@Req() req: Request) {
+    const authorization = req.headers.authorization;
+    if (!authorization) throw new UnauthorizedException();
+
+    const token = authorization.split(' ')[1];
+    return this.getAllUsersUseCase.execute(token);
   }
 }
