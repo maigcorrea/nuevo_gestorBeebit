@@ -195,7 +195,7 @@ const ProjectTab = () => {
                         rel="noopener noreferrer"
                         className="text-blue-500 underline"
                       >
-                        {proyecto.document.filename_dowload || 'Ver documento'}
+                        Ver documento
                       </a>
                     ) : '---'}
                   </td>
