@@ -28,7 +28,7 @@ const ForgotPasswordForm = () => {
         }
 
         try {
-            const res = await fetch(`http://localhost:3000/public-staff/emailExists/${email}`, {
+            const res = await fetch(`http://localhost:3000/directus/staff/email-exists/${email}`, {
             });
             const data = await res.json();
 

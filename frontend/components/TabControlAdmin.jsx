@@ -291,10 +291,15 @@ if (editData.deadline && editData.start_date && fin < inicio) {
                     <Column field="deadline" header="Deadline" body={(rowData) => formatDate(rowData.deadline)} />
                     <Column field="last_update" header="Última actualización" body={(rowData) => formatDate(rowData.last_update)} />
                     <Column field="status" header="Estado" body={(rowData) => {
-                        if (typeof rowData.status === 'object') return rowData.status.name;
+                      console.log("STATUS1:", rowData.status);
+                         if (!rowData.status) return '—'; // si es null o undefined
+
+  if (typeof rowData.status === 'object' && rowData.status !== null) {
+    return rowData.status.name || '—';
+  }
 
                         const found = statusProjectTypes.find(s => s.code === rowData.status);
-                        return found?.name || rowData.status;
+                        return found?.name || rowData.status; 
                     }} sortable />
                     <Column header="Acciones" body={(rowData) => actionButtonsTemplate(rowData, 'project')} />
                 </DataTable>
@@ -322,6 +327,7 @@ if (editData.deadline && editData.start_date && fin < inicio) {
                         if (typeof rowData.status === 'object') return rowData.status.name;
                         const found = statusTaskTypes.find(p => p.code === rowData.status);
                         return found?.name || rowData.status;
+                        console.log("STATUS:", rowData.status);
                     }} />
                     <Column field="completed" header="Completada" body={(rowData) => (rowData.completed ? 'Sí' : 'No')}/>
                     <Column header="Acciones" body={(rowData) => actionButtonsTemplate(rowData, 'task')} />
